@@ -1,0 +1,2338 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ABYSS GUILD</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --white:#ffffff;
+  --off:#f8f8f7;
+  --gray-50:#f5f5f4;
+  --gray-100:#e8e8e6;
+  --gray-200:#d4d4d0;
+  --gray-300:#b8b8b2;
+  --gray-400:#8a8a84;
+  --gray-500:#5c5c56;
+  --gray-600:#3d3d38;
+  --gray-700:#2a2a26;
+  --black:#1a1a18;
+  --success:#2d6a2d;
+  --success-bg:#edf5ed;
+  --danger:#8b1a1a;
+  --danger-bg:#fdf0f0;
+  --warn:#7a5c00;
+  --warn-bg:#fdf8e8;
+  --rank-s:#8b1a1a;
+  --rank-a:#3d1a8b;
+  --rank-b:#1a4a8b;
+  --rank-c:#1a6b3a;
+  --rank-d:#4a4a4a;
+  --shadow-sm:0 1px 3px rgba(0,0,0,0.08);
+  --shadow:0 2px 8px rgba(0,0,0,0.10);
+  --shadow-lg:0 8px 32px rgba(0,0,0,0.12);
+  --radius:10px;
+  --radius-lg:16px;
+}
+html,body{height:100%;background:var(--off);color:var(--black);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.5}
+.app{display:grid;grid-template-rows:60px 1fr;height:100vh;overflow:hidden}
+.header{background:var(--white);border-bottom:1px solid var(--gray-100);display:flex;align-items:center;padding:0 24px;gap:24px;position:relative;z-index:50}
+.main{display:grid;grid-template-columns:220px 1fr;overflow:hidden}
+.sidebar{background:var(--white);border-right:1px solid var(--gray-100);overflow-y:auto;display:flex;flex-direction:column;padding:16px 12px}
+.content{overflow-y:auto;padding:24px}
+.logo{font-family:'DM Serif Display',serif;font-size:20px;letter-spacing:.5px;color:var(--black);white-space:nowrap}
+.logo span{font-style:italic;color:var(--gray-400)}
+.header-currencies{display:flex;gap:8px;margin-left:auto}
+.currency-chip{display:flex;align-items:center;gap:6px;border-radius:20px;padding:5px 14px;font-size:13px;font-weight:600;cursor:default}
+.currency-chip.gold{background:#fffbeb;border:1px solid #d4a800;color:#7a5c00}
+.currency-chip.dia{background:#edf5ff;border:1px solid #1a6a8b;color:#1a4a6b;cursor:pointer;transition:.15s}
+.currency-chip.dia:hover{background:#d8eeff;transform:scale(1.02)}
+.guild-chip{display:flex;align-items:center;gap:8px;padding:6px 14px;background:var(--black);color:var(--white);border-radius:20px;font-size:13px;font-weight:600}
+.nav-section{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--gray-400);padding:4px 8px 8px;margin-top:12px;text-transform:uppercase}
+.nav-section:first-child{margin-top:0}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;cursor:pointer;color:var(--gray-500);font-size:13px;font-weight:500;transition:.15s;border:none;background:none;width:100%;text-align:left}
+.nav-item:hover{background:var(--gray-50);color:var(--gray-700)}
+.nav-item.active{background:var(--black);color:var(--white)}
+.nav-item.active .ni{stroke:var(--white)}
+.ni{stroke:var(--gray-400);transition:.15s;flex-shrink:0;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:2}
+.nav-item:hover .ni{stroke:var(--gray-600)}
+.nav-badge{margin-left:auto;background:var(--danger);color:#fff;border-radius:10px;font-size:10px;font-weight:700;padding:1px 6px}
+.panel{display:none;animation:fadeUp .25s ease}
+.panel.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.page-title{font-family:'DM Serif Display',serif;font-size:26px;margin-bottom:4px}
+.page-sub{color:var(--gray-400);font-size:13px;margin-bottom:20px}
+.section-label{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--gray-400);margin-bottom:10px;margin-top:20px}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.stat-box{background:var(--white);border:1px solid var(--gray-100);border-radius:var(--radius);padding:16px}
+.stat-val{font-family:'DM Serif Display',serif;font-size:28px;color:var(--black);line-height:1}
+.stat-lbl{font-size:12px;color:var(--gray-400);margin-top:4px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.grid-auto{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.hunter-card{background:var(--white);border:1px solid var(--gray-100);border-radius:var(--radius);padding:14px;position:relative;overflow:hidden;transition:.2s}
+.hunter-card:hover{border-color:var(--gray-300);box-shadow:var(--shadow)}
+.hunter-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.hunter-avatar{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.rank-pill{font-size:11px;font-weight:700;padding:3px 9px;border-radius:10px;letter-spacing:.5px}
+.rank-S{background:#fdf0f0;color:var(--rank-s);border:1px solid #f5c8c8}
+.rank-A{background:#f3f0fd;color:var(--rank-a);border:1px solid #d0c8f5}
+.rank-B{background:#eff5fd;color:var(--rank-b);border:1px solid #c8ddf5}
+.rank-C{background:#f0fdf3;color:var(--rank-c);border:1px solid #c8f0d4}
+.rank-D{background:var(--gray-50);color:var(--rank-d);border:1px solid var(--gray-200)}
+.hunter-name{font-weight:700;font-size:14px}
+.hunter-class{font-size:11px;color:var(--gray-400);margin-bottom:10px}
+.stat-bars{display:flex;flex-direction:column;gap:5px}
+.sbar{display:flex;align-items:center;gap:6px;font-size:11px}
+.sbar-lbl{color:var(--gray-400);width:26px}
+.sbar-track{flex:1;height:4px;background:var(--gray-100);border-radius:2px;overflow:hidden}
+.sbar-fill{height:100%;border-radius:2px;background:var(--black);transition:width .5s}
+.sbar-val{color:var(--gray-600);width:24px;text-align:right;font-weight:600}
+.hunter-footer{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--gray-100)}
+.hunter-lv{font-size:12px;font-weight:600;color:var(--gray-600)}
+.hunter-pwr{font-size:11px;color:var(--gray-400)}
+.busy-tag{font-size:10px;background:var(--warn-bg);color:var(--warn);border:1px solid #e6cc80;padding:2px 7px;border-radius:8px;font-weight:600}
+.quest-row{background:var(--white);border:1px solid var(--gray-100);border-radius:var(--radius);padding:14px 16px;display:flex;align-items:center;gap:16px;margin-bottom:8px;transition:.15s}
+.quest-row:hover{border-color:var(--gray-200);box-shadow:var(--shadow-sm)}
+.q-icon{width:42px;height:42px;background:var(--gray-50);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.q-icon svg{stroke:var(--gray-600);fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:2}
+.q-body{flex:1;min-width:0}
+.q-name{font-weight:600;font-size:14px;margin-bottom:2px}
+.q-desc{font-size:12px;color:var(--gray-400);margin-bottom:6px}
+.q-tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:3px 8px;border-radius:6px;font-weight:600}
+.tag-gold{background:#fffbeb;color:#7a5c00;border:1px solid #e6cc80}
+.tag-dia{background:#edf5ff;color:#1a4a6b;border:1px solid #a8cef5}
+.tag-exp{background:var(--success-bg);color:var(--success);border:1px solid #a8d4a8}
+.tag-easy{background:#f0fdf3;color:#2d6a2d;border:1px solid #c8f0d4}
+.tag-normal{background:#eff5fd;color:#1a4a8b;border:1px solid #c8ddf5}
+.tag-hard{background:#fff8ed;color:#7a4000;border:1px solid #f5d8a8}
+.tag-extreme{background:#fdf0f0;color:#8b1a1a;border:1px solid #f5c8c8}
+.tag-muted{background:var(--gray-50);color:var(--gray-500);border:1px solid var(--gray-200)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:.15s;line-height:1;white-space:nowrap}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-black{background:var(--black);color:#fff}
+.btn-black:hover{background:var(--gray-700)}
+.btn-outline{background:var(--white);border:1px solid var(--gray-200);color:var(--gray-700)}
+.btn-outline:hover{border-color:var(--gray-400);background:var(--gray-50)}
+.btn-gold{background:#fffbeb;border:1px solid #d4a800;color:#7a5c00}
+.btn-gold:hover{background:#fff5cc}
+.btn-dia{background:#edf5ff;border:1px solid #1a6a8b;color:#1a4a6b}
+.btn-dia:hover{background:#d8eeff}
+.btn-sm{padding:6px 12px;font-size:12px}
+.content-card{background:var(--white);border:1px solid var(--gray-100);border-radius:var(--radius-lg);overflow:hidden;transition:.2s}
+.content-card:hover{box-shadow:var(--shadow);border-color:var(--gray-200)}
+.cc-header{padding:16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--gray-100)}
+.cc-icon{width:44px;height:44px;background:var(--gray-50);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cc-icon svg{stroke:var(--gray-600);fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:2}
+.cc-body{padding:14px 16px}
+.cc-name{font-weight:700;font-size:15px}
+.cc-desc{font-size:12px;color:var(--gray-400);margin-top:2px}
+.cc-tags{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.mission-row{background:var(--white);border:1px solid var(--gray-100);border-radius:var(--radius);padding:14px;margin-bottom:8px}
+.mission-top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.m-icon{width:36px;height:36px;background:var(--gray-50);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.m-icon svg{stroke:var(--gray-600);fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:2}
+.m-body{flex:1;min-width:0}
+.m-name{font-weight:600;font-size:13px}
+.m-type{font-size:11px;color:var(--gray-400)}
+.m-hunters{font-size:11px;color:var(--gray-500);margin-top:2px}
+.m-side{text-align:right;font-size:12px}
+.prog-track{height:6px;background:var(--gray-100);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;background:var(--black);border-radius:3px;transition:width .5s}
+.m-meta{display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:var(--gray-400)}
+.gacha-hero{background:var(--black);border-radius:var(--radius-lg);padding:32px;text-align:center;color:#fff;position:relative;overflow:hidden;margin-bottom:20px}
+.gacha-hero::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(255,255,255,.02) 0px,rgba(255,255,255,.02) 1px,transparent 1px,transparent 20px);pointer-events:none}
+.gacha-title{font-family:'DM Serif Display',serif;font-size:32px;margin-bottom:6px}
+.gacha-sub{color:rgba(255,255,255,.5);font-size:13px;margin-bottom:20px}
+.rate-row{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-bottom:24px}
+.rate-item{font-size:12px;color:rgba(255,255,255,.5)}
+.rate-item strong{color:#fff}
+.gacha-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.gacha-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;transition:.15s}
+.gacha-btn:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.4)}
+.gacha-btn:active{transform:scale(.97)}
+.pity-wrap{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:10px 16px;display:inline-block;margin-top:16px}
+.pity-track{height:4px;background:rgba(255,255,255,.15);border-radius:2px;margin-top:6px;overflow:hidden}
+.pity-fill{height:100%;background:#fff;border-radius:2px;transition:width .5s}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:200;animation:fadeUp .2s ease}
+.modal{background:var(--white);border-radius:var(--radius-lg);padding:28px;max-width:540px;width:95%;max-height:85vh;overflow-y:auto;box-shadow:var(--shadow-lg)}
+.modal-title{font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:16px}
+.result-grid{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:20px}
+.result-card{width:86px;padding:12px 6px;border-radius:10px;text-align:center;border:1px solid var(--gray-100);animation:popIn .35s cubic-bezier(.34,1.56,.64,1) backwards}
+@keyframes popIn{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+.rc-S{background:#fdf0f0;border-color:#f5c8c8}
+.rc-A{background:#f3f0fd;border-color:#d0c8f5}
+.rc-B{background:#eff5fd;border-color:#c8ddf5}
+.rc-C{background:#f0fdf3;border-color:#c8f0d4}
+.rc-D{background:var(--gray-50);border-color:var(--gray-200)}
+.r-avatar{width:42px;height:42px;border-radius:8px;background:rgba(0,0,0,.05);display:flex;align-items:center;justify-content:center;margin:0 auto 6px}
+.r-avatar svg{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:2}
+.pick-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:6px;max-height:280px;overflow-y:auto;padding:2px}
+.pick-item{border:1px solid var(--gray-100);border-radius:8px;padding:8px 6px;text-align:center;cursor:pointer;transition:.15s;background:var(--white)}
+.pick-item:hover{border-color:var(--gray-300)}
+.pick-item.selected{border-color:var(--black);background:var(--gray-50)}
+.pick-item.busy-h{opacity:.35;cursor:not-allowed;pointer-events:none}
+.p-avatar{width:34px;height:34px;border-radius:6px;display:flex;align-items:center;justify-content:center;margin:0 auto 5px}
+.p-avatar svg{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:2}
+.p-name{font-size:11px;font-weight:700;margin-bottom:2px}
+.p-info{font-size:10px;color:var(--gray-400)}
+.log-area{background:var(--gray-50);border:1px solid var(--gray-100);border-radius:var(--radius);padding:12px;max-height:160px;overflow-y:auto;font-size:12px;color:var(--gray-600);font-family:'DM Mono','Courier New',monospace;line-height:1.7}
+.log-good{color:var(--success)}
+.log-bad{color:var(--danger)}
+.log-special{color:#7a5c00;font-weight:600}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--gray-200);border-radius:2px}
+.empty{text-align:center;padding:32px 16px;color:var(--gray-400)}
+.empty-icon{width:40px;height:40px;stroke:var(--gray-200);fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.5;margin:0 auto 10px;display:block}
+.notif{position:fixed;bottom:20px;right:20px;z-index:300;background:var(--white);border:1px solid var(--gray-200);border-radius:10px;padding:12px 16px;font-size:13px;font-weight:500;box-shadow:var(--shadow-lg);animation:slideUp .3s ease;max-width:280px;display:flex;align-items:center;gap:8px}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.notif svg{flex-shrink:0}
+.notif.ok{border-color:#a8d4a8;color:var(--success)}
+.notif.err{border-color:#f5c8c8;color:var(--danger)}
+.notif.info{border-color:var(--gray-200);color:var(--gray-700)}
+.sr-high{color:var(--success);font-weight:700}
+.sr-mid{color:var(--warn);font-weight:700}
+.sr-low{color:var(--danger);font-weight:700}
+.sel-info-box{background:var(--gray-50);border:1px solid var(--gray-100);border-radius:8px;padding:10px 14px;margin-top:12px;font-size:12px}
+.sel-info-row{display:flex;justify-content:space-between;margin-bottom:4px}
+.sel-info-row:last-child{margin-bottom:0}
+.elem-pill{display:inline-flex;align-items:center;font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;border:1px solid;letter-spacing:.3px}
+
+/* ── EXCHANGE SYSTEM ───────────────────────────────────────── */
+.exchange-control{display:flex;align-items:center;justify-content:center;gap:12px;margin:20px 0}
+.exchange-btn{padding:8px 12px;border-radius:8px;border:1px solid var(--gray-200);background:var(--white);cursor:pointer;font-weight:700;font-family:'DM Sans',sans-serif;color:var(--gray-600);transition:.15s}
+.exchange-btn:hover{background:var(--gray-50);border-color:var(--gray-400)}
+.exchange-val{font-size:24px;font-family:'DM Serif Display',serif;min-width:60px;text-align:center;color:var(--black)}
+
+/* ── GROWTH SYSTEM ─────────────────────────────────────────── */
+.awaken-stars{display:flex;gap:3px;align-items:center;margin-top:3px}
+.awaken-star{font-size:11px;opacity:.25;transition:.2s}
+.awaken-star.lit{opacity:1;filter:drop-shadow(0 0 3px gold)}
+.hunter-card{cursor:pointer}
+.growth-modal-header{display:flex;align-items:center;gap:14px;margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid var(--gray-100)}
+.growth-avatar{width:56px;height:56px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.growth-name{font-family:'DM Serif Display',serif;font-size:20px;line-height:1.1}
+.growth-sub{font-size:12px;color:var(--gray-400);margin-top:3px}
+.exp-bar-wrap{background:var(--gray-50);border:1px solid var(--gray-100);border-radius:8px;padding:10px 14px;margin-bottom:14px}
+.exp-bar-label{display:flex;justify-content:space-between;font-size:12px;color:var(--gray-500);margin-bottom:6px}
+.exp-bar-track{height:8px;background:var(--gray-200);border-radius:4px;overflow:hidden}
+.exp-bar-fill{height:100%;background:var(--black);border-radius:4px;transition:width .5s}
+.awaken-info-box{background:var(--warn-bg);border:1px solid #e6cc80;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:var(--warn)}
+.awaken-info-box strong{color:#5a3e00}
+.feed-section-label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gray-400);margin-bottom:8px}
+.feed-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:6px;max-height:220px;overflow-y:auto;padding:2px}
+.feed-item{border:1px solid var(--gray-100);border-radius:8px;padding:7px 5px;text-align:center;cursor:pointer;transition:.15s;background:var(--white);position:relative}
+.feed-item:hover{border-color:var(--gray-300)}
+.feed-item.selected{border-color:var(--black);background:var(--gray-50)}
+.feed-item.same-rank-req{border-color:#d4a800;background:#fffbeb}
+.feed-item.same-rank-req.selected{border-color:#7a5c00;background:#fff5cc}
+.feed-count-badge{position:absolute;top:3px;right:3px;background:var(--black);color:#fff;border-radius:8px;font-size:9px;font-weight:700;padding:1px 5px;display:none}
+.feed-count-badge.show{display:block}
+.feed-f-avatar{width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;margin:0 auto 4px}
+.feed-f-name{font-size:10px;font-weight:700;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.feed-f-info{font-size:9px;color:var(--gray-400)}
+.feed-exp-preview{font-size:9px;color:var(--success);font-weight:700}
+.awaken-slot-grid{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.awaken-slot{width:60px;height:60px;border:2px dashed var(--gray-200);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--gray-300);cursor:pointer;transition:.15s;position:relative;background:var(--gray-50)}
+.awaken-slot.filled{border-style:solid;border-color:var(--gray-300);background:var(--white)}
+.awaken-slot.filled:hover::after{content:'✕';position:absolute;inset:0;background:rgba(255,0,0,.15);display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:14px;color:var(--danger)}
+.awaken-slot-inner{display:flex;flex-direction:column;align-items:center;gap:3px}
+.awaken-slot-name{font-size:9px;font-weight:700;color:var(--gray-600);text-align:center;max-width:52px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.level-cap-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:8px;background:var(--danger-bg);color:var(--danger);border:1px solid #f5c8c8}
+.tab-btns{display:flex;gap:6px;margin-bottom:14px}
+.tab-btn{flex:1;padding:7px;border-radius:7px;border:1px solid var(--gray-200);background:var(--white);color:var(--gray-500);font-size:12px;font-weight:600;cursor:pointer;transition:.15s;font-family:'DM Sans',sans-serif}
+.tab-btn.active{background:var(--black);color:#fff;border-color:var(--black)}
+.awaken-progress-dots{display:flex;gap:8px;align-items:center;margin:6px 0}
+.awaken-dot{width:10px;height:10px;border-radius:50%;background:var(--gray-200);border:2px solid var(--gray-200);transition:.3s}
+.awaken-dot.done{background:#d4a800;border-color:#d4a800}
+.awaken-dot.current{background:var(--white);border-color:#d4a800;box-shadow:0 0 0 2px #d4a80060}
+
+/* ── ACHIEVEMENT & CODEX ───────────────────────────────── */
+.ach-tabs{display:flex;gap:6px;margin-bottom:18px}
+.ach-tab{flex:1;padding:8px;border-radius:8px;border:1px solid var(--gray-200);background:var(--white);color:var(--gray-500);font-size:12px;font-weight:700;cursor:pointer;transition:.15s;font-family:'DM Sans',sans-serif;letter-spacing:.3px}
+.ach-tab.active{background:var(--black);color:#fff;border-color:var(--black)}
+.ach-cat-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray-400);padding:4px 0 10px;margin-top:14px;display:flex;align-items:center;gap:8px}
+.ach-cat-label::after{content:'';flex:1;height:1px;background:var(--gray-100)}
+.ach-list{display:flex;flex-direction:column;gap:8px}
+.ach-row{background:var(--white);border:1px solid var(--gray-100);border-radius:var(--radius);padding:14px 16px;display:flex;align-items:center;gap:14px;transition:.15s}
+.ach-row.done{border-color:#c8f0d4;background:#f0fdf3}
+.ach-row.claimable{border-color:#d4a800;background:#fffbeb;cursor:pointer}
+.ach-row.claimable:hover{background:#fff5cc}
+.ach-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px}
+.ach-body{flex:1;min-width:0}
+.ach-name{font-weight:700;font-size:13px;margin-bottom:2px}
+.ach-desc{font-size:11px;color:var(--gray-400);margin-bottom:6px}
+.ach-prog-wrap{display:flex;align-items:center;gap:8px}
+.ach-prog-track{flex:1;height:5px;background:var(--gray-100);border-radius:3px;overflow:hidden}
+.ach-prog-fill{height:100%;border-radius:3px;background:var(--black);transition:width .5s}
+.ach-prog-fill.done{background:var(--success)}
+.ach-prog-text{font-size:10px;font-weight:700;color:var(--gray-500);white-space:nowrap}
+.ach-reward{font-size:11px;font-weight:700;color:var(--warn);white-space:nowrap;text-align:right}
+.ach-done-badge{font-size:10px;font-weight:700;color:var(--success);background:var(--success-bg);border:1px solid #a8d4a8;padding:3px 8px;border-radius:8px;white-space:nowrap}
+.ach-claim-badge{font-size:10px;font-weight:700;color:#7a5c00;background:#fffbeb;border:1px solid #d4a800;padding:3px 8px;border-radius:8px;white-space:nowrap;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.codex-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.codex-stat{background:var(--white);border:1px solid var(--gray-100);border-radius:var(--radius);padding:14px;text-align:center}
+.codex-stat-val{font-family:'DM Serif Display',serif;font-size:22px;color:var(--black)}
+.codex-stat-lbl{font-size:11px;color:var(--gray-400);margin-top:3px}
+.codex-section{margin-bottom:20px}
+.codex-section-title{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--gray-400);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.codex-section-title::after{content:'';flex:1;height:1px;background:var(--gray-100)}
+.codex-hunter-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px}
+.codex-hunter{border:1px solid var(--gray-100);border-radius:10px;padding:10px 6px;text-align:center;background:var(--white)}
+.codex-hunter.owned{border-color:transparent}
+.codex-hunter.locked{opacity:.35;filter:grayscale(1)}
+.codex-hunter-avatar{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin:0 auto 5px}
+.codex-hunter-name{font-size:10px;font-weight:700;margin-bottom:2px}
+.codex-hunter-info{font-size:9px;color:var(--gray-400)}
+.codex-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.codex-bar-label{font-size:12px;font-weight:600;width:48px;flex-shrink:0}
+.codex-bar-track{flex:1;height:8px;background:var(--gray-100);border-radius:4px;overflow:hidden}
+.codex-bar-fill{height:100%;border-radius:4px;transition:width .6s}
+.codex-bar-count{font-size:11px;font-weight:700;color:var(--gray-600);width:40px;text-align:right;flex-shrink:0}
+.codex-content-list{display:flex;flex-direction:column;gap:6px}
+.codex-content-row{background:var(--white);border:1px solid var(--gray-100);border-radius:8px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between}
+.codex-content-row.cleared{border-color:#c8f0d4;background:#f0fdf3}
+.codex-content-name{font-size:12px;font-weight:700}
+.codex-content-info{font-size:11px;color:var(--gray-400);margin-top:1px}
+.codex-cleared-badge{font-size:10px;font-weight:700;color:var(--success);background:var(--success-bg);border:1px solid #a8d4a8;padding:2px 7px;border-radius:6px}
+.codex-locked-badge{font-size:10px;color:var(--gray-400);background:var(--gray-50);border:1px solid var(--gray-200);padding:2px 7px;border-radius:6px}
+
+/* ── MOBILE UI ─────────────────────────────────────────── */
+.mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:1px solid var(--gray-100);z-index:100;padding:4px 0 env(safe-area-inset-bottom,4px)}
+.mob-nav-inner{display:flex;justify-content:space-around;align-items:center}
+.mob-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 10px;background:none;border:none;color:var(--gray-400);font-family:'DM Sans',sans-serif;font-size:10px;font-weight:600;cursor:pointer;border-radius:8px;transition:.15s;min-width:52px;position:relative}
+.mob-btn.active{color:var(--black)}
+.mob-btn.active svg{stroke:var(--black)}
+.mob-btn svg{stroke:var(--gray-400);transition:.15s}
+.mob-btn-dot{position:absolute;top:4px;right:8px;width:6px;height:6px;background:var(--danger);border-radius:50%;display:none}
+.mob-btn-dot.show{display:block}
+.mob-header{display:none;background:var(--white);border-bottom:1px solid var(--gray-100);padding:10px 16px;position:sticky;top:0;z-index:50}
+.mob-header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.mob-logo{font-family:'DM Serif Display',serif;font-size:17px;color:var(--black)}
+.mob-logo span{font-style:italic;color:var(--gray-400)}
+.mob-currencies{display:flex;gap:6px}
+.mob-cur{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;padding:4px 10px;border-radius:14px}
+.mob-cur.gold{background:#fffbeb;border:1px solid #d4a800;color:#7a5c00}
+.mob-cur.dia{background:#edf5ff;border:1px solid #1a6a8b;color:#1a4a6b;cursor:pointer;transition:.15s}
+.mob-cur.dia:hover{background:#d8eeff;transform:scale(1.02)}
+.mob-guild{font-size:11px;color:var(--gray-500);font-weight:600}
+
+/* refresh timers */
+.refresh-bar{background:var(--gray-50);border:1px solid var(--gray-100);border-radius:8px;padding:8px 12px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--gray-500)}
+.refresh-bar strong{color:var(--gray-700)}
+.refresh-timer{font-weight:700;color:var(--gray-600);font-variant-numeric:tabular-nums}
+
+/* quest expiry badge */
+.q-expire{font-size:10px;color:var(--warn);font-weight:700;padding:2px 6px;background:var(--warn-bg);border-radius:6px;border:1px solid #e6cc80}
+
+/* settings panel */
+.settings-card{background:var(--white);border:1px solid var(--gray-100);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:8px}
+.settings-card-danger{border-color:#f5c8c8}
+.settings-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 20px}
+.settings-info{flex:1;min-width:0}
+.settings-title{font-weight:700;font-size:14px;margin-bottom:3px}
+.settings-desc{font-size:12px;color:var(--gray-400);line-height:1.5}
+.settings-divider{height:1px;background:var(--gray-100);margin:0}
+.btn-danger{background:var(--danger-bg);border:1px solid #f5c8c8;color:var(--danger)}
+.btn-danger:hover{background:#fde4e4}
+@media(max-width:700px){
+  .settings-row{flex-direction:column;align-items:flex-start;gap:12px}
+  .settings-row .btn,.settings-row label.btn{width:100%;justify-content:center}
+}
+
+@media(max-width:700px){
+  .app{grid-template-rows:auto 1fr;height:100vh;overflow:hidden}
+  .header{display:none}
+  .mob-header{display:block}
+  .main{grid-template-columns:1fr;overflow:hidden}
+  .sidebar{display:none}
+  .content{padding:12px 12px 80px;overflow-y:auto}
+  .mob-nav{display:block}
+  .stat-row{grid-template-columns:repeat(2,1fr);gap:8px}
+  .grid-2{grid-template-columns:1fr}
+  .grid-3{grid-template-columns:1fr 1fr}
+  .grid-auto{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+  .page-title{font-size:20px}
+  .gacha-hero{padding:20px 16px}
+  .gacha-title{font-size:24px}
+  .modal{padding:20px 16px;max-height:90vh}
+  .pick-grid{max-height:240px}
+}
+@media(max-width:380px){
+  .grid-3{grid-template-columns:1fr}
+  .mob-btn{min-width:42px;font-size:9px;padding:6px 6px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="mob-header">
+  <div class="mob-header-top">
+    <div class="mob-logo">ABYSS <span>Guild</span></div>
+    <div class="mob-currencies">
+      <div class="mob-cur gold">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.5 9a2.5 2.5 0 0 0-5 0c0 1.5 1 2.5 2.5 2.5h0c1.5 0 2.5 1 2.5 2.5a2.5 2.5 0 0 1-5 0"/></svg>
+        <span id="mob-gold-val">5,000</span>
+      </div>
+      <div class="mob-cur dia" onclick="openExchangeModal()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 9 18 20 6 20 2 9"/><line x1="2" y1="9" x2="22" y2="9"/><polyline points="6 20 12 9 18 20"/></svg>
+        <span id="mob-dia-val">300</span>
+      </div>
+    </div>
+  </div>
+  <div class="mob-guild" id="mob-guild-txt">Lv.1 · 명성 0</div>
+</div>
+
+<header class="header">
+  <div class="logo">ABYSS <span>Guild</span></div>
+  <div class="header-currencies">
+    <div class="currency-chip gold">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M14.5 9a2.5 2.5 0 0 0-5 0c0 1.5 1 2.5 2.5 2.5h0c1.5 0 2.5 1 2.5 2.5a2.5 2.5 0 0 1-5 0"/><line x1="12" y1="6.5" x2="12" y2="7.5"/><line x1="12" y1="16.5" x2="12" y2="17.5"/></svg>
+      <span id="gold-val">5,000</span>
+    </div>
+    <div class="currency-chip dia" onclick="openExchangeModal()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 9 18 20 6 20 2 9"/><line x1="2" y1="9" x2="22" y2="9"/><polyline points="6 20 12 9 18 20"/></svg>
+      <span id="dia-val">300</span>
+    </div>
+    <div class="guild-chip">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span id="guild-chip-txt">Lv.1 · 명성 0</span>
+    </div>
+  </div>
+</header>
+
+<div class="main">
+<aside class="sidebar">
+  <div class="nav-section">메인</div>
+  <button class="nav-item active" onclick="goTab('dashboard')" id="nav-dashboard">
+    <svg class="ni" width="16" height="16" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    대시보드
+  </button>
+  <button class="nav-item" onclick="goTab('hunters')" id="nav-hunters">
+    <svg class="ni" width="16" height="16" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    헌터 명단
+    <span class="nav-badge" id="hunter-badge">0</span>
+  </button>
+  <div class="nav-section">임무</div>
+  <button class="nav-item" onclick="goTab('quest')" id="nav-quest">
+    <svg class="ni" width="16" height="16" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+    의뢰
+  </button>
+  <button class="nav-item" onclick="goTab('expedition')" id="nav-expedition">
+    <svg class="ni" width="16" height="16" viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+    원정
+  </button>
+  <button class="nav-item" onclick="goTab('dungeon')" id="nav-dungeon">
+    <svg class="ni" width="16" height="16" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
+    던전
+  </button>
+  <button class="nav-item" onclick="goTab('raid')" id="nav-raid">
+    <svg class="ni" width="16" height="16" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+    레이드
+  </button>
+  <div class="nav-section">헌터</div>
+  <button class="nav-item" onclick="goTab('growth')" id="nav-growth">
+    <svg class="ni" width="16" height="16" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+    헌터 성장
+  </button>
+  <button class="nav-item" onclick="goTab('gacha')" id="nav-gacha">
+    <svg class="ni" width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    헌터 소환
+  </button>
+  <div class="nav-section">기록</div>
+  <button class="nav-item" onclick="goTab('achievement')" id="nav-achievement">
+    <svg class="ni" width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+    업적
+    <span class="nav-badge" id="ach-badge" style="display:none">!</span>
+  </button>
+  <button class="nav-item" onclick="goTab('codex')" id="nav-codex">
+    <svg class="ni" width="16" height="16" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    도감
+  </button>
+  <div class="nav-section">기타</div>
+  <button class="nav-item" onclick="goTab('settings')" id="nav-settings">
+    <svg class="ni" width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    설정
+  </button>
+</aside>
+
+<main class="content">
+
+<div class="panel active" id="panel-dashboard">
+  <div class="page-title">대시보드</div>
+  <div class="page-sub">길드 현황을 한눈에 확인합니다.</div>
+  <div class="stat-row">
+    <div class="stat-box"><div class="stat-val" id="st-hunters">0</div><div class="stat-lbl">보유 헌터</div></div>
+    <div class="stat-box"><div class="stat-val" id="st-missions">0</div><div class="stat-lbl">진행 중 임무</div></div>
+    <div class="stat-box"><div class="stat-val" id="st-completed">0</div><div class="stat-lbl">완료 임무</div></div>
+    <div class="stat-box"><div class="stat-val" id="st-fame">0</div><div class="stat-lbl">길드 명성</div></div>
+  </div>
+  <div class="section-label">활동 로그</div>
+  <div class="log-area" id="log-area"></div>
+  <div class="section-label">진행 중인 임무</div>
+  <div id="dash-missions"></div>
+</div>
+
+<div class="panel" id="panel-hunters">
+  <div class="page-title">헌터 명단</div>
+  <div class="page-sub">소속 헌터들의 능력치와 현재 상태를 확인합니다.</div>
+  <div class="grid-auto" id="hunter-grid"></div>
+  <div id="hunter-empty" style="display:none">
+    <div class="empty">
+      <svg class="empty-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+      <div style="font-size:13px">아직 헌터가 없습니다.<br>소환 탭에서 헌터를 영입하세요.</div>
+    </div>
+  </div>
+</div>
+
+<div class="panel" id="panel-quest">
+  <div class="page-title">의뢰 게시판</div>
+  <div class="page-sub">헌터 1명을 파견합니다. 골드와 경험치를 획득합니다.</div>
+  <div class="refresh-bar">
+    <span>의뢰 갱신까지</span>
+    <span class="refresh-timer" id="quest-refresh-timer">3:00</span>
+  </div>
+  <div id="quest-list"></div>
+  <div class="section-label">진행 중인 의뢰</div>
+  <div id="quest-active"></div>
+</div>
+
+<div class="panel" id="panel-expedition">
+  <div class="page-title">원정</div>
+  <div class="page-sub">헌터를 최대 3명 파견합니다. 큰 보상과 다이아를 획득합니다.</div>
+  <div class="refresh-bar">
+    <span>원정 갱신까지</span>
+    <span class="refresh-timer" id="exp-refresh-timer">10:00</span>
+  </div>
+  <div id="expedition-list"></div>
+  <div class="section-label">진행 중인 원정</div>
+  <div id="expedition-active"></div>
+</div>
+
+<div class="panel" id="panel-dungeon">
+  <div class="page-title">던전</div>
+  <div class="page-sub">헌터 2명이 함께 돌파합니다. 특수 아이템과 다이아를 획득합니다.</div>
+  <div class="refresh-bar">
+    <span>던전 갱신까지</span>
+    <span class="refresh-timer" id="dg-refresh-timer">10:00</span>
+  </div>
+  <div class="grid-3" id="dungeon-grid"></div>
+  <div class="section-label">진행 중인 던전</div>
+  <div id="dungeon-active"></div>
+</div>
+
+<div class="panel" id="panel-raid">
+  <div class="page-title">레이드</div>
+  <div class="page-sub">최고 난이도. 강력한 보스를 처치하고 희귀 보상을 획득합니다.</div>
+  <div class="refresh-bar">
+    <span>레이드 갱신까지</span>
+    <span class="refresh-timer" id="raid-refresh-timer">60:00</span>
+  </div>
+  <div class="grid-2" id="raid-grid"></div>
+  <div class="section-label">진행 중인 레이드</div>
+  <div id="raid-active"></div>
+</div>
+
+<div class="panel" id="panel-growth">
+  <div class="page-title">헌터 성장</div>
+  <div class="page-sub">헌터를 경험치 재료로 사용해 레벨업하거나, 각성시켜 한계를 돌파하세요.</div>
+  <div style="background:var(--gray-50);border:1px solid var(--gray-100);border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:12px;color:var(--gray-600);line-height:1.8">
+    <span style="color:var(--black)">성장 시스템 안내</span><br>
+    • 헌터를 경험치 재료로 사용해 레벨업 가능. 사용된 헌터는 소멸합니다.<br>
+    • 10 / 20 / 30 / 40레벨에서 레벨 상한에 도달합니다.<br>
+    • 각성 돌파: 동일 등급 헌터 2 / 3 / 4 / 5명을 재료로 각성(★)을 올리면 다음 구간 레벨업이 가능해집니다.<br>
+    • 최대 레벨은 Lv.50이며, 각성 4단계(★4)가 필요합니다.
+  </div>
+  <div class="section-label">성장할 헌터 선택</div>
+  <div class="grid-auto" id="growth-hunter-grid"></div>
+  <div id="growth-hunter-empty" style="display:none">
+    <div class="empty"><svg class="empty-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><div style="font-size:13px">헌터가 없습니다.</div></div>
+  </div>
+</div>
+
+<div class="panel" id="panel-gacha">
+  <div class="gacha-hero">
+    <div class="gacha-title">헌터 소환대</div>
+    <div class="gacha-sub">강력한 헌터를 영입하여 길드를 성장시키세요</div>
+    <div class="rate-row">
+      <div class="rate-item">S랭크 <span style="color:#fff">3%</span></div>
+      <div class="rate-item">A랭크 <span style="color:#fff">12%</span></div>
+      <div class="rate-item">B랭크 <span style="color:#fff">25%</span></div>
+      <div class="rate-item">C랭크 <span style="color:#fff">35%</span></div>
+      <div class="rate-item">D랭크 <span style="color:#fff">25%</span></div>
+    </div>
+    <div class="rate-row" style="margin-bottom:16px">
+      <div class="rate-item">속성 <span style="color:#fff">불·물·바람·풀·빛·어둠·번개·얼음</span></div>
+      <div class="rate-item">직업 <span style="color:#fff">딜러·탱커·힐러</span></div>
+    </div>
+    <div class="gacha-btns">
+      <button class="gacha-btn" onclick="doGacha(1,'dia')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 9 18 20 6 20 2 9"/><line x1="2" y1="9" x2="22" y2="9"/><polyline points="6 20 12 9 18 20"/></svg>
+        1회 소환 · 30 다이아
+      </button>
+      <button class="gacha-btn" onclick="doGacha(10,'dia')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 9 18 20 6 20 2 9"/><line x1="2" y1="9" x2="22" y2="9"/><polyline points="6 20 12 9 18 20"/></svg>
+        10회 소환 · 270 다이아
+      </button>
+    </div>
+    <div class="pity-wrap">
+      <div style="font-size:12px;color:rgba(255,255,255,.7)">S랭크 보장: <span style="color:#fff"><span id="pity-num">0</span> / 75회</span></div>
+      <div class="pity-track"><div class="pity-fill" id="pity-bar" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="section-label">소환 기록</div>
+  <div class="log-area" id="gacha-history"></div>
+</div>
+
+
+<div class="panel" id="panel-achievement">
+  <div class="page-title">업적</div>
+  <div class="page-sub">조건을 달성하고 보상을 수령하세요.</div>
+  <div class="ach-tabs">
+    <button class="ach-tab active" onclick="switchAchTab('collect')" id="acht-collect">⭐ 소환·수집</button>
+    <button class="ach-tab" onclick="switchAchTab('battle')" id="acht-battle">⚔️ 임무·전투</button>
+    <button class="ach-tab" onclick="switchAchTab('growth')" id="acht-growth">📈 성장</button>
+  </div>
+  <div id="ach-content"></div>
+</div>
+
+<div class="panel" id="panel-codex">
+  <div class="page-title">도감</div>
+  <div class="page-sub">수집한 헌터와 클리어한 콘텐츠를 기록합니다.</div>
+  <div class="ach-tabs">
+    <button class="ach-tab active" onclick="switchCodexTab('hunters')" id="cdxt-hunters">👤 헌터</button>
+    <button class="ach-tab" onclick="switchCodexTab('content')" id="cdxt-content">🗺️ 콘텐츠</button>
+  </div>
+  <div id="codex-content"></div>
+</div>
+<div class="panel" id="panel-settings">
+  <div class="page-title">설정</div>
+  <div class="page-sub">데이터를 저장하거나 불러오고, 게임을 초기화합니다.</div>
+
+  <div class="section-label">데이터 내보내기 / 가져오기</div>
+  <div class="settings-card">
+    <div class="settings-row">
+      <div class="settings-info">
+        <div class="settings-title">데이터 저장 (내보내기)</div>
+        <div class="settings-desc">현재 게임 데이터를 JSON 파일로 다운로드합니다.</div>
+      </div>
+      <button class="btn btn-black" onclick="exportData()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        저장
+      </button>
+    </div>
+    <div class="settings-divider"></div>
+    <div class="settings-row">
+      <div class="settings-info">
+        <div class="settings-title">데이터 불러오기</div>
+        <div class="settings-desc">저장된 JSON 파일을 선택하여 게임 데이터를 복원합니다.</div>
+      </div>
+      <label class="btn btn-outline" style="cursor:pointer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        불러오기
+        <input type="file" accept=".json" onchange="importData(event)" style="display:none">
+      </label>
+    </div>
+  </div>
+
+  <div class="section-label" style="margin-top:24px">자동 저장</div>
+  <div class="settings-card">
+    <div class="settings-row">
+      <div class="settings-info">
+        <div class="settings-title">브라우저 자동 저장</div>
+        <div class="settings-desc">게임 진행 시 자동으로 브라우저에 저장됩니다. 현재 저장 슬롯: ag3</div>
+      </div>
+      <button class="btn btn-black" onclick="manualSave()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        지금 저장
+      </button>
+    </div>
+    <div class="settings-divider"></div>
+    <div class="settings-row">
+      <div class="settings-info">
+        <div class="settings-title">저장 정보</div>
+        <div class="settings-desc" id="save-info-text">확인 중...</div>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="refreshSaveInfo()">새로고침</button>
+    </div>
+  </div>
+
+  <div class="section-label" style="margin-top:24px">위험 구역</div>
+  <div class="settings-card settings-card-danger">
+    <div class="settings-row">
+      <div class="settings-info">
+        <div class="settings-title" style="color:var(--danger)">게임 초기화</div>
+        <div class="settings-desc">모든 데이터가 삭제되고 게임이 처음부터 시작됩니다. 이 작업은 되돌릴 수 없습니다.</div>
+      </div>
+      <button class="btn btn-danger" onclick="confirmReset()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+        초기화
+      </button>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+</div>
+
+<div class="modal-overlay" id="modal" style="display:none" onclick="onModalBg(event)">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<nav class="mob-nav">
+  <div class="mob-nav-inner">
+    <button class="mob-btn active" onclick="goTab('dashboard')" id="mob-nav-dashboard">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      홈
+    </button>
+    <button class="mob-btn" onclick="goTab('hunters')" id="mob-nav-hunters">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      헌터
+    </button>
+    <button class="mob-btn" onclick="goTab('quest')" id="mob-nav-quest">
+      <div class="mob-btn-dot" id="mob-dot-quest"></div>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
+      의뢰
+    </button>
+    <button class="mob-btn" onclick="goTab('expedition')" id="mob-nav-expedition">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/></svg>
+      원정
+    </button>
+    <button class="mob-btn" onclick="goTab('dungeon')" id="mob-nav-dungeon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
+      던전
+    </button>
+    <button class="mob-btn" onclick="goTab('raid')" id="mob-nav-raid">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      레이드
+    </button>
+    <button class="mob-btn" onclick="goTab('growth')" id="mob-nav-growth">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+      성장
+    </button>
+    <button class="mob-btn" onclick="goTab('gacha')" id="mob-nav-gacha">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      소환
+    </button>
+    <button class="mob-btn" onclick="goTab('achievement')" id="mob-nav-achievement" style="position:relative">
+      <div class="mob-btn-dot" id="mob-ach-badge" style="display:none;background:var(--danger);color:#fff;font-size:8px;font-weight:700;width:auto;height:auto;padding:1px 4px;border-radius:8px;top:2px;right:4px"></div>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+      업적
+    </button>
+    <button class="mob-btn" onclick="goTab('codex')" id="mob-nav-codex">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      도감
+    </button>
+    <button class="mob-btn" onclick="goTab('settings')" id="mob-nav-settings">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      설정
+    </button>
+  </div>
+</nav>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────────
+// SVG ICONS
+// ─────────────────────────────────────────────────────────────────────────────
+const SVG = {
+  sword:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M14.5 17.5L3 6V3h3l11.5 11.5"/><path d="M13 19l6-6"/><path d="M16 16l4 4"/><path d="M19 21l2-2"/></svg>`,
+  shield:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+  bow:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M17.8 19.8L6 8"/><path d="M9 4.5C9 4.5 5 5 4 9"/><path d="M14.5 19.5C14.5 19.5 19 19 20 15"/><path d="M4.5 14.5L9.5 9.5"/><path d="M14.5 4.5L19.5 9.5"/></svg>`,
+  magic:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M12 2L9.5 9.5 2 12l7.5 2.5L12 22l2.5-7.5L22 12l-7.5-2.5z"/></svg>`,
+  fist:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M18 11V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2v0"/><path d="M14 10V4a2 2 0 0 0-2-2 2 2 0 0 0-2 2v2"/><path d="M10 10.5V6a2 2 0 0 0-2-2 2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34L2.41 16.1a2 2 0 0 1 2.83-2.82L7 15"/></svg>`,
+  heal:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`,
+  map:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>`,
+  dungeon:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
+  skull:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><path d="M8 20v2h8v-2"/><path d="M12.5 17l-.5-1-.5 1h1z"/><path d="M16 20a2 2 0 0 0 1.956-2.4 6 6 0 1 0-11.912 0A2 2 0 0 0 8 20h8z"/></svg>`,
+  quest:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`,
+  check:`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`,
+  x:`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+  info:`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+};
+
+function strokify(raw, color='currentColor', size=20) {
+  return raw.replace('<svg ', `<svg stroke="${color}" `).replace('width="20"', `width="${size}"`).replace('height="20"', `height="${size}"`);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────────────────────────────────────
+const ELEMENTS = ['불','물','바람','풀','빛','어둠','번개','얼음'];
+const ELEM_COLOR = {
+  불:'#c0392b', 물:'#1a6a8b', 바람:'#27ae60',
+  풀:'#2d7a2d', 빛:'#b8860b', 어둠:'#5b2d8b', 번개:'#c8a800', 얼음:'#2980b9'
+};
+const ELEM_BG = {
+  불:'#fdf0ee', 물:'#edf5ff', 바람:'#edfdf3',
+  풀:'#edfdf0', 빛:'#fdfbe8', 어둠:'#f3eeff', 번개:'#fdfbe0', 얼음:'#e8f4fd'
+};
+
+const S_HUNTERS = [
+  {name:"이청",  rank:"S", cls:"딜러", elem:"어둠", atk:96, def:48, spd:90},
+  {name:"백야",  rank:"S", cls:"딜러", elem:"빛",   atk:94, def:52, spd:88},
+  {name:"해저드",rank:"S", cls:"딜러", elem:"불",   atk:99, def:40, spd:82},
+  {name:"실론",  rank:"S", cls:"힐러", elem:"빛",   atk:45, def:80, spd:88},
+  {name:"공명",  rank:"S", cls:"딜러", elem:"어둠", atk:92, def:44, spd:96},
+  {name:"백화",  rank:"S", cls:"탱커", elem:"바람", atk:38, def:90, spd:40},
+  {name:"멜로우",rank:"S", cls:"힐러", elem:"빛",   atk:30, def:75, spd:72},
+  {name:"비비안",rank:"S", cls:"딜러", elem:"물",   atk:93, def:42, spd:85},
+  {name:"앰버",  rank:"S", cls:"딜러", elem:"번개", atk:95, def:38, spd:92},
+  {name:"피피",  rank:"S", cls:"딜러", elem:"얼음", atk:91, def:44, spd:87},
+  {name:"킨들",  rank:"S", cls:"힐러", elem:"불",   atk:32, def:78, spd:70},
+  {name:"리",    rank:"S", cls:"힐러", elem:"물",   atk:28, def:80, spd:75},
+  {name:"오르빗",rank:"S", cls:"딜러", elem:"바람", atk:90, def:46, spd:94},
+  {name:"화안",  rank:"S", cls:"힐러", elem:"불",   atk:35, def:76, spd:68},
+  {name:"시그마",rank:"S", cls:"힐러", elem:"얼음", atk:30, def:82, spd:65},
+  {name:"세렌",  rank:"S", cls:"탱커", elem:"빛",   atk:40, def:92, spd:38},
+  {name:"릴리",  rank:"S", cls:"힐러", elem:"얼음", atk:26, def:85, spd:72},
+  {name:"라비",  rank:"S", cls:"탱커", elem:"바람", atk:42, def:88, spd:45},
+  {name:"서지",  rank:"S", cls:"힐러", elem:"물",   atk:30, def:78, spd:74},
+  {name:"화랑",  rank:"S", cls:"탱커", elem:"불",   atk:44, def:94, spd:35},
+  {name:"제퍼",  rank:"S", cls:"딜러", elem:"바람", atk:92, def:40, spd:96},
+  {name:"청류",  rank:"S", cls:"힐러", elem:"물",   atk:28, def:80, spd:70},
+  {name:"퓨즈",  rank:"S", cls:"딜러", elem:"번개", atk:97, def:36, spd:90},
+  {name:"린",    rank:"S", cls:"힐러", elem:"물",   atk:32, def:77, spd:73},
+  {name:"은랑",  rank:"S", cls:"딜러", elem:"빛",   atk:93, def:44, spd:86},
+  {name:"리버브",rank:"S", cls:"딜러", elem:"바람", atk:91, def:42, spd:91},
+  {name:"베일",  rank:"S", cls:"힐러", elem:"어둠", atk:34, def:79, spd:68},
+  {name:"할로우",rank:"S", cls:"딜러", elem:"어둠", atk:94, def:40, spd:88},
+  {name:"닉스",  rank:"S", cls:"힐러", elem:"빛",   atk:29, def:83, spd:71},
+  {name:"효영",  rank:"S", cls:"탱커", elem:"어둠", atk:46, def:91, spd:36},
+  {name:"사월",  rank:"S", cls:"힐러", elem:"풀",   atk:33, def:76, spd:74},
+  {name:"은백",  rank:"S", cls:"딜러", elem:"빛",   atk:92, def:45, spd:85},
+  {name:"겐틸리스",rank:"S",cls:"탱커",elem:"바람", atk:40, def:93, spd:38},
+  {name:"노아",  rank:"S", cls:"힐러", elem:"바람", atk:28, def:79, spd:76},
+  {name:"달링",  rank:"S", cls:"힐러", elem:"빛",   atk:31, def:77, spd:73},
+  {name:"키티",  rank:"S", cls:"탱커", elem:"불",   atk:45, def:90, spd:40},
+];
+
+const NAME_POOL = {
+  front: ['강','백','서','한','도','유','이','조','최','나','하','윤','김','박','정','류','송','고','문','임'],
+  back:  ['준','아','린','호','진','율','영','우','현','빛','강','담','해','별','온','철','민','서','연','람','겸','여','안','석','솔','재','혜','윤','란','건'],
+};
+
+const CLS_STAT = {
+  딜러: { atk:[55,82], def:[28,50], spd:[55,80] },
+  탱커: { atk:[28,50], def:[70,92], spd:[22,48] },
+  힐러: { atk:[22,40], def:[58,78], spd:[55,78] },
+};
+const CLASSES = ['딜러','탱커','힐러'];
+
+function rng(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+const RANK_MULT = { A:1.0, B:0.82, C:0.65, D:0.50 };
+
+function makeRandomHunter(rank) {
+  const cls  = CLASSES[Math.floor(Math.random()*CLASSES.length)];
+  const elem = ELEMENTS[Math.floor(Math.random()*ELEMENTS.length)];
+  const m    = RANK_MULT[rank] || 1;
+  const r    = CLS_STAT[cls];
+  const scale= (lo,hi)=>Math.round(rng(lo,hi)*m);
+  return {
+    rank, cls, elem,
+    atk: scale(...r.atk),
+    def: scale(...r.def),
+    spd: scale(...r.spd),
+  };
+}
+
+function makeName(usedNames) {
+  const f = NAME_POOL.front, b = NAME_POOL.back;
+  let attempts = 0, name;
+  do {
+    name = f[Math.floor(Math.random()*f.length)] + b[Math.floor(Math.random()*b.length)];
+    attempts++;
+  } while(usedNames.has(name) && attempts < 200);
+  return name;
+}
+
+const QUESTS = [
+  {id:'q1',name:'마을 경비 임무',type:'quest',icon:'quest',diff:'easy',time:20,gold:300,exp:50,gem:0,min_power:50,maxSlots:1,desc:'마을 주변 몬스터 토벌'},
+  {id:'q6',name:'도적단 소탕',type:'quest',icon:'quest',diff:'easy',time:15,gold:250,exp:40,gem:0,min_power:80,maxSlots:1,desc:'마을 도적단 제거'},
+  {id:'q7',name:'독초 수집',type:'quest',icon:'quest',diff:'easy',time:12,gold:200,exp:30,gem:0,min_power:40,maxSlots:1,desc:'마법사 의뢰 채집 임무'},
+  {id:'q2',name:'광산 정화 작전',type:'quest',icon:'quest',diff:'normal',time:40,gold:800,exp:120,gem:0,min_power:500,maxSlots:1,desc:'광산 내 언데드 제거'},
+  {id:'q3',name:'수상한 상인 조사',type:'quest',icon:'quest',diff:'normal',time:35,gold:700,exp:100,gem:0,min_power:400,maxSlots:1,desc:'밀수 조직 검거'},
+  {id:'q4',name:'드래곤 둥지 정찰',type:'quest',icon:'quest',diff:'hard',time:60,gold:2000,exp:300,gem:1,min_power:2000,maxSlots:1,desc:'산악 지대 정찰'},
+  {id:'q8',name:'영웅의 묘지 탐사',type:'quest',icon:'quest',diff:'hard',time:70,gold:2200,exp:350,gem:1,min_power:2500,maxSlots:1,desc:'봉인된 고대 무덤 탐사'},
+  {id:'q5',name:'악마 계약서 회수',type:'quest',icon:'quest',diff:'extreme',time:90,gold:4500,exp:600,gem:2,min_power:5000,maxSlots:1,desc:'금지된 계약서 탈환'},
+];
+
+const EXPEDITIONS = [
+  {id:'ex2',name:'고대 유적 탐사',type:'expedition',icon:'map',diff:'normal',time:160,gold:4000,exp:800,gem:2,min_power:2000,maxSlots:2,desc:'잊혀진 제국의 유적지 — 최대 2명 파견'},
+  {id:'ex1',name:'북방 설원 탐험',type:'expedition',icon:'map',diff:'normal',time:200,gold:6000,exp:1200,gem:3,min_power:3000,maxSlots:3,desc:'미지의 설원 지대 — 최대 3명 파견'},
+  {id:'ex4',name:'용암 지대 원정',type:'expedition',icon:'map',diff:'hard',time:260,gold:12000,exp:2000,gem:8,min_power:10000,maxSlots:2,desc:'화산 지대 비밀 탐사 — 최대 2명'},
+  {id:'ex3',name:'마계 관문 정찰',type:'expedition',icon:'map',diff:'hard',time:360,gold:18000,exp:3000,gem:12,min_power:15000,maxSlots:3,desc:'마계와의 경계 조사 — 최대 3명'},
+];
+
+const DUNGEONS = [
+  {id:'dg1',name:'어둠의 동굴',type:'dungeon',icon:'dungeon',diff:'normal',time:45,gold:2500,exp:400,gem:1,min_power:1000,maxSlots:2,desc:'B랭크 이상 권장'},
+  {id:'dg6',name:'황금 보고',type:'dungeon',icon:'dungeon',diff:'normal',time:35,gold:4000,exp:300,gem:1,min_power:1500,maxSlots:2,desc:'골드 대량 획득'},
+  {id:'dg3',name:'고대 신전',type:'dungeon',icon:'dungeon',diff:'hard',time:60,gold:7000,exp:1000,gem:3,min_power:6000,maxSlots:2,desc:'A랭크 이상 권장'},
+  {id:'dg2',name:'독의 늪지대',type:'dungeon',icon:'dungeon',diff:'hard',time:65,gold:8500,exp:1200,gem:4,min_power:8000,maxSlots:2,desc:'A랭크 2명 권장'},
+  {id:'dg4',name:'얼음 궁전',type:'dungeon',icon:'dungeon',diff:'extreme',time:90,gold:15000,exp:2500,gem:8,min_power:20000,maxSlots:2,desc:'S랭크 이상 권장'},
+  {id:'dg5',name:'마왕성 하층부',type:'dungeon',icon:'dungeon',diff:'extreme',time:110,gold:22000,exp:3500,gem:12,min_power:30000,maxSlots:2,desc:'고각성 S랭크 권장'},
+];
+
+const RAIDS = [
+  {id:'rd4',name:'황금 골렘 타이탄',type:'raid',icon:'skull',diff:'hard',time:120,gold:25000,exp:4000,gem:15,min_power:15000,maxSlots:3,desc:'전설의 기계 골렘 — 최대 3명'},
+  {id:'rd3',name:'허무의 지배자',type:'raid',icon:'skull',diff:'extreme',time:180,gold:40000,exp:6000,gem:25,min_power:30000,maxSlots:4,desc:'차원의 군주 — 최대 4명'},
+  {id:'rd2',name:'심연의 리바이어던',type:'raid',icon:'skull',diff:'extreme',time:240,gold:60000,exp:8000,gem:40,min_power:50000,maxSlots:5,desc:'바다의 지배자 — 최대 5명'},
+  {id:'rd1',name:'붉은 용 발록',type:'raid',icon:'skull',diff:'extreme',time:300,gold:100000,exp:12000,gem:60,min_power:80000,maxSlots:6,desc:'화염룡 — 최대 6명'},
+];
+
+function allContent() { return [...QUESTS,...EXPEDITIONS,...DUNGEONS,...RAIDS]; }
+function findContent(id) {
+  const found=allContent().find(c=>c.id===id);
+  return found||null;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ACHIEVEMENTS DATA
+// ─────────────────────────────────────────────────────────────────────────────
+const ACHIEVEMENTS = [
+  // ── 소환·수집 ──
+  {id:'a_summon1',   cat:'collect', icon:'⭐', name:'첫 소환',         desc:'헌터를 처음으로 소환합니다.',             stat:'totalSummons',  goal:1,   gold:500,   dia:0 },
+  {id:'a_summon10',  cat:'collect', icon:'🌟', name:'소환 10회',        desc:'총 10회 소환합니다.',                      stat:'totalSummons',  goal:10,  gold:1000,  dia:3 },
+  {id:'a_summon50',  cat:'collect', icon:'💫', name:'소환 50회',        desc:'총 50회 소환합니다.',                      stat:'totalSummons',  goal:50,  gold:3000,  dia:10},
+  {id:'a_summon100', cat:'collect', icon:'✨', name:'소환 100회',       desc:'총 100회 소환합니다.',                     stat:'totalSummons',  goal:100, gold:5000,  dia:20},
+  {id:'a_srare1',    cat:'collect', icon:'🔴', name:'S급 첫 영입',      desc:'S급 헌터를 처음으로 소환합니다.',          stat:'sSummons',      goal:1,   gold:2000,  dia:5 },
+  {id:'a_srare5',    cat:'collect', icon:'💎', name:'S급 5명',          desc:'S급 헌터를 5명 보유합니다.',               stat:'sOwned',        goal:5,   gold:5000,  dia:15},
+  {id:'a_srare10',   cat:'collect', icon:'👑', name:'S급 10명',         desc:'S급 헌터를 10명 보유합니다.',              stat:'sOwned',        goal:10,  gold:10000, dia:30},
+  {id:'a_hunter10',  cat:'collect', icon:'🪖', name:'헌터 10명',        desc:'헌터를 10명 이상 보유합니다.',             stat:'hunterCount',   goal:10,  gold:1000,  dia:3 },
+  {id:'a_hunter30',  cat:'collect', icon:'⚔️', name:'헌터 30명',        desc:'헌터를 30명 이상 보유합니다.',             stat:'hunterCount',   goal:30,  gold:3000,  dia:8 },
+  {id:'a_allelems',  cat:'collect', icon:'🌈', name:'속성 마스터',      desc:'모든 속성의 헌터를 1명 이상 보유합니다.', stat:'elemVariety',   goal:8,   gold:5000,  dia:10},
+  {id:'a_allcls',    cat:'collect', icon:'🛡️', name:'균형 편성',        desc:'딜러·탱커·힐러를 모두 보유합니다.',       stat:'clsVariety',    goal:3,   gold:2000,  dia:5 },
+  // ── 임무·전투 ──
+  {id:'b_mission1',  cat:'battle',  icon:'📜', name:'첫 임무',          desc:'임무를 처음으로 완료합니다.',              stat:'totalMissions', goal:1,   gold:500,   dia:0 },
+  {id:'b_mission10', cat:'battle',  icon:'🗡️', name:'임무 10회',        desc:'임무를 10회 완료합니다.',                  stat:'totalMissions', goal:10,  gold:2000,  dia:3 },
+  {id:'b_mission50', cat:'battle',  icon:'🏹', name:'임무 50회',        desc:'임무를 50회 완료합니다.',                  stat:'totalMissions', goal:50,  gold:8000,  dia:10},
+  {id:'b_mission100',cat:'battle',  icon:'🗺️', name:'임무 100회',       desc:'임무를 100회 완료합니다.',                 stat:'totalMissions', goal:100, gold:15000, dia:20},
+  {id:'b_raid1',     cat:'battle',  icon:'💀', name:'첫 레이드',        desc:'레이드를 처음으로 클리어합니다.',          stat:'raidCleared',   goal:1,   gold:3000,  dia:5 },
+  {id:'b_raid10',    cat:'battle',  icon:'☠️', name:'레이드 10회',      desc:'레이드를 10회 클리어합니다.',              stat:'raidCleared',   goal:10,  gold:10000, dia:20},
+  {id:'b_dungeon5',  cat:'battle',  icon:'🏰', name:'던전 탐험가',      desc:'던전을 5회 클리어합니다.',                 stat:'dungeonCleared',goal:5,   gold:2000,  dia:5 },
+  {id:'b_dungeon20', cat:'battle',  icon:'🗝️', name:'던전 마스터',      desc:'던전을 20회 클리어합니다.',                stat:'dungeonCleared',goal:20,  gold:8000,  dia:15},
+  {id:'b_gold100k',  cat:'battle',  icon:'🪙', name:'황금 길드',        desc:'누적 골드 획득 100,000을 달성합니다.',    stat:'totalGoldEarned',goal:100000,gold:5000,dia:5},
+  {id:'b_fame500',   cat:'battle',  icon:'🏆', name:'명성의 길드',      desc:'길드 명성 500을 달성합니다.',              stat:'totalFame',     goal:500, gold:5000,  dia:8 },
+  // ── 성장 ──
+  {id:'g_lv10',      cat:'growth',  icon:'⬆️', name:'첫 레벨업',       desc:'헌터를 Lv.10으로 육성합니다.',            stat:'maxHunterLv',   goal:10,  gold:1000,  dia:2 },
+  {id:'g_lv30',      cat:'growth',  icon:'🔥', name:'강화의 길',        desc:'헌터를 Lv.30으로 육성합니다.',            stat:'maxHunterLv',   goal:30,  gold:3000,  dia:5 },
+  {id:'g_lv50',      cat:'growth',  icon:'💥', name:'한계 돌파',        desc:'헌터를 Lv.50(최대)으로 육성합니다.',      stat:'maxHunterLv',   goal:50,  gold:10000, dia:20},
+  {id:'g_awaken1',   cat:'growth',  icon:'✨', name:'첫 각성',          desc:'헌터를 처음으로 각성시킵니다.',           stat:'totalAwakens',  goal:1,   gold:2000,  dia:3 },
+  {id:'g_awaken5',   cat:'growth',  icon:'🌟', name:'각성 5회',         desc:'총 5회 각성을 달성합니다.',               stat:'totalAwakens',  goal:5,   gold:5000,  dia:10},
+  {id:'g_star4',     cat:'growth',  icon:'👑', name:'★4 달성',          desc:'헌터를 ★4 최대 각성합니다.',              stat:'maxAwakening',  goal:4,   gold:20000, dia:50},
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────────────────────────────────────
+let S = {
+  gold:5000, dia:300,
+  hunters:[], missions:[],
+  completed:0, fame:0, guildLv:1,
+  pity:0, nextId:1,
+  logs:[], gachaLogs:[],
+  activeQuests:[], lastQuestRefresh:0,
+  lastExpeditionRefresh:0, lastDungeonRefresh:0, lastRaidRefresh:0,
+  expeditionPool:[0,1,2,3], dungeonPool:[0,1,2,3,4,5], raidPool:[0,1,2,3],
+  // 업적/도감 통계
+  stats:{
+    totalSummons:0, sSummons:0, sOwned:0, hunterCount:0, elemVariety:0, clsVariety:0,
+    totalMissions:0, raidCleared:0, dungeonCleared:0, totalGoldEarned:0, totalFame:0,
+    maxHunterLv:1, totalAwakens:0, maxAwakening:0,
+  },
+  achClaimed:{}, // id → true
+  codexSeen:[], // 소환한 S급 헌터 이름 목록
+  clearedContent:{}, // contentId → 클리어 횟수
+};
+
+function saveState() { try { localStorage.setItem('ag3', JSON.stringify(S)); } catch(e){} }
+function loadState() {
+  try { const d=localStorage.getItem('ag3'); if(d){ const p=JSON.parse(d); S={...S,...p}; } } catch(e){}
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// UTILS
+// ─────────────────────────────────────────────────────────────────────────────
+function power(h) { return Math.floor(((h.atk||0)+(h.def||0)+(h.spd||0))*((h.level||1)*0.5)); }
+function rankColor(r) { return {S:'#8b1a1a',A:'#3d1a8b',B:'#1a4a8b',C:'#1a6b3a',D:'#4a4a4a'}[r]||'#333'; }
+function clsIcon(cls) { return {딜러:'sword',탱커:'shield',힐러:'heal'}[cls]||'sword'; }
+function elemColor(e) { return ELEM_COLOR[e]||'#555'; }
+function elemBg(e)    { return ELEM_BG[e]||'#f5f5f5'; }
+function fmtNum(n) { return (n||0).toLocaleString('ko-KR'); }
+function fmtTime(s) {
+  if(s<=0) return '완료';
+  if(s<60) return `${s}초`;
+  const m=Math.floor(s/60),sec=s%60;
+  return sec>0?`${m}분 ${sec}초`:`${m}분`;
+}
+function timeStr() { return new Date().toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'}); }
+function diffLabel(d) { return {easy:'쉬움',normal:'보통',hard:'어려움',extreme:'극한'}[d]||d; }
+
+function notify(msg, type='info') {
+  const icons={ok:SVG.check,err:SVG.x,info:SVG.info};
+  const el=document.createElement('div');
+  el.className=`notif ${type}`;
+  el.innerHTML=(icons[type]||SVG.info)+msg;
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),3000);
+}
+
+function addLog(msg, type='') {
+  S.logs.unshift({t:timeStr(),msg,type});
+  if(S.logs.length>60) S.logs.pop();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────────────────────────────────────────
+function render() {
+  document.getElementById('gold-val').textContent=fmtNum(S.gold);
+  document.getElementById('dia-val').textContent=fmtNum(S.dia);
+  document.getElementById('guild-chip-txt').textContent=`Lv.${S.guildLv} · 명성 ${fmtNum(S.fame)}`;
+  document.getElementById('pity-num').textContent=S.pity;
+  document.getElementById('pity-bar').style.width=`${Math.min(100,(S.pity/75)*100)}%`;
+  document.getElementById('hunter-badge').textContent=S.hunters.length;
+  
+  document.getElementById('mob-gold-val').textContent=fmtNum(S.gold);
+  document.getElementById('mob-dia-val').textContent=fmtNum(S.dia);
+  document.getElementById('mob-guild-txt').textContent=`Lv.${S.guildLv} · 명성 ${fmtNum(S.fame)}`;
+
+  document.getElementById('st-hunters').textContent=S.hunters.length;
+  document.getElementById('st-missions').textContent=S.missions.length;
+  document.getElementById('st-completed').textContent=S.completed;
+  document.getElementById('st-fame').textContent=fmtNum(S.fame);
+
+  renderLog();
+  renderHunters();
+  renderGrowthPanel();
+  renderQuestList();
+  renderExpeditionList();
+  renderDungeonGrid();
+  renderRaidGrid();
+  renderAllActiveMissions();
+  renderGachaHistory();
+  renderRefreshTimers();
+}
+
+function renderLog() {
+  const el=document.getElementById('log-area'); if(!el) return;
+  el.innerHTML=S.logs.length
+    ? S.logs.slice(0,30).map(l=>`<div class="log-${l.type||''}">[${l.t}] ${l.msg}</div>`).join('')
+    : '<span style="color:var(--gray-400)">아직 활동 내역이 없습니다.</span>';
+}
+
+function renderGachaHistory() {
+  const el=document.getElementById('gacha-history'); if(!el) return;
+  el.innerHTML=S.gachaLogs.length
+    ? S.gachaLogs.slice(0,20).map(l=>`<div class="log-${l.type||''}">[${l.t}] ${l.msg}</div>`).join('')
+    : '<span style="color:var(--gray-400)">소환 기록이 없습니다.</span>';
+}
+
+function renderHunters() {
+  const grid=document.getElementById('hunter-grid');
+  const emp=document.getElementById('hunter-empty');
+  if(!grid||!emp) return;
+  if(!S.hunters.length){ grid.innerHTML=''; emp.style.display=''; return; }
+  emp.style.display='none';
+  grid.innerHTML=S.hunters.map(h=>{
+    const col=rankColor(h.rank);
+    const ico=clsIcon(h.cls);
+    const pwr=power(h);
+    const busyBadge=h.busy?'<span class="busy-tag" style="margin-left:4px">출중</span>':'';
+    const ec=elemColor(h.elem||'');
+    const eb=elemBg(h.elem||'');
+    const elemBadge=h.elem?`<span class="elem-pill" style="background:${eb};color:${ec};border-color:${ec}40">${h.elem}</span>`:'';
+    const aw=h.awakening||0;
+    const stars='⭐'.repeat(aw)+'☆'.repeat(4-aw);
+    const capLv=levelCap(h);
+    const atCap=h.level>=capLv&&aw<4;
+    const capBadge=atCap?`<span style="font-size:9px;background:var(--danger-bg);color:var(--danger);border:1px solid #f5c8c8;padding:1px 5px;border-radius:5px;font-weight:700">한계</span>`:'';
+    return `<div class="hunter-card" onclick="openGrowthModal(${h.id})">
+      <div class="hunter-card-top">
+        <div class="hunter-avatar" style="background:${col}15">${strokify(SVG[ico],col,24)}</div>
+        <span class="rank-pill rank-${h.rank}">${h.rank}</span>
+      </div>
+      <div class="hunter-name">${h.name}${busyBadge}</div>
+      <div class="hunter-class" style="display:flex;align-items:center;gap:5px;margin-bottom:4px">${h.cls} ${elemBadge}</div>
+      <div style="font-size:11px;color:#b8860b;margin-bottom:8px;letter-spacing:.5px">${stars} ${capBadge}</div>
+      <div class="stat-bars">
+        <div class="sbar"><span class="sbar-lbl">ATK</span><div class="sbar-track"><div class="sbar-fill" style="width:${Math.min(100,(h.atk/4))}%"></div></div><span class="sbar-val">${h.atk}</span></div>
+        <div class="sbar"><span class="sbar-lbl">DEF</span><div class="sbar-track"><div class="sbar-fill" style="width:${Math.min(100,(h.def/4))}%;opacity:.55"></div></div><span class="sbar-val">${h.def}</span></div>
+        <div class="sbar"><span class="sbar-lbl">SPD</span><div class="sbar-track"><div class="sbar-fill" style="width:${Math.min(100,(h.spd/4))}%;opacity:.35"></div></div><span class="sbar-val">${h.spd}</span></div>
+      </div>
+      <div class="hunter-footer">
+        <span class="hunter-lv">Lv.${h.level||1}</span>
+        <span class="hunter-pwr">전투력 ${pwr}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function diffTag(d) {
+  return `<span class="tag tag-${d}">${diffLabel(d)}</span>`;
+}
+
+function renderQuestList() {
+  const el=document.getElementById('quest-list'); if(!el) return;
+  const now=Date.now();
+  const valid=S.activeQuests.filter(aq=>now<aq.expireAt);
+  if(!valid.length){
+    el.innerHTML=`<div class="empty"><svg class="empty-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><div style="font-size:13px">현재 등록된 의뢰가 없습니다.<br>곧 새 의뢰가 등록됩니다.</div></div>`;
+    return;
+  }
+  el.innerHTML=valid.map(aq=>{
+    const q=aq.quest;
+    const rem=Math.max(0,Math.ceil((aq.expireAt-now)/1000));
+    const expireStr=fmtTime(rem);
+    return `<div class="quest-row">
+      <div class="q-icon">${SVG[q.icon]||SVG.quest}</div>
+      <div class="q-body">
+        <div class="q-name">${q.name}</div>
+        <div class="q-desc">${q.desc}</div>
+        <div class="q-tags">
+          ${diffTag(q.diff)}
+          <span class="tag tag-muted">⏱ ${fmtTime(q.time)}</span>
+          <span class="tag tag-gold">🪙 ${fmtNum(q.gold)}</span>
+          <span class="tag tag-exp">EXP +${q.exp}</span>
+          <span class="tag tag-muted">전투력 ${q.min_power}+</span>
+          <span class="q-expire">만료 ${expireStr}</span>
+        </div>
+      </div>
+      <button class="btn btn-black btn-sm" onclick="openSelect('${q.id}')">${SVG.check} 수락</button>
+    </div>`;
+  }).join('');
+}
+
+function renderExpeditionList() {
+  const el=document.getElementById('expedition-list'); if(!el) return;
+  const pool=(S.expeditionPool||[0,1,2,3]).slice(0,4);
+  const items=pool.map(i=>EXPEDITIONS[i]).filter(Boolean);
+  if(!items.length){ el.innerHTML=`<div class="empty"><div style="font-size:13px">원정 목록을 불러오는 중...</div></div>`; return; }
+  el.innerHTML=items.map(q=>`<div class="quest-row">
+    <div class="q-icon">${SVG.map}</div>
+    <div class="q-body">
+      <div class="q-name">${q.name}</div>
+      <div class="q-desc">${q.desc}</div>
+      <div class="q-tags">
+        ${diffTag(q.diff)}
+        <span class="tag tag-muted">⏱ ${fmtTime(q.time)}</span>
+        <span class="tag tag-gold">🪙 ${fmtNum(q.gold)}</span>
+        <span class="tag tag-dia">◆ ${q.gem}</span>
+        <span class="tag tag-exp">EXP +${q.exp}</span>
+        <span class="tag tag-muted">최대 ${q.maxSlots}명 · 전투력 ${q.min_power}+</span>
+      </div>
+    </div>
+    <button class="btn btn-black btn-sm" onclick="openSelect('${q.id}')">${SVG.check} 파견</button>
+  </div>`).join('');
+}
+
+function renderDungeonGrid() {
+  const el=document.getElementById('dungeon-grid'); if(!el) return;
+  const pool=(S.dungeonPool||[0,1,2,3,4,5]).slice(0,6);
+  const items=pool.map(i=>DUNGEONS[i]).filter(Boolean);
+  if(!items.length){ el.innerHTML=`<div class="empty"><div style="font-size:13px">던전 목록을 불러오는 중...</div></div>`; return; }
+  el.innerHTML=items.map(q=>`<div class="content-card">
+    <div class="cc-header">
+      <div class="cc-icon">${SVG.dungeon}</div>
+      <div><div class="cc-name">${q.name}</div><div class="cc-desc">${q.desc}</div></div>
+    </div>
+    <div class="cc-body">
+      <div class="cc-tags">
+        ${diffTag(q.diff)}
+        <span class="tag tag-muted">⏱ ${fmtTime(q.time)}</span>
+        <span class="tag tag-gold">🪙 ${fmtNum(q.gold)}</span>
+        ${q.gem>0?`<span class="tag tag-dia">◆ ${q.gem}</span>`:''}
+        <span class="tag tag-exp">EXP +${q.exp}</span>
+      </div>
+      <div style="font-size:11px;color:var(--gray-400);margin-bottom:10px">전투력 ${q.min_power}+ · 최대 ${q.maxSlots}명</div>
+      <button class="btn btn-black" style="width:100%" onclick="openSelect('${q.id}')">${SVG.check} 입장</button>
+    </div>
+  </div>`).join('');
+}
+
+function renderRaidGrid() {
+  const el=document.getElementById('raid-grid'); if(!el) return;
+  const pool=(S.raidPool||[0,1,2,3]);
+  const items=pool.map(i=>RAIDS[i]).filter(Boolean);
+  if(!items.length){ el.innerHTML=`<div class="empty"><div style="font-size:13px">레이드를 불러오는 중...</div></div>`; return; }
+  el.innerHTML=items.map(q=>`<div class="content-card">
+    <div class="cc-header">
+      <div class="cc-icon">${SVG.skull}</div>
+      <div><div class="cc-name">${q.name}</div><div class="cc-desc">${q.desc}</div></div>
+    </div>
+    <div class="cc-body">
+      <div class="cc-tags">
+        ${diffTag(q.diff)}
+        <span class="tag tag-muted">⏱ ${fmtTime(q.time)}</span>
+        <span class="tag tag-gold">🪙 ${fmtNum(q.gold)}</span>
+        <span class="tag tag-dia">◆ ${q.gem}</span>
+        <span class="tag tag-exp">EXP +${q.exp}</span>
+      </div>
+      <div style="font-size:11px;color:var(--gray-400);margin-bottom:10px">최소 전투력 ${q.min_power} · 최대 ${q.maxSlots}명</div>
+      <button class="btn btn-black" style="width:100%" onclick="openSelect('${q.id}')">${SVG.skull.replace('width="20"','width="13"').replace('height="20"','height="13"')} 도전</button>
+    </div>
+  </div>`).join('');
+}
+
+function missionRowHTML(m) {
+  const now=Date.now();
+  const remaining=Math.max(0,Math.ceil((m.endTime-now)/1000));
+  const total=m.content.time;
+  const pct=Math.min(100,((total-remaining)/total)*100);
+  const done=remaining<=0;
+  const names=m.hunterIds.map(id=>{const h=S.hunters.find(x=>x.id===id);return h?h.name:'?';}).join(', ');
+  const sr=Math.round(m.successChance*100);
+  const srClass=sr>=70?'sr-high':sr>=40?'sr-mid':'sr-low';
+  const typeLabel={quest:'의뢰',expedition:'원정',dungeon:'던전',raid:'레이드'}[m.type]||m.type;
+  const ico=SVG[{quest:'quest',expedition:'map',dungeon:'dungeon',raid:'skull'}[m.type]]||SVG.quest;
+  return `<div class="mission-row">
+    <div class="mission-top">
+      <div class="m-icon">${ico}</div>
+      <div class="m-body">
+        <div class="m-name">${m.content.name}</div>
+        <div class="m-type">${typeLabel}</div>
+        <div class="m-hunters">파견: ${names}</div>
+      </div>
+      <div class="m-side">
+        <div class="${srClass}">${sr}%</div>
+        <div style="font-size:10px;color:var(--gray-400)">성공률</div>
+      </div>
+    </div>
+    <div class="prog-track"><div class="prog-fill" style="width:${pct}%"></div></div>
+    <div class="m-meta">
+      <span>${done?'<span style="color:var(--success);font-weight:600">완료 처리 중...</span>':`⏱ ${fmtTime(remaining)} 남음`}</span>
+      <span>🪙 ${fmtNum(m.content.gold)}${m.content.gem>0?` · ◆ ${m.content.gem}`:''}</span>
+    </div>
+  </div>`;
+}
+
+function emptyMission() { return `<div class="empty"><svg class="empty-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg><div style="font-size:12px">진행 중인 임무가 없습니다.</div></div>`; }
+
+function renderAllActiveMissions() {
+  const sections={
+    'dash-missions':null,
+    'quest-active':'quest',
+    'expedition-active':'expedition',
+    'dungeon-active':'dungeon',
+    'raid-active':'raid',
+  };
+  for(const [id,type] of Object.entries(sections)){
+    const el=document.getElementById(id); if(!el) continue;
+    const list=type?S.missions.filter(m=>m.type===type):S.missions;
+    el.innerHTML=list.length?list.map(missionRowHTML).join(''):emptyMission();
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MISSION SELECT MODAL
+// ─────────────────────────────────────────────────────────────────────────────
+let _selContent=null, _selIds=[];
+
+function openSelect(contentId) {
+  const content=findContent(contentId);
+  if(!content) return;
+  _selContent=content; _selIds=[];
+
+  const avail=S.hunters.filter(h=>!h.busy);
+  if(!avail.length){ notify('파견 가능한 헌터가 없습니다.','err'); return; }
+
+  const picks=avail.map(h=>{
+    const col=rankColor(h.rank);
+    const ico=clsIcon(h.cls);
+    const ec=elemColor(h.elem||'');
+    const eb=elemBg(h.elem||'');
+    const elemTag=h.elem?`<span class="elem-pill" style="font-size:9px;background:${eb};color:${ec};border-color:${ec}40;margin-top:2px">${h.elem}</span>`:'';
+    return `<div class="pick-item" id="pi-${h.id}" onclick="togglePick(${h.id},${content.maxSlots})">
+      <div class="p-avatar" style="background:${col}15">${strokify(SVG[ico],col,18)}</div>
+      <div class="p-name">${h.name}</div>
+      <div class="p-info" style="color:${col};font-weight:700">${h.rank} · Lv.${h.level||1}</div>
+      <div class="p-info">전투력 ${power(h)}</div>
+      ${elemTag}
+    </div>`;
+  }).join('');
+
+  showModal(`
+    <div class="modal-title">${content.name}</div>
+    <div style="font-size:12px;color:var(--gray-400);margin-bottom:14px">${content.desc} · 최소 전투력 ${content.min_power} · 최대 ${content.maxSlots}명</div>
+    <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gray-400);margin-bottom:8px">헌터 선택 (<span id="sel-cnt">0</span>/${content.maxSlots}명)</div>
+    <div class="pick-grid">${picks}</div>
+    <div class="sel-info-box">
+      <div class="sel-info-row"><span style="color:var(--gray-400)">선택 헌터 전투력 합계</span><span id="sel-pwr" style="font-weight:600">0</span></div>
+      <div class="sel-info-row"><span style="color:var(--gray-400)">예상 성공률</span><span id="sel-rate">—</span></div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:16px">
+      <button class="btn btn-black" style="flex:1" onclick="confirmMission()">${SVG.check} 출발!</button>
+      <button class="btn btn-outline" onclick="closeModal()">${SVG.x} 취소</button>
+    </div>
+  `);
+}
+
+function togglePick(id, max) {
+  const idx=_selIds.indexOf(id);
+  const el=document.getElementById(`pi-${id}`);
+  if(idx>=0){ _selIds.splice(idx,1); el.classList.remove('selected'); }
+  else {
+    if(_selIds.length>=max){ notify(`최대 ${max}명까지 선택 가능합니다`,'err'); return; }
+    _selIds.push(id); el.classList.add('selected');
+  }
+  document.getElementById('sel-cnt').textContent=_selIds.length;
+  const totalPwr=_selIds.reduce((s,i)=>{const h=S.hunters.find(x=>x.id===i);return s+(h?power(h):0);},0);
+  document.getElementById('sel-pwr').textContent=fmtNum(totalPwr);
+  if(_selContent&&_selIds.length>0){
+    const rate=Math.min(95,Math.max(10,Math.round((totalPwr/_selContent.min_power)*70)));
+    const rEl=document.getElementById('sel-rate');
+    rEl.textContent=`${rate}%`;
+    rEl.className=rate>=70?'sr-high':rate>=40?'sr-mid':'sr-low';
+  } else { document.getElementById('sel-rate').textContent='—'; }
+}
+
+function confirmMission() {
+  if(!_selContent||!_selIds.length){ notify('헌터를 선택하세요','err'); return; }
+  const hunters=_selIds.map(id=>S.hunters.find(h=>h.id===id)).filter(Boolean);
+  const totalPwr=hunters.reduce((s,h)=>s+power(h),0);
+  const successChance=Math.min(0.95,Math.max(0.1,(totalPwr/_selContent.min_power)*0.7));
+
+  hunters.forEach(h=>h.busy=true);
+  S.missions.push({
+    id:Date.now()+Math.random(),
+    type:_selContent.type,
+    content:_selContent,
+    hunterIds:_selIds.slice(),
+    endTime:Date.now()+_selContent.time*1000,
+    successChance,totalPwr,
+  });
+
+  const typeLabel={quest:'의뢰',expedition:'원정',dungeon:'던전',raid:'레이드'}[_selContent.type]||_selContent.type;
+  addLog(`출발: [${typeLabel}] ${_selContent.name} — ${hunters.map(h=>h.name).join(', ')}`);
+  notify(`${_selContent.name} 출발!`,'info');
+  closeModal(); render(); saveState();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MISSION COMPLETION
+// ─────────────────────────────────────────────────────────────────────────────
+function checkMissions() {
+  const now=Date.now();
+  const done=S.missions.filter(m=>now>=m.endTime);
+  if(!done.length) return;
+  done.forEach(completeMission);
+  S.missions=S.missions.filter(m=>now<m.endTime);
+  saveState();
+}
+
+function completeMission(m) {
+  m.hunterIds.forEach(id=>{const h=S.hunters.find(x=>x.id===id);if(h)h.busy=false;});
+  S.completed++;
+  const success=Math.random()<m.successChance;
+  const typeLabel={quest:'의뢰',expedition:'원정',dungeon:'던전',raid:'레이드'}[m.type]||m.type;
+
+  if(success){
+    const bonus=Math.floor(Math.random()*m.content.gold*0.2);
+    const gold=m.content.gold+bonus;
+    S.gold+=gold;
+    if(m.content.gem>0) S.dia+=m.content.gem;
+    S.fame+=Math.floor(m.content.gold/40);
+    S.guildLv=Math.floor(S.fame/300)+1;
+
+    m.hunterIds.forEach(id=>{
+      const h=S.hunters.find(x=>x.id===id); if(!h) return;
+      h.exp=(h.exp||0)+m.content.exp;
+      levelUpIfPossible(h);
+    });
+
+    // 통계 업데이트
+    if(!S.stats) S.stats={totalSummons:0,sSummons:0,sOwned:0,hunterCount:0,elemVariety:0,clsVariety:0,totalMissions:0,raidCleared:0,dungeonCleared:0,totalGoldEarned:0,totalFame:0,maxHunterLv:1,totalAwakens:0,maxAwakening:0};
+    S.stats.totalMissions = (S.stats.totalMissions||0)+1;
+    S.stats.totalGoldEarned = (S.stats.totalGoldEarned||0)+gold;
+    S.stats.totalFame = S.fame;
+    if(m.type==='raid')    S.stats.raidCleared    = (S.stats.raidCleared||0)+1;
+    if(m.type==='dungeon') S.stats.dungeonCleared = (S.stats.dungeonCleared||0)+1;
+    if(!S.clearedContent) S.clearedContent={};
+    S.clearedContent[m.content.id] = (S.clearedContent[m.content.id]||0)+1;
+
+    addLog(`성공: [${typeLabel}] ${m.content.name} +${fmtNum(gold)}G${m.content.gem>0?` +${m.content.gem}D`:''}`,'good');
+    notify(`✓ ${m.content.name} 완료 +${fmtNum(gold)} 골드`,'ok');
+  } else {
+    addLog(`실패: [${typeLabel}] ${m.content.name} — 전투력 부족`,'bad');
+    notify(`✗ ${m.content.name} 실패`,'err');
+  }
+  updateAchBadge();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GACHA
+// ─────────────────────────────────────────────────────────────────────────────
+function rollOne() {
+  S.pity++;
+  let rank;
+  if(S.pity>=75){ rank='S'; S.pity=0; }
+  else {
+    const r=Math.random()*100;
+    if(r<3){ rank='S'; S.pity=0; }
+    else if(r<15) rank='A';
+    else if(r<40) rank='B';
+    else if(r<75) rank='C';
+    else rank='D';
+  }
+
+  const usedNames = new Set(S.hunters.map(h=>h.name));
+
+  if(rank==='S'){
+    const available = S_HUNTERS.filter(h=>!usedNames.has(h.name));
+    const base = available.length
+      ? available[Math.floor(Math.random()*available.length)]
+      : S_HUNTERS[Math.floor(Math.random()*S_HUNTERS.length)];
+    return {...base, id:S.nextId++, level:1, exp:0, busy:false};
+  } else {
+    const name = makeName(usedNames);
+    const stats = makeRandomHunter(rank);
+    return {name, ...stats, id:S.nextId++, level:1, exp:0, busy:false};
+  }
+}
+
+function doGacha(n, currency) {
+  if(currency !== 'dia'){ notify('헌터 소환은 다이아로만 가능합니다','err'); return; }
+  const costs={dia:{1:30,10:270}};
+  const cost=costs[currency][n];
+  if(!cost){ notify('잘못된 소환 옵션입니다','err'); return; }
+  if(S.dia<cost){ notify('다이아가 부족합니다','err'); return; }
+  S.dia-=cost;
+
+  const results=[];
+  for(let i=0;i<n;i++) results.push(rollOne());
+  results.forEach(h=>S.hunters.push(h));
+
+  // 통계 업데이트
+  if(!S.stats) S.stats={totalSummons:0,sSummons:0,sOwned:0,hunterCount:0,elemVariety:0,clsVariety:0,totalMissions:0,raidCleared:0,dungeonCleared:0,totalGoldEarned:0,totalFame:0,maxHunterLv:1,totalAwakens:0,maxAwakening:0};
+  if(!S.codexSeen) S.codexSeen=[];
+  S.stats.totalSummons = (S.stats.totalSummons||0)+n;
+  const sResults = results.filter(h=>h.rank==='S');
+  S.stats.sSummons = (S.stats.sSummons||0)+sResults.length;
+  sResults.forEach(h=>{ if(!S.codexSeen.includes(h.name)) S.codexSeen.push(h.name); });
+  recalcStats();
+  updateAchBadge();
+
+  const msg=`${n}회 소환 — ${results.map(h=>`[${h.rank}]${h.name}(${h.elem||'?'}·${h.cls})`).join(' · ')}`;
+  S.gachaLogs.unshift({t:timeStr(),msg,type:'special'});
+  if(S.gachaLogs.length>30) S.gachaLogs.pop();
+  addLog(msg,'special');
+
+  render(); saveState();
+  showGachaResult(results);
+}
+
+function showGachaResult(results) {
+  const cards=results.map((h,i)=>{
+    const col=rankColor(h.rank);
+    const ico=clsIcon(h.cls);
+    const ec=elemColor(h.elem||'');
+    const eb=elemBg(h.elem||'');
+    const elemBadge=h.elem?`<div style="margin-top:4px"><span class="elem-pill" style="font-size:9px;background:${eb};color:${ec};border-color:${ec}40">${h.elem}</span></div>`:'';
+    return `<div class="result-card rc-${h.rank}" style="animation-delay:${i*0.06}s">
+      <div class="r-avatar" style="background:${col}15">${strokify(SVG[ico],col,24)}</div>
+      <div style="font-size:11px;font-weight:700;margin-bottom:4px">${h.name}</div>
+      <span class="rank-pill rank-${h.rank}">${h.rank}</span>
+      <div style="font-size:10px;color:var(--gray-400);margin-top:3px">${h.cls}</div>
+      ${elemBadge}
+    </div>`;
+  }).join('');
+  showModal(`<div class="modal-title">소환 결과</div>
+    <div class="result-grid">${cards}</div>
+    <div style="text-align:center"><button class="btn btn-black" onclick="closeModal()">${SVG.check} 확인</button></div>`);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// EXCHANGE SYSTEM (GOLD -> DIA)
+// ─────────────────────────────────────────────────────────────────────────────
+let _exchangeAmount = 0;
+
+function openExchangeModal() {
+  const maxAmount = Math.floor(S.gold / 100000);
+  _exchangeAmount = maxAmount > 0 ? 1 : 0;
+  renderExchangeModal();
+}
+
+function updateExchangeAmount(delta) {
+  const maxAmount = Math.floor(S.gold / 100000);
+  _exchangeAmount += delta;
+  if (_exchangeAmount < 0) _exchangeAmount = 0;
+  if (_exchangeAmount > maxAmount) _exchangeAmount = maxAmount;
+  renderExchangeModal(true);
+}
+
+function setExchangeMax() {
+  _exchangeAmount = Math.floor(S.gold / 100000);
+  renderExchangeModal(true);
+}
+
+function renderExchangeModal(isUpdate = false) {
+  const maxAmount = Math.floor(S.gold / 100000);
+  const cost = _exchangeAmount * 100000;
+
+  const html = `
+    <div class="modal-title">다이아 교환소</div>
+    <div style="font-size:13px;color:var(--gray-500);margin-bottom:16px;line-height:1.6">
+      남아도는 골드를 다이아로 교환할 수 있습니다.<br>
+      교환 비율: 100,000 골드 = 1 다이아
+    </div>
+    
+    <div style="background:var(--gray-50);border:1px solid var(--gray-100);border-radius:10px;padding:16px;margin-bottom:20px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:12px">
+        <span style="color:var(--gray-400)">보유 골드</span>
+        <span style="font-weight:700;color:#7a5c00">${fmtNum(S.gold)} G</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:12px">
+        <span style="color:var(--gray-400)">최대 교환 가능</span>
+        <span style="font-weight:700;color:#1a4a6b">${fmtNum(maxAmount)} 다이아</span>
+      </div>
+    </div>
+
+    <div class="exchange-control">
+      <button class="exchange-btn" onclick="updateExchangeAmount(-10)">-10</button>
+      <button class="exchange-btn" onclick="updateExchangeAmount(-1)">-1</button>
+      <div class="exchange-val">${_exchangeAmount}</div>
+      <button class="exchange-btn" onclick="updateExchangeAmount(1)">+1</button>
+      <button class="exchange-btn" onclick="updateExchangeAmount(10)">+10</button>
+      <button class="exchange-btn" onclick="setExchangeMax()">MAX</button>
+    </div>
+
+    <div style="text-align:center;margin-bottom:20px;font-size:14px">
+      소모: <span style="color:var(--danger);font-weight:700">${fmtNum(cost)} G</span> → 획득: <span style="color:#1a4a6b;font-weight:700">${fmtNum(_exchangeAmount)} 다이아</span>
+    </div>
+
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-dia" style="flex:1" ${_exchangeAmount > 0 ? '' : 'disabled'} onclick="confirmExchange()">교환하기</button>
+      <button class="btn btn-outline" style="flex:1" onclick="closeModal()">취소</button>
+    </div>
+  `;
+
+  if (isUpdate) {
+    document.getElementById('modal-content').innerHTML = html;
+  } else {
+    showModal(html);
+  }
+}
+
+function confirmExchange() {
+  const cost = _exchangeAmount * 100000;
+  if (_exchangeAmount <= 0 || S.gold < cost) {
+    notify('교환할 수 없습니다.', 'err');
+    return;
+  }
+  
+  S.gold -= cost;
+  S.dia += _exchangeAmount;
+  
+  addLog(`환전: ${fmtNum(cost)} 골드를 ${_exchangeAmount} 다이아로 교환했습니다.`, 'good');
+  notify(`✓ ${_exchangeAmount} 다이아 획득!`, 'ok');
+  
+  saveState();
+  render();
+  closeModal();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MODAL
+// ─────────────────────────────────────────────────────────────────────────────
+function showModal(html) {
+  document.getElementById('modal-content').innerHTML=html;
+  document.getElementById('modal').style.display='flex';
+}
+function closeModal() { document.getElementById('modal').style.display='none'; }
+function onModalBg(e) { if(e.target===document.getElementById('modal')) closeModal(); }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TABS
+// ─────────────────────────────────────────────────────────────────────────────
+function goTab(name) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.mob-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(`panel-${name}`).classList.add('active');
+  const desktopNav=document.getElementById(`nav-${name}`);
+  if(desktopNav) desktopNav.classList.add('active');
+  const mobNav=document.getElementById(`mob-nav-${name}`);
+  if(mobNav) mobNav.classList.add('active');
+  if(name==='settings') refreshSaveInfo();
+  if(name==='achievement'){ recalcStats(); renderAchPanel(); }
+  if(name==='codex') renderCodexPanel();
+  render();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CONTENT REFRESH SYSTEM
+// ─────────────────────────────────────────────────────────────────────────────
+const QUEST_REFRESH_MS   = 3 * 60 * 1000;   // 3분
+const QUEST_EXPIRE_MS    = 5 * 60 * 1000;   // 5분
+const CONTENT_REFRESH_MS = 10 * 60 * 1000;  // 10분
+const RAID_REFRESH_MS    = 60 * 60 * 1000;  // 1시간
+const MAX_QUESTS = 6;
+
+function pickRandom(arr, n) {
+  const a=[...arr]; const r=[];
+  for(let i=0;i<n&&a.length;i++){
+    const idx=Math.floor(Math.random()*a.length);
+    r.push(a.splice(idx,1)[0]);
+  }
+  return r;
+}
+
+function refreshQuests(now) {
+  S.activeQuests=S.activeQuests.filter(aq=>now<aq.expireAt);
+  const room=MAX_QUESTS-S.activeQuests.length;
+  if(room>0){
+    const n=Math.floor(Math.random()*4);
+    const add=Math.min(n,room);
+    if(add>0){
+      const pool=pickRandom(QUESTS,add);
+      pool.forEach(q=>{
+        S.activeQuests.push({quest:q, expireAt:now+QUEST_EXPIRE_MS});
+      });
+      if(add>0) addLog(`의뢰 게시판에 새 의뢰 ${add}건이 등록되었습니다.`);
+    }
+  }
+  S.lastQuestRefresh=now;
+}
+
+function refreshExpeditions(now) {
+  S.expeditionPool=pickRandom([...Array(EXPEDITIONS.length).keys()],4);
+  S.lastExpeditionRefresh=now;
+  addLog('원정 목록이 갱신되었습니다.');
+}
+
+function refreshDungeons(now) {
+  S.dungeonPool=pickRandom([...Array(DUNGEONS.length).keys()],6);
+  S.lastDungeonRefresh=now;
+  addLog('던전 목록이 갱신되었습니다.');
+}
+
+function refreshRaids(now) {
+  S.raidPool=pickRandom([...Array(RAIDS.length).keys()],RAIDS.length);
+  S.lastRaidRefresh=now;
+  addLog('레이드 목록이 갱신되었습니다.');
+}
+
+function checkRefreshes() {
+  const now=Date.now();
+  if(!S.lastQuestRefresh || now-S.lastQuestRefresh >= QUEST_REFRESH_MS) {
+    refreshQuests(now);
+    renderQuestList();
+  }
+  if(!S.lastExpeditionRefresh || now-S.lastExpeditionRefresh >= CONTENT_REFRESH_MS) {
+    refreshExpeditions(now);
+    renderExpeditionList();
+  }
+  if(!S.lastDungeonRefresh || now-S.lastDungeonRefresh >= CONTENT_REFRESH_MS) {
+    refreshDungeons(now);
+    renderDungeonGrid();
+  }
+  if(!S.lastRaidRefresh || now-S.lastRaidRefresh >= RAID_REFRESH_MS) {
+    refreshRaids(now);
+    renderRaidGrid();
+  }
+  saveState();
+}
+
+function fmtCountdown(ms) {
+  if(ms<=0) return '0:00';
+  const totalSec=Math.ceil(ms/1000);
+  const m=Math.floor(totalSec/60), s=totalSec%60;
+  return `${m}:${s.toString().padStart(2,'0')}`;
+}
+
+function renderRefreshTimers() {
+  const now=Date.now();
+  const qtEl=document.getElementById('quest-refresh-timer');
+  if(qtEl) qtEl.textContent=fmtCountdown(S.lastQuestRefresh+QUEST_REFRESH_MS-now);
+  const expEl=document.getElementById('exp-refresh-timer');
+  if(expEl) expEl.textContent=fmtCountdown(S.lastExpeditionRefresh+CONTENT_REFRESH_MS-now);
+  const dgEl=document.getElementById('dg-refresh-timer');
+  if(dgEl) dgEl.textContent=fmtCountdown(S.lastDungeonRefresh+CONTENT_REFRESH_MS-now);
+  const rdEl=document.getElementById('raid-refresh-timer');
+  if(rdEl) rdEl.textContent=fmtCountdown(S.lastRaidRefresh+RAID_REFRESH_MS-now);
+  
+  const dot=document.getElementById('mob-dot-quest');
+  if(dot) dot.classList.toggle('show', S.activeQuests.length>0);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TICK & INIT
+// ─────────────────────────────────────────────────────────────────────────────
+function tick() {
+  checkMissions();
+  checkRefreshes();
+  renderAllActiveMissions();
+  renderRefreshTimers();
+  renderLog();
+}
+
+function init() {
+  loadState();
+  if(!S.activeQuests) S.activeQuests=[];
+  if(!S.expeditionPool) S.expeditionPool=[0,1,2,3];
+  if(!S.dungeonPool) S.dungeonPool=[0,1,2,3,4,5];
+  if(!S.raidPool) S.raidPool=[0,1,2,3];
+  if(!S.stats) S.stats={totalSummons:0,sSummons:0,sOwned:0,hunterCount:0,elemVariety:0,clsVariety:0,totalMissions:0,raidCleared:0,dungeonCleared:0,totalGoldEarned:0,totalFame:0,maxHunterLv:1,totalAwakens:0,maxAwakening:0};
+  if(!S.achClaimed) S.achClaimed={};
+  if(!S.codexSeen) S.codexSeen=[];
+  if(!S.clearedContent) S.clearedContent={};
+
+  if(!S.hunters.length){
+    const used = new Set();
+    for(let i=0;i<3;i++){
+      const name = makeName(used);
+      used.add(name);
+      const stats = makeRandomHunter('C');
+      S.hunters.push({name, ...stats, id:S.nextId++, level:1, exp:0, busy:false});
+    }
+    addLog('어비스 길드에 오신 것을 환영합니다. 스타터 헌터 3명이 지급되었습니다.','good');
+    addLog('소환 탭에서 더 많은 헌터를 영입하고 임무에 도전하세요!');
+    saveState();
+  }
+  render();
+  setInterval(tick,1000);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ACHIEVEMENT & CODEX SYSTEM
+// ─────────────────────────────────────────────────────────────────────────────
+
+// 통계 재계산 (전체 상태 기반으로 항상 정확하게 유지)
+function recalcStats() {
+  if(!S.stats) S.stats={totalSummons:0,sSummons:0,sOwned:0,hunterCount:0,elemVariety:0,clsVariety:0,totalMissions:0,raidCleared:0,dungeonCleared:0,totalGoldEarned:0,totalFame:0,maxHunterLv:1,totalAwakens:0,maxAwakening:0};
+  const st = S.stats;
+  st.hunterCount  = S.hunters.length;
+  st.sOwned       = S.hunters.filter(h=>h.rank==='S').length;
+  st.elemVariety  = new Set(S.hunters.map(h=>h.elem).filter(Boolean)).size;
+  st.clsVariety   = new Set(S.hunters.map(h=>h.cls).filter(Boolean)).size;
+  st.maxHunterLv  = S.hunters.reduce((m,h)=>Math.max(m,h.level||1),1);
+  st.maxAwakening = S.hunters.reduce((m,h)=>Math.max(m,h.awakening||0),0);
+  st.totalFame    = S.fame;
+}
+
+// 업적 달성 조건값 계산
+function achCurrent(ach) {
+  const st = S.stats;
+  return st[ach.stat] || 0;
+}
+
+// 수령 가능한 업적 수
+function claimableCount() {
+  if(!S.achClaimed) S.achClaimed={};
+  if(!S.stats) S.stats={totalSummons:0,sSummons:0,sOwned:0,hunterCount:0,elemVariety:0,clsVariety:0,totalMissions:0,raidCleared:0,dungeonCleared:0,totalGoldEarned:0,totalFame:0,maxHunterLv:1,totalAwakens:0,maxAwakening:0};
+  return ACHIEVEMENTS.filter(a=>{
+    if(S.achClaimed[a.id]) return false;
+    return achCurrent(a) >= a.goal;
+  }).length;
+}
+
+// 업적 배지 업데이트
+function updateAchBadge() {
+  const n = claimableCount();
+  const b = document.getElementById('ach-badge');
+  const mb = document.getElementById('mob-ach-badge');
+  if(b){ b.style.display = n>0?'':'none'; b.textContent=n; }
+  if(mb){ mb.style.display = n>0?'':'none'; mb.textContent=n; }
+}
+
+// 업적 보상 수령
+function claimAch(id) {
+  const a = ACHIEVEMENTS.find(x=>x.id===id);
+  if(!a || S.achClaimed[id]) return;
+  if(achCurrent(a) < a.goal) return;
+  S.achClaimed[id] = true;
+  if(a.gold) S.gold += a.gold;
+  if(a.dia)  S.dia  += a.dia;
+  const reward = [a.gold?`🪙 ${a.gold.toLocaleString('ko-KR')}`:null, a.dia?`◆ ${a.dia}`:null].filter(Boolean).join(' · ');
+  addLog(`업적 달성: [${a.name}] ${reward} 획득!`, 'special');
+  notify(`🏆 업적 달성! ${a.name} — ${reward}`, 'ok');
+  saveState(); render();
+  renderAchPanel();
+}
+
+// 업적 탭 전환
+let _achTab = 'collect';
+function switchAchTab(tab) {
+  _achTab = tab;
+  ['collect','battle','growth'].forEach(t=>{
+    const el=document.getElementById(`acht-${t}`);
+    if(el) el.classList.toggle('active', t===tab);
+  });
+  renderAchPanel();
+}
+
+// 업적 패널 렌더링
+function renderAchPanel() {
+  const el = document.getElementById('ach-content'); if(!el) return;
+  recalcStats();
+  const list = ACHIEVEMENTS.filter(a=>a.cat===_achTab);
+  const total = list.length;
+  const done  = list.filter(a=>S.achClaimed[a.id]).length;
+
+  const progressBar = `
+    <div style="background:var(--white);border:1px solid var(--gray-100);border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;gap:14px">
+      <div style="flex:1">
+        <div style="font-size:12px;font-weight:700;margin-bottom:6px;color:var(--gray-600)">${_achTab==='collect'?'소환·수집':_achTab==='battle'?'임무·전투':'성장'} 달성률</div>
+        <div class="ach-prog-wrap">
+          <div class="ach-prog-track" style="height:8px"><div class="ach-prog-fill${done===total?' done':''}" style="width:${total?Math.round(done/total*100):0}%"></div></div>
+          <div class="ach-prog-text">${done} / ${total}</div>
+        </div>
+      </div>
+      <div style="font-family:'DM Serif Display',serif;font-size:26px;color:${done===total?'var(--success)':'var(--gray-300)'}">${done===total?'🏆':'🔒'}</div>
+    </div>`;
+
+  const rows = list.map(a=>{
+    const cur   = Math.min(achCurrent(a), a.goal);
+    const pct   = a.goal>0 ? Math.round(cur/a.goal*100) : 0;
+    const claimed = !!S.achClaimed[a.id];
+    const ready   = !claimed && cur >= a.goal;
+    const reward  = [a.gold?`🪙 ${a.gold.toLocaleString('ko-KR')}`:null, a.dia?`◆ ${a.dia}`:null].filter(Boolean).join(' · ');
+    const statusEl = claimed
+      ? `<div class="ach-done-badge">✓ 완료</div>`
+      : ready
+        ? `<div class="ach-claim-badge" onclick="claimAch('${a.id}')">🎁 수령</div>`
+        : `<div class="ach-reward">${reward}</div>`;
+    return `<div class="ach-row${claimed?' done':ready?' claimable':''}" ${ready?`onclick="claimAch('${a.id}')"`:''}> 
+      <div class="ach-icon" style="background:${claimed?'var(--success-bg)':ready?'#fffbeb':'var(--gray-50)'}">${a.icon}</div>
+      <div class="ach-body">
+        <div class="ach-name">${a.name}</div>
+        <div class="ach-desc">${a.desc}</div>
+        <div class="ach-prog-wrap">
+          <div class="ach-prog-track"><div class="ach-prog-fill${claimed?' done':''}" style="width:${pct}%"></div></div>
+          <div class="ach-prog-text">${cur.toLocaleString('ko-KR')} / ${a.goal.toLocaleString('ko-KR')}</div>
+        </div>
+      </div>
+      ${statusEl}
+    </div>`;
+  }).join('');
+
+  el.innerHTML = progressBar + `<div class="ach-list">${rows}</div>`;
+  updateAchBadge();
+}
+
+// 도감 탭 전환
+let _codexTab = 'hunters';
+function switchCodexTab(tab) {
+  _codexTab = tab;
+  ['hunters','content'].forEach(t=>{
+    const el=document.getElementById(`cdxt-${t}`);
+    if(el) el.classList.toggle('active', t===tab);
+  });
+  renderCodexPanel();
+}
+
+// 도감 패널 렌더링
+function renderCodexPanel() {
+  const el = document.getElementById('codex-content'); if(!el) return;
+  if(_codexTab === 'hunters') renderCodexHunters(el);
+  else renderCodexContent(el);
+}
+
+function renderCodexHunters(el) {
+  // 요약 통계
+  const totalS = S_HUNTERS.length;
+  const ownedS = S_HUNTERS.filter(h=>S.codexSeen.includes(h.name)).length;
+  const rankCounts = {S:0,A:0,B:0,C:0,D:0};
+  S.hunters.forEach(h=>{ if(rankCounts[h.rank]!==undefined) rankCounts[h.rank]++; });
+  const elemCounts = {};
+  ELEMENTS.forEach(e=>{ elemCounts[e]=S.hunters.filter(h=>h.elem===e).length; });
+  const maxElem = Math.max(1,...Object.values(elemCounts));
+  const elemColors = {'불':'#c0392b','물':'#1a6a8b','바람':'#27ae60','풀':'#2d7a2d','빛':'#b8860b','어둠':'#5b2d8b','번개':'#c8a800','얼음':'#2980b9'};
+
+  // S급 도감 그리드
+  const sGrid = S_HUNTERS.map(sh=>{
+    const owned = S.codexSeen.includes(sh.name);
+    const col = rankColor('S');
+    const ico = clsIcon(sh.cls);
+    const ec = ELEM_COLOR[sh.elem]||'#555';
+    const eb = ELEM_BG[sh.elem]||'#f5f5f5';
+    return `<div class="codex-hunter ${owned?'owned':'locked'}">
+      <div class="codex-hunter-avatar" style="background:${owned?col+'15':'var(--gray-100)'}">${strokify(SVG[ico], owned?col:'#aaa', 18)}</div>
+      <div class="codex-hunter-name">${owned?sh.name:'???'}</div>
+      <div class="codex-hunter-info">${owned?`<span class="elem-pill" style="font-size:8px;background:${eb};color:${ec};border-color:${ec}40">${sh.elem}</span> ${sh.cls}`:'미발견'}</div>
+    </div>`;
+  }).join('');
+
+  // 등급별 막대
+  const rankColors = {S:'#8b1a1a',A:'#3d1a8b',B:'#1a4a8b',C:'#1a6b3a',D:'#4a4a4a'};
+  const maxRank = Math.max(1,...Object.values(rankCounts));
+  const rankBars = ['S','A','B','C','D'].map(r=>`
+    <div class="codex-bar-row">
+      <div class="codex-bar-label" style="color:${rankColors[r]};font-weight:800">${r}급</div>
+      <div class="codex-bar-track"><div class="codex-bar-fill" style="width:${Math.round(rankCounts[r]/maxRank*100)}%;background:${rankColors[r]}"></div></div>
+      <div class="codex-bar-count">${rankCounts[r]}명</div>
+    </div>`).join('');
+
+  // 속성별 막대
+  const elemBars = ELEMENTS.map(e=>`
+    <div class="codex-bar-row">
+      <div class="codex-bar-label" style="color:${elemColors[e]||'#555'}">${e}</div>
+      <div class="codex-bar-track"><div class="codex-bar-fill" style="width:${Math.round((elemCounts[e]||0)/maxElem*100)}%;background:${elemColors[e]||'#555'}"></div></div>
+      <div class="codex-bar-count">${elemCounts[e]||0}명</div>
+    </div>`).join('');
+
+  el.innerHTML = `
+    <div class="codex-summary">
+      <div class="codex-stat"><div class="codex-stat-val">${S.hunters.length}</div><div class="codex-stat-lbl">보유 헌터</div></div>
+      <div class="codex-stat"><div class="codex-stat-val">${ownedS}<span style="font-size:14px;color:var(--gray-400)">/${totalS}</span></div><div class="codex-stat-lbl">S급 도감</div></div>
+      <div class="codex-stat"><div class="codex-stat-val">${new Set(S.hunters.map(h=>h.elem).filter(Boolean)).size}<span style="font-size:14px;color:var(--gray-400)">/8</span></div><div class="codex-stat-lbl">보유 속성</div></div>
+      <div class="codex-stat"><div class="codex-stat-val">${S.stats.totalSummons||0}</div><div class="codex-stat-lbl">총 소환 수</div></div>
+    </div>
+    <div class="codex-section">
+      <div class="codex-section-title">S급 헌터 도감 (${ownedS}/${totalS})</div>
+      <div class="codex-hunter-grid">${sGrid}</div>
+    </div>
+    <div class="codex-section">
+      <div class="codex-section-title">등급별 현황</div>
+      ${rankBars}
+    </div>
+    <div class="codex-section">
+      <div class="codex-section-title">속성별 현황</div>
+      ${elemBars}
+    </div>`;
+}
+
+function renderCodexContent(el) {
+  const allC = [...QUESTS,...EXPEDITIONS,...DUNGEONS,...RAIDS];
+  const typeLabel = {quest:'의뢰',expedition:'원정',dungeon:'던전',raid:'레이드'};
+  const typeGroups = ['quest','expedition','dungeon','raid'];
+  const totalCleared = Object.values(S.clearedContent).reduce((s,v)=>s+v,0);
+  const uniqueCleared = Object.keys(S.clearedContent).filter(id=>S.clearedContent[id]>0).length;
+
+  const sections = typeGroups.map(type=>{
+    const items = allC.filter(c=>c.type===type);
+    const rows = items.map(c=>{
+      const cnt = S.clearedContent[c.id]||0;
+      const cleared = cnt>0;
+      return `<div class="codex-content-row${cleared?' cleared':''}">
+        <div>
+          <div class="codex-content-name">${cleared?c.name:'???'}</div>
+          <div class="codex-content-info">${cleared?`${diffLabel(c.diff)} · ${fmtTime(c.time)}`:'미클리어'}</div>
+        </div>
+        ${cleared
+          ? `<div class="codex-cleared-badge">✓ ${cnt}회</div>`
+          : `<div class="codex-locked-badge">🔒</div>`}
+      </div>`;
+    }).join('');
+    const clearedInType = items.filter(c=>(S.clearedContent[c.id]||0)>0).length;
+    return `<div class="codex-section">
+      <div class="codex-section-title">${typeLabel[type]} (${clearedInType}/${items.length})</div>
+      <div class="codex-content-list">${rows}</div>
+    </div>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="codex-summary" style="grid-template-columns:repeat(3,1fr)">
+      <div class="codex-stat"><div class="codex-stat-val">${totalCleared}</div><div class="codex-stat-lbl">총 클리어</div></div>
+      <div class="codex-stat"><div class="codex-stat-val">${uniqueCleared}<span style="font-size:14px;color:var(--gray-400)">/${allC.length}</span></div><div class="codex-stat-lbl">종류</div></div>
+      <div class="codex-stat"><div class="codex-stat-val">${S.stats.raidCleared||0}</div><div class="codex-stat-lbl">레이드 클리어</div></div>
+    </div>
+    ${sections}`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SETTINGS
+// ─────────────────────────────────────────────────────────────────────────────
+function exportData() {
+  try {
+    const json = JSON.stringify(S, null, 2);
+    const blob = new Blob([json], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const now = new Date();
+    const stamp = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}_${String(now.getHours()).padStart(2,'0')}${String(now.getMinutes()).padStart(2,'0')}`;
+    a.href = url;
+    a.download = `abyss_guild_${stamp}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    notify('데이터를 저장했습니다.', 'ok');
+  } catch(e) {
+    notify('저장 중 오류가 발생했습니다.', 'err');
+  }
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      if (typeof parsed !== 'object' || !Array.isArray(parsed.hunters)) {
+        notify('올바른 저장 파일이 아닙니다.', 'err');
+        return;
+      }
+      S = {...S, ...parsed};
+      if (!S.activeQuests) S.activeQuests = [];
+      if (!S.expeditionPool) S.expeditionPool = [0,1,2,3];
+      if (!S.dungeonPool) S.dungeonPool = [0,1,2,3,4,5];
+      if (!S.raidPool) S.raidPool = [0,1,2,3];
+      saveState();
+      render();
+      refreshSaveInfo();
+      notify('데이터를 불러왔습니다.', 'ok');
+      addLog('설정: 외부 파일에서 데이터를 불러왔습니다.', 'good');
+    } catch(err) {
+      notify('파일을 읽는 중 오류가 발생했습니다.', 'err');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function manualSave() {
+  saveState();
+  refreshSaveInfo();
+  notify('브라우저에 저장했습니다.', 'ok');
+}
+
+function refreshSaveInfo() {
+  const el = document.getElementById('save-info-text');
+  if (!el) return;
+  try {
+    const raw = localStorage.getItem('ag3');
+    if (!raw) { el.textContent = '저장된 데이터 없음'; return; }
+    const kb = (new Blob([raw]).size / 1024).toFixed(1);
+    const parsed = JSON.parse(raw);
+    el.innerHTML = `헌터 ${parsed.hunters?.length||0}명 · 임무완료 ${parsed.completed||0}회 · ${kb} KB`;
+  } catch(e) {
+    el.textContent = '저장 정보를 읽을 수 없습니다.';
+  }
+}
+
+function confirmReset() {
+  showModal(`
+    <div class="modal-title">⚠️ 게임 초기화</div>
+    <p style="font-size:14px;color:var(--gray-600);margin-bottom:8px;line-height:1.7">
+      모든 헌터, 골드, 다이아, 진행 기록이 <span style="color:var(--danger);font-weight:700">영구적으로 삭제</span>됩니다.<br>
+      이 작업은 되돌릴 수 없습니다. 정말 초기화하시겠습니까?
+    </p>
+    <div style="background:var(--danger-bg);border:1px solid #f5c8c8;border-radius:8px;padding:10px 14px;font-size:12px;color:var(--danger);margin-bottom:20px">
+      초기화 전 데이터를 백업하려면 설정 탭에서 저장(내보내기)을 먼저 진행하세요.
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-danger" style="flex:1" onclick="resetGame()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+        초기화 확인
+      </button>
+      <button class="btn btn-outline" style="flex:1" onclick="closeModal()">취소</button>
+    </div>
+  `);
+}
+
+function resetGame() {
+  try { localStorage.removeItem('ag3'); } catch(e) {}
+  S = {
+    gold:5000, dia:300,
+    hunters:[], missions:[],
+    completed:0, fame:0, guildLv:1,
+    pity:0, nextId:1,
+    logs:[], gachaLogs:[],
+    activeQuests:[], lastQuestRefresh:0,
+    lastExpeditionRefresh:0, lastDungeonRefresh:0, lastRaidRefresh:0,
+    expeditionPool:[0,1,2,3], dungeonPool:[0,1,2,3,4,5], raidPool:[0,1,2,3],
+  };
+  const used = new Set();
+  for(let i=0;i<3;i++){
+    const name = makeName(used);
+    used.add(name);
+    const stats = makeRandomHunter('C');
+    S.hunters.push({name, ...stats, id:S.nextId++, level:1, exp:0, busy:false});
+  }
+  addLog('게임이 초기화되었습니다. 스타터 헌터 3명이 지급되었습니다.','good');
+  saveState();
+  closeModal();
+  render();
+  refreshSaveInfo();
+  goTab('dashboard');
+  notify('게임이 초기화되었습니다.', 'ok');
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GROWTH SYSTEM
+// ─────────────────────────────────────────────────────────────────────────────
+function levelCap(h) {
+  const aw = h.awakening||0;
+  return [10,20,30,40,50][aw];
+}
+
+function expToNext(lv) { return lv * 300; }
+
+const AWAKEN_COST = [2,3,4,5];
+
+function levelUpIfPossible(h) {
+  const cap = levelCap(h);
+  let leveled = false;
+  while(true) {
+    if((h.level||1) >= cap) break;
+    const thr = expToNext(h.level||1);
+    if((h.exp||0) < thr) break;
+    h.exp -= thr;
+    h.level = (h.level||1)+1;
+    h.atk = Math.min(400, h.atk+Math.floor(Math.random()*8+3));
+    h.def = Math.min(400, h.def+Math.floor(Math.random()*8+3));
+    h.spd = Math.min(400, h.spd+Math.floor(Math.random()*8+3));
+    leveled = true;
+    addLog(`레벨업: ${h.name} → Lv.${h.level}`,'good');
+    notify(`⬆ ${h.name} Lv.${h.level} 달성!`,'ok');
+  }
+  return leveled;
+}
+
+function feedExp(feeder) {
+  const rankBase = {S:5000, A:1500, B:600, C:250, D:100};
+  const base = rankBase[feeder.rank]||100;
+  return base + (feeder.level||1)*50;
+}
+
+function renderGrowthPanel() {
+  const grid = document.getElementById('growth-hunter-grid');
+  const emp  = document.getElementById('growth-hunter-empty');
+  if(!grid||!emp) return;
+  if(!S.hunters.length){ grid.innerHTML=''; emp.style.display=''; return; }
+  emp.style.display='none';
+  grid.innerHTML = S.hunters.map(h=>{
+    const col = rankColor(h.rank);
+    const ico = clsIcon(h.cls);
+    const aw  = h.awakening||0;
+    const cap = levelCap(h);
+    const atCap = h.level>=cap && aw<4;
+    const stars = '⭐'.repeat(aw)+'☆'.repeat(4-aw);
+    const expPct = Math.min(100, Math.round(((h.exp||0)/expToNext(h.level||1))*100));
+    const capBadge = atCap
+      ? `<span style="font-size:9px;background:var(--danger-bg);color:var(--danger);border:1px solid #f5c8c8;padding:1px 5px;border-radius:5px;font-weight:700;margin-left:4px">각성필요</span>` : '';
+    return `<div class="hunter-card" onclick="openGrowthModal(${h.id})">
+      <div class="hunter-card-top">
+        <div class="hunter-avatar" style="background:${col}15">${strokify(SVG[ico],col,24)}</div>
+        <span class="rank-pill rank-${h.rank}">${h.rank}</span>
+      </div>
+      <div class="hunter-name">${h.name}</div>
+      <div style="font-size:11px;color:#b8860b;margin-bottom:6px;letter-spacing:.5px">${stars}${capBadge}</div>
+      <div style="font-size:11px;color:var(--gray-500);margin-bottom:4px">Lv.${h.level||1} / ${cap}</div>
+      <div style="height:4px;background:var(--gray-100);border-radius:2px;overflow:hidden;margin-bottom:8px">
+        <div style="height:100%;width:${expPct}%;background:var(--black);border-radius:2px;transition:width .5s"></div>
+      </div>
+      <div style="font-size:11px;color:var(--gray-400)">전투력 ${power(h)}</div>
+    </div>`;
+  }).join('');
+}
+
+let _growthTarget = null;
+let _growthTab = 'feed';
+let _feedSelected = [];
+let _awakenSelected = [];
+
+function openGrowthModal(hunterId) {
+  _growthTarget = S.hunters.find(h=>h.id===hunterId);
+  if(!_growthTarget) return;
+  _feedSelected = [];
+  _awakenSelected = [];
+  _growthTab = 'feed';
+  renderGrowthModal();
+}
+
+function renderGrowthModal() {
+  const h = _growthTarget;
+  if(!h) return;
+  const col = rankColor(h.rank);
+  const ico = clsIcon(h.cls);
+  const aw  = h.awakening||0;
+  const cap = levelCap(h);
+  const atCap = (h.level||1) >= cap;
+  const expPct = atCap ? 100 : Math.min(100, Math.round(((h.exp||0)/expToNext(h.level||1))*100));
+  const stars = '⭐'.repeat(aw)+'☆'.repeat(4-aw);
+
+  const dots = [0,1,2,3].map(i=>{
+    const cls = i<aw ? 'done' : (i===aw&&aw<4 ? 'current' : '');
+    return `<div class="awaken-dot ${cls}"></div>`;
+  }).join('');
+
+  let feedContent = '';
+  if(atCap && aw>=4) {
+    feedContent = `<div style="text-align:center;padding:20px;color:var(--gray-400);font-size:13px">최대 레벨 달성! (Lv.50 · ★4 각성)</div>`;
+  } else if(atCap) {
+    feedContent = `<div class="awaken-info-box">
+      레벨 상한 도달 (Lv.${cap})<br>
+      각성 탭에서 동일 등급 헌터 ${AWAKEN_COST[aw]}명을 재료로 각성해야<br>Lv.${cap+1}~${cap+10} 구간이 열립니다.
+    </div>`;
+  } else {
+    const feeders = S.hunters.filter(f=>f.id!==h.id && !f.busy);
+    const feedHTML = feeders.length ? feeders.map(f=>{
+      const fc = rankColor(f.rank);
+      const fi = clsIcon(f.cls);
+      const fexp = feedExp(f);
+      const sel = _feedSelected.includes(f.id);
+      return `<div class="feed-item${sel?' selected':''}" id="fdi-${f.id}" onclick="toggleFeedSelect(${f.id})">
+        <div class="feed-f-avatar" style="background:${fc}15">${strokify(SVG[fi],fc,16)}</div>
+        <div class="feed-f-name">${f.name}</div>
+        <div class="feed-f-info" style="color:${fc};font-weight:700">${f.rank} Lv.${f.level||1}</div>
+        <div class="feed-exp-preview">+${fexp} EXP</div>
+      </div>`;
+    }).join('') : `<div style="color:var(--gray-400);font-size:12px;padding:12px;text-align:center">재료로 사용할 다른 헌터가 없습니다.</div>`;
+
+    const totalExp = _feedSelected.reduce((s,id)=>{const f=S.hunters.find(x=>x.id===id);return s+(f?feedExp(f):0);},0);
+    const selInfo = _feedSelected.length>0 ? `
+      <div class="sel-info-box" style="margin-top:10px">
+        <div class="sel-info-row"><span style="color:var(--gray-400)">선택한 재료</span><span style="font-weight:600">${_feedSelected.length}명</span></div>
+        <div class="sel-info-row"><span style="color:var(--gray-400)">획득 EXP 합계</span><span style="font-weight:600;color:var(--success)">+${totalExp} EXP</span></div>
+      </div>` : '';
+
+    feedContent = `
+      <div class="feed-section-label">경험치 재료 선택 (출중 중이 아닌 헌터)</div>
+      <div class="feed-grid">${feedHTML}</div>
+      ${selInfo}
+      <button class="btn btn-black" style="width:100%;margin-top:12px" ${_feedSelected.length?'':'disabled'} onclick="doFeedExp()">
+        ⬆ 경험치 투입 (${_feedSelected.length}명 소멸)
+      </button>`;
+  }
+
+  let awakenContent = '';
+  if(aw>=4) {
+    awakenContent = `<div style="text-align:center;padding:20px;color:var(--success);font-size:13px;font-weight:700">★4 각성 완료! 최대 각성 달성.</div>`;
+  } else if(!atCap) {
+    awakenContent = `<div class="awaken-info-box">
+      각성 조건 미충족<br>
+      먼저 현재 레벨 상한인 Lv.${cap}에 도달해야 각성할 수 있습니다.<br>
+      현재 레벨: Lv.${h.level||1}
+    </div>`;
+  } else {
+    const needed = AWAKEN_COST[aw];
+    const awakenFeeders = S.hunters.filter(f=>f.id!==h.id && f.rank===h.rank && !f.busy);
+    const awakenHTML = awakenFeeders.length ? awakenFeeders.map(f=>{
+      const fc = rankColor(f.rank);
+      const fi = clsIcon(f.cls);
+      const sel = _awakenSelected.includes(f.id);
+      return `<div class="feed-item${sel?' selected':' same-rank-req'}" id="awi-${f.id}" onclick="toggleAwakenSelect(${f.id},${needed})">
+        <div class="feed-f-avatar" style="background:${fc}15">${strokify(SVG[fi],fc,16)}</div>
+        <div class="feed-f-name">${f.name}</div>
+        <div class="feed-f-info" style="color:${fc};font-weight:700">${f.rank} Lv.${f.level||1}</div>
+        <div class="feed-exp-preview" style="color:${fc}">동일 등급</div>
+      </div>`;
+    }).join('') : `<div style="color:var(--gray-400);font-size:12px;padding:12px;text-align:center">동일 등급(${h.rank}) 헌터가 없습니다.</div>`;
+
+    awakenContent = `
+      <div class="awaken-info-box">
+        ★${aw} → ★${aw+1} 각성 돌파<br>
+        동일 등급(${h.rank}) 헌터 ${needed}명을 재료로 선택하세요. (${_awakenSelected.length}/${needed}명 선택됨)<br>
+        각성 시 레벨 상한이 Lv.${cap} → Lv.${cap+10}으로 확장됩니다.
+      </div>
+      <div class="feed-section-label">각성 재료 선택 (${h.rank}등급 헌터)</div>
+      <div class="feed-grid">${awakenHTML}</div>
+      <button class="btn btn-gold" style="width:100%;margin-top:12px" ${_awakenSelected.length>=needed?'':'disabled'} onclick="doAwaken()">
+        ✨ 각성 돌파 (★${aw} → ★${aw+1})
+      </button>`;
+  }
+
+  showModal(`
+    <div class="growth-modal-header">
+      <div class="growth-avatar" style="background:${col}15">${strokify(SVG[ico],col,28)}</div>
+      <div style="flex:1;min-width:0">
+        <div class="growth-name">${h.name}</div>
+        <div class="growth-sub">${h.rank}등급 · ${h.cls} · ${h.elem||'?'}</div>
+        <div style="font-size:13px;color:#b8860b;margin-top:3px;letter-spacing:.5px">${stars}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-family:'DM Serif Display',serif;font-size:22px">Lv.${h.level||1}</div>
+        <div style="font-size:11px;color:var(--gray-400)">/ ${cap} 상한</div>
+      </div>
+    </div>
+
+    <div class="exp-bar-wrap">
+      <div class="exp-bar-label">
+        <span>EXP ${h.exp||0} / ${atCap&&aw<4?'MAX':expToNext(h.level||1)}</span>
+        <span style="color:var(--gray-400)">각성 ${dots.replace(/<div/g,'<div style="display:inline-block"').replace(/class="awaken-dot/g,'style="display:inline-block;width:10px;height:10px;border-radius:50%;margin:0 2px" class="awaken-dot')}</span>
+      </div>
+      <div class="exp-bar-track"><div class="exp-bar-fill" style="width:${atCap&&aw<4?100:expPct}%;${atCap&&aw<4?'background:var(--danger)':''}"></div></div>
+    </div>
+
+    <div class="tab-btns">
+      <button class="tab-btn ${_growthTab==='feed'?'active':''}" onclick="switchGrowthTab('feed')">⬆ 경험치 투입</button>
+      <button class="tab-btn ${_growthTab==='awaken'?'active':''}" onclick="switchGrowthTab('awaken')">✨ 각성 돌파</button>
+    </div>
+
+    <div id="growth-tab-content">
+      ${_growthTab==='feed' ? feedContent : awakenContent}
+    </div>
+
+    <button class="btn btn-outline" style="width:100%;margin-top:10px" onclick="closeModal()">닫기</button>
+  `);
+}
+
+function switchGrowthTab(tab) {
+  _growthTab = tab;
+  _feedSelected = [];
+  _awakenSelected = [];
+  renderGrowthModal();
+}
+
+function toggleFeedSelect(id) {
+  const idx = _feedSelected.indexOf(id);
+  if(idx>=0) _feedSelected.splice(idx,1);
+  else _feedSelected.push(id);
+  renderGrowthModal();
+}
+
+function toggleAwakenSelect(id, needed) {
+  const idx = _awakenSelected.indexOf(id);
+  if(idx>=0) _awakenSelected.splice(idx,1);
+  else {
+    if(_awakenSelected.length>=needed){ notify(`${needed}명만 선택 가능합니다`,'err'); return; }
+    _awakenSelected.push(id);
+  }
+  renderGrowthModal();
+}
+
+function doFeedExp() {
+  const h = _growthTarget;
+  if(!h||!_feedSelected.length) return;
+  const totalExp = _feedSelected.reduce((s,id)=>{const f=S.hunters.find(x=>x.id===id);return s+(f?feedExp(f):0);},0);
+  const names = _feedSelected.map(id=>{const f=S.hunters.find(x=>x.id===id);return f?f.name:'?';});
+  S.hunters = S.hunters.filter(x=>!_feedSelected.includes(x.id));
+  h.exp = (h.exp||0)+totalExp;
+  levelUpIfPossible(h);
+  addLog(`강화: ${h.name}에게 ${names.join(', ')}을 경험치로 투입 (+${totalExp} EXP)`,'good');
+  notify(`✓ ${h.name} EXP +${totalExp} 흡수!`,'ok');
+  _feedSelected = [];
+  saveState(); render();
+  renderGrowthPanel();
+  renderGrowthModal();
+}
+
+function doAwaken() {
+  const h = _growthTarget;
+  if(!h||!_awakenSelected.length) return;
+  const aw = h.awakening||0;
+  if(aw>=4){ notify('이미 최대 각성입니다','err'); return; }
+  const needed = AWAKEN_COST[aw];
+  if(_awakenSelected.length < needed){ notify(`${needed}명이 필요합니다`,'err'); return; }
+  const names = _awakenSelected.map(id=>{const f=S.hunters.find(x=>x.id===id);return f?f.name:'?';});
+  S.hunters = S.hunters.filter(x=>!_awakenSelected.includes(x.id));
+  h.awakening = aw+1;
+  const newCap = levelCap(h);
+  addLog(`각성: ${h.name} ★${aw} → ★${aw+1}! 레벨 상한 Lv.${newCap}로 확장. (재료: ${names.join(', ')})`,'special');
+  notify(`✨ ${h.name} ★${aw+1} 각성 성공!`,'ok');
+  // 통계
+  if(!S.stats) S.stats={totalSummons:0,sSummons:0,sOwned:0,hunterCount:0,elemVariety:0,clsVariety:0,totalMissions:0,raidCleared:0,dungeonCleared:0,totalGoldEarned:0,totalFame:0,maxHunterLv:1,totalAwakens:0,maxAwakening:0};
+  S.stats.totalAwakens = (S.stats.totalAwakens||0)+1;
+  recalcStats();
+  updateAchBadge();
+  _awakenSelected = [];
+  _growthTab = 'feed';
+  saveState(); render();
+  renderGrowthPanel();
+  renderGrowthModal();
+}
+
+init();
+</script>
+</body>
+</html>
