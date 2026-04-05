@@ -461,9 +461,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
   </button>
 
   <div class="nav-group">육성</div>
+  <button class="nav-item" onclick="goTab('guiding')" id="nav-guiding">
+    <svg class="ni" width="15" height="15" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    가이딩
+  </button>
   <button class="nav-item" onclick="goTab('training')" id="nav-training">
     <svg class="ni" width="15" height="15" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-    가이딩 페어링
+    페어링
   </button>
   <button class="nav-item" onclick="goTab('growth')" id="nav-growth">
     <svg class="ni" width="15" height="15" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
@@ -584,9 +588,28 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
   <div id="raid-active"></div>
 </div>
 
+<!-- GUIDING -->
+<div class="panel" id="panel-guiding">
+  <div class="page-title">가이딩</div>
+  <div class="page-sub">센티넬의 폭주율을 해소합니다 · 배치된 요원은 작전 투입 불가</div>
+  <div class="info-box">
+    <strong>가이딩 안내</strong><br>
+    · 센티넬과 가이드를 슬롯에 배치하면 센티넬의 폭주율이 서서히 해소됩니다.<br>
+    · 배치 중인 센티넬과 가이드는 작전에 투입할 수 없습니다.<br>
+    · 폭주율 100% 도달 시 행동불능 상태가 되며, 폭주율이 0%가 될 때까지 작전 투입 불가.<br>
+    · 행동불능 센티넬도 가이딩 슬롯에 배치할 수 있습니다.
+  </div>
+  <div class="section-label">가이딩 슬롯</div>
+  <div id="guiding-slots"></div>
+  <div class="section-label" style="margin-top:20px">대기 중 센티넬</div>
+  <div id="guiding-sentinel-bench"></div>
+  <div class="section-label" style="margin-top:16px">대기 중 가이드</div>
+  <div id="guiding-guide-bench"></div>
+</div>
+
 <!-- TRAINING / PAIRING -->
 <div class="panel" id="panel-training">
-  <div class="page-title">가이딩 페어링</div>
+  <div class="page-title">페어링</div>
   <div class="page-sub">센티넬과 가이드를 1:1 매칭하여 전투 보너스 부여 · 같은 속성 매칭 시 추가 효과</div>
   <div class="info-box">
     <strong>페어링 효과</strong><br>
@@ -796,6 +819,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter'
     </button>
     <button class="mob-btn" onclick="goTab('raid')" id="mob-nav-raid">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>진압
+    </button>
+    <button class="mob-btn" onclick="goTab('guiding')" id="mob-nav-guiding">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>가이딩
     </button>
     <button class="mob-btn" onclick="goTab('training')" id="mob-nav-training">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>페어링
@@ -1161,7 +1187,7 @@ let S={
   expeditionPool:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14], dungeonPool:[0,1,2,3,4,5,6,7,8,9,10,11,12,13], raidPool:[0,1,2,3,4,5,6,7,8,9,10],
   lastFreeGacha:0,
   stats:{totalSummons:0,sSummons:0,sOwned:0,ssOwned:0,hunterCount:0,elemVariety:0,clsVariety:0,totalMissions:0,raidCleared:0,dungeonCleared:0,expeditionCleared:0,questCleared:0,totalGoldEarned:0,totalFame:0,maxHunterLv:1,totalAwakens:0,maxAwakening:0,totalPairings:0,sameElemPairings:0,maxPower:0,guideCount:0,codexCount:0,guildLevel:1,totalFeeds:0,totalDiaEarned:0,maxConcurrentMissions:0,fireCount:0,waterCount:0,grassCount:0,lightningCount:0,windCount:0,iceCount:0,vanguard1Count:0,vanguard2Count:0,harmonySupportCount:0,harmonyCoreCount:0,rstCount:0,agentGroupCount:0,acolyteGroupCount:0,specialGroupsComplete:0},
-  achClaimed:{}, codexSeen:[], clearedContent:{}, trainingSlots:[], pairSlots:[],
+  achClaimed:{}, codexSeen:[], clearedContent:{}, trainingSlots:[], pairSlots:[], guidingSlots:[],
   exchAmt:1,
 };
 
@@ -1251,6 +1277,7 @@ function goTab(tab){
   if(tab==='codex')renderCodex();
   if(tab==='growth')renderGrowthPanel();
   if(tab==='training')renderTraining();
+  if(tab==='guiding')renderGuiding();
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -1291,7 +1318,7 @@ function agentCardHTML(h,onclick=''){
   const fb=fieldBg(h.elem||'');
   const ico=roleIcon(h.role||'센티넬');
   const pwr=power(h);
-  const busyBadge=h.busy?`<span class="busy-tag" style="margin-left:4px">작전중</span>`:'';
+  const busyBadge=h.incapacitated?`<span class="busy-tag" style="margin-left:4px;background:var(--danger-bg);color:var(--danger)">행동불능</span>`:isInGuiding(h.id)?`<span class="busy-tag" style="margin-left:4px;background:var(--guide-bg);color:var(--guide)">가이딩중</span>`:h.busy?`<span class="busy-tag" style="margin-left:4px">작전중</span>`:'';
   const fSvg=fieldIcon(h.elem||'',14);
   const fLabel=h.elem?`<span class="elem-icon">${fSvg}</span> ${h.elem}`:'';
   const fieldTag=h.elem?`<span class="field-badge ${fieldCls(h.elem)}">${fLabel}</span>`:'';
@@ -1305,7 +1332,7 @@ function agentCardHTML(h,onclick=''){
   const guideBadge=!isSentinel&&(h.rank==='S'||h.rank==='SS')?`<span class="harmony-badge" style="margin-left:3px">하모니</span>`:'';
   const primaBadge=h.rank==='SS'?`<span class="prima-badge" style="margin-left:3px">프리마</span>`:h.group?`<span class="vanguard-badge" style="margin-left:3px;font-size:8px">${h.group}</span>`:'';
   const runawayVal=h.runaway||0;
-  const runawayBar=isSentinel?`<div class="runaway-bar"><div class="runaway-fill" style="width:${runawayVal}%"></div></div><div class="runaway-label">폭주 ${runawayVal}%</div>`:'<div style="font-size:9px;color:var(--guide);font-family:\'Space Mono\',monospace;margin-top:4px">가이딩 가능</div>';
+  const runawayBar=isSentinel?`<div class="runaway-bar"><div class="runaway-fill" style="width:${runawayVal}%;${h.incapacitated?"background:var(--danger)":""}"></div></div><div class="runaway-label" style="${h.incapacitated?"color:var(--danger)":""}">폭주 ${Math.round(runawayVal)}%${h.incapacitated?" · 행동불능":""}</div>`:'<div style="font-size:9px;color:var(--guide);font-family:\'Space Mono\',monospace;margin-top:4px">가이딩 가능</div>';
   const lblA=isSentinel?'ATK':'가이딩';
   const lblD=isSentinel?'DEF':'방호';
   const lblS=isSentinel?'SPD':'반응';
@@ -1371,8 +1398,8 @@ function renderAgents(){
   const elemOrd={'불':0,'물':1,'풀':2,'번개':3,'바람':4,'얼음':5,'무':6};
   if(_agentSort==='pwr')list.sort((a,b)=>power(b)-power(a));
   else if(_agentSort==='lv')list.sort((a,b)=>(b.level||1)-(a.level||1));
-  else if(_agentSort==='rank')list.sort((a,b)=>(rankOrd[a.rank]||9)-(rankOrd[b.rank]||9));
-  else if(_agentSort==='elem')list.sort((a,b)=>(elemOrd[a.elem]||9)-(elemOrd[b.elem]||9));
+  else if(_agentSort==='rank')list.sort((a,b)=>(rankOrd[a.rank]??9)-(rankOrd[b.rank]??9));
+  else if(_agentSort==='elem')list.sort((a,b)=>(elemOrd[a.elem]??9)-(elemOrd[b.elem]??9));
   grid.innerHTML=list.map(h=>agentCardHTML(h,`openGrowthModal(${h.id})`)).join('');
 }
 
@@ -1546,7 +1573,7 @@ function openSelect(contentId){
   const content=findContent(contentId);
   if(!content)return;
   _selContent=content; _selIds=[]; _selFilter='all'; _selSort='pwr';
-  const avail=S.hunters.filter(h=>!h.busy);
+  const avail=S.hunters.filter(h=>!h.busy&&!isIncapacitated(h));
   if(!avail.length){notify('투입 가능한 요원이 없습니다.','err');return;}
   const mElem=getMissionElem(content.id);
   const mEc=fieldColor(mElem);
@@ -1564,6 +1591,7 @@ function openSelect(contentId){
       <span style="width:1px;background:var(--border);margin:0 4px"></span>
       <button class="btn btn-primary btn-sm" style="font-size:9px;padding:4px 8px" id="ss-pwr" onclick="setSelSort('pwr')">전투력</button>
       <button class="btn btn-outline btn-sm" style="font-size:9px;padding:4px 8px" id="ss-lv" onclick="setSelSort('lv')">레벨</button>
+      <button class="btn btn-outline btn-sm" style="font-size:9px;padding:4px 8px" id="ss-rank" onclick="setSelSort('rank')">등급</button>
       <button class="btn btn-outline btn-sm" style="font-size:9px;padding:4px 8px" id="ss-elem" onclick="setSelSort('elem')">속성</button>
       <button class="btn btn-outline btn-sm" style="font-size:9px;padding:4px 8px" id="ss-adv" onclick="setSelSort('adv')">상성</button>
     </div>
@@ -1587,7 +1615,7 @@ function setSelFilter(f){
 }
 function setSelSort(s){
   _selSort=s;
-  ['pwr','lv','elem','adv'].forEach(t=>{
+  ['pwr','lv','rank','elem','adv'].forEach(t=>{
     const btn=document.getElementById('ss-'+t);
     if(btn){btn.className='btn '+(t===s?'btn-primary':'btn-outline')+' btn-sm';btn.style.fontSize='9px';btn.style.padding='4px 8px';}
   });
@@ -1605,7 +1633,8 @@ function renderSelGrid(){
   const elemOrd={'불':0,'물':1,'풀':2,'번개':3,'바람':4,'얼음':5,'무':6};
   if(_selSort==='pwr')avail.sort((a,b)=>power(b)-power(a));
   else if(_selSort==='lv')avail.sort((a,b)=>(b.level||1)-(a.level||1));
-  else if(_selSort==='elem')avail.sort((a,b)=>(elemOrd[a.elem]||9)-(elemOrd[b.elem]||9));
+  else if(_selSort==='rank')avail.sort((a,b)=>(rankOrd[a.rank]??9)-(rankOrd[b.rank]??9));
+  else if(_selSort==='elem')avail.sort((a,b)=>(elemOrd[a.elem]??9)-(elemOrd[b.elem]??9));
   else if(_selSort==='adv')avail.sort((a,b)=>elemBonus(b.elem,mElem)-elemBonus(a.elem,mElem));
 
   grid.innerHTML=avail.map(h=>{
@@ -1770,7 +1799,7 @@ function tickMissions(){
       // exp to hunters
       m.hunterIds.forEach(id=>{
         const h=S.hunters.find(x=>x.id===id);
-        if(h){addExpSafe(h,expGain);levelUpIfPossible(h);}
+        if(h){addExpSafe(h,expGain);levelUpIfPossible(h);addRunaway(h,Math.floor(5+Math.random()*10));}
       });
       const names=m.hunterIds.map(id=>{const h=S.hunters.find(x=>x.id===id);return h?h.name:'?';}).join(', ');
       addLog(`[성공] ${m.content.name} — G +${fmtNum(goldGain)}${gemGain?` · D +${gemGain}`:''}  (${names})`,'good');
@@ -1783,7 +1812,7 @@ function tickMissions(){
       // 실패해도 약간의 경험치
       m.hunterIds.forEach(id=>{
         const h=S.hunters.find(x=>x.id===id);
-        if(h){addExpSafe(h,expConsole);levelUpIfPossible(h);}
+        if(h){addExpSafe(h,expConsole);levelUpIfPossible(h);addRunaway(h,Math.floor(3+Math.random()*5));}
       });
       addLog(`[실패] ${m.content.name} — G +${fmtNum(consolation)} (위로금)`,'bad');
       notify(`✗ [${m.content.name}] 작전 실패`,'err');
@@ -2282,8 +2311,8 @@ function renderPairPartnerModal(h){
   const elemOrd={'불':0,'물':1,'풀':2,'번개':3,'바람':4,'얼음':5,'무':6};
   if(_pairSort==='pwr')candidates.sort((a,b)=>power(b)-power(a));
   else if(_pairSort==='lv')candidates.sort((a,b)=>(b.level||1)-(a.level||1));
-  else if(_pairSort==='rank')candidates.sort((a,b)=>(rankOrd[a.rank]||9)-(rankOrd[b.rank]||9));
-  else if(_pairSort==='elem')candidates.sort((a,b)=>(elemOrd[a.elem]||9)-(elemOrd[b.elem]||9));
+  else if(_pairSort==='rank')candidates.sort((a,b)=>(rankOrd[a.rank]??9)-(rankOrd[b.rank]??9));
+  else if(_pairSort==='elem')candidates.sort((a,b)=>(elemOrd[a.elem]??9)-(elemOrd[b.elem]??9));
   else if(_pairSort==='match')candidates.sort((a,b)=>{const sa=h.elem&&a.elem===h.elem?0:1;const sb=h.elem&&b.elem===h.elem?0:1;return sa-sb||power(b)-power(a);});
 
   const picks=candidates.length?candidates.map(c=>{
@@ -2370,8 +2399,8 @@ function renderPairPickModal(){
   const elemOrd={'불':0,'물':1,'풀':2,'번개':3,'바람':4,'얼음':5,'무':6};
   if(_pairPickSort==='pwr')sentinels.sort((a,b)=>power(b)-power(a));
   else if(_pairPickSort==='lv')sentinels.sort((a,b)=>(b.level||1)-(a.level||1));
-  else if(_pairPickSort==='rank')sentinels.sort((a,b)=>(rankOrd[a.rank]||9)-(rankOrd[b.rank]||9));
-  else if(_pairPickSort==='elem')sentinels.sort((a,b)=>(elemOrd[a.elem]||9)-(elemOrd[b.elem]||9));
+  else if(_pairPickSort==='rank')sentinels.sort((a,b)=>(rankOrd[a.rank]??9)-(rankOrd[b.rank]??9));
+  else if(_pairPickSort==='elem')sentinels.sort((a,b)=>(elemOrd[a.elem]??9)-(elemOrd[b.elem]??9));
 
   const picks=sentinels.length?sentinels.map(h=>{
     const fc=fieldColor(h.elem||'');
@@ -2539,8 +2568,8 @@ function applyGrowthSort(list,sort){
   const elemOrd={'불':0,'물':1,'풀':2,'번개':3,'바람':4,'얼음':5,'무':6};
   if(sort==='pwr')list.sort((a,b)=>power(b)-power(a));
   else if(sort==='lv')list.sort((a,b)=>(b.level||1)-(a.level||1));
-  else if(sort==='rank')list.sort((a,b)=>(rankOrd[a.rank]||9)-(rankOrd[b.rank]||9));
-  else if(sort==='elem')list.sort((a,b)=>(elemOrd[a.elem]||9)-(elemOrd[b.elem]||9));
+  else if(sort==='rank')list.sort((a,b)=>(rankOrd[a.rank]??9)-(rankOrd[b.rank]??9));
+  else if(sort==='elem')list.sort((a,b)=>(elemOrd[a.elem]??9)-(elemOrd[b.elem]??9));
   else if(sort==='exp')list.sort((a,b)=>feedExp(b)-feedExp(a));
   return list;
 }
@@ -2873,6 +2902,247 @@ function claimAllAch(){
 }
 
 // ═══════════════════════════════════════════════════════════════════
+// GUIDING SYSTEM (폭주율 해소)
+// ═══════════════════════════════════════════════════════════════════
+const GUIDING_SLOTS=5;
+const GUIDING_REDUCE_PER_TICK=2; // 가이딩 슬롯: 틱당 폭주율 감소
+const INCAP_PASSIVE_REDUCE=0.3; // 행동불능 미배치 시 틱당 자연 감소
+
+function isIncapacitated(h){return h.role==='센티넬'&&h.incapacitated;}
+function isInGuiding(id){return (S.guidingSlots||[]).some(g=>g.sentinelId===id||g.guideId===id);}
+
+function tickGuiding(){
+  S.guidingSlots=S.guidingSlots||[];
+  let changed=false;
+  // 가이딩 슬롯 배치 센티넬: 폭주율 감소
+  S.guidingSlots.forEach(slot=>{
+    const s=S.hunters.find(x=>x.id===slot.sentinelId);
+    if(!s)return;
+    if((s.runaway||0)>0){
+      s.runaway=Math.max(0,(s.runaway||0)-GUIDING_REDUCE_PER_TICK);
+      changed=true;
+      if(s.runaway<=0&&s.incapacitated){
+        s.incapacitated=false;
+        addLog(`${s.name} 행동불능 해제 — 작전 투입 가능`,'good');
+        notify(`✓ ${s.name} 행동불능 해제!`,'ok');
+      }
+    }
+  });
+  // 행동불능 미배치 센티넬: 아주 느리게 자연 감소
+  S.hunters.forEach(h=>{
+    if(h.role!=='센티넬'||!h.incapacitated)return;
+    if(isInGuiding(h.id))return; // 가이딩 중이면 위에서 처리
+    if((h.runaway||0)>0){
+      h.runaway=Math.max(0,(h.runaway||0)-INCAP_PASSIVE_REDUCE);
+      changed=true;
+      if(h.runaway<=0){
+        h.incapacitated=false;
+        addLog(`${h.name} 행동불능 자연 해제`,'good');
+        notify(`✓ ${h.name} 행동불능 해제!`,'ok');
+      }
+    }
+  });
+  if(changed){saveState();if(_curTab==='guiding')renderGuiding();}
+}
+
+// 작전 완료 시 폭주율 증가
+function addRunaway(h,amount){
+  if(h.role!=='센티넬')return;
+  h.runaway=Math.min(100,(h.runaway||0)+amount);
+  if(h.runaway>=100&&!h.incapacitated){
+    h.incapacitated=true;
+    addLog(`⚠ ${h.name} 폭주율 100% — 행동불능!`,'bad');
+    notify(`⚠ ${h.name} 행동불능 상태!`,'err');
+  }
+}
+
+function renderGuiding(){
+  const slotsEl=document.getElementById('guiding-slots');
+  const sBench=document.getElementById('guiding-sentinel-bench');
+  const gBench=document.getElementById('guiding-guide-bench');
+  if(!slotsEl||!sBench||!gBench)return;
+  S.guidingSlots=S.guidingSlots||[];
+
+  const slots=[];
+  for(let i=0;i<GUIDING_SLOTS;i++){
+    const slot=S.guidingSlots[i];
+    if(slot){
+      const s=S.hunters.find(x=>x.id===slot.sentinelId);
+      const g=S.hunters.find(x=>x.id===slot.guideId);
+      if(s&&g){
+        const sc=fieldColor(s.elem||'');
+        const gc=fieldColor(g.elem||'');
+        const rw=s.runaway||0;
+        const incapTag=s.incapacitated?`<span style="font-size:8px;color:var(--danger);font-weight:700;background:var(--danger-bg);border:1px solid rgba(220,38,38,0.2);border-radius:4px;padding:1px 6px">행동불능</span>`:'';
+        slots.push(`<div class="training-slot filled-slot" style="border-color:${sc}30">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <div style="text-align:center">
+              <div style="background:${sc}12;width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.sentinel,sc,18)}</div>
+              <div style="font-size:10px;font-weight:700;color:var(--text);margin-top:3px">${s.name}</div>
+              <div style="font-size:9px;color:var(--text2)">${s.rank} Lv.${s.level||1}</div>
+            </div>
+            <div style="font-size:16px;color:var(--text3)">⇄</div>
+            <div style="text-align:center">
+              <div style="background:${gc}12;width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.guide,gc,18)}</div>
+              <div style="font-size:10px;font-weight:700;color:var(--text);margin-top:3px">${g.name}</div>
+              <div style="font-size:9px;color:var(--text2)">${g.rank} Lv.${g.level||1}</div>
+            </div>
+          </div>
+          ${incapTag}
+          <div class="runaway-bar" style="margin-top:6px"><div class="runaway-fill" style="width:${rw}%"></div></div>
+          <div style="font-size:9px;color:${rw>60?'var(--danger)':'var(--warn)'};font-family:'Space Mono',monospace;margin-top:2px">폭주 ${Math.round(rw)}%${rw>0?' · 해소 중':' · 안정'}</div>
+          <button class="btn btn-outline btn-sm" style="margin-top:8px;font-size:9px;width:100%" onclick="removeGuiding(${i})">해제</button>
+        </div>`);
+      } else {
+        S.guidingSlots.splice(i,1);i--;
+        slots.push(emptyGuidingSlot(i));
+      }
+    } else {
+      slots.push(emptyGuidingSlot(i));
+    }
+  }
+  slotsEl.innerHTML=`<div class="training-slots">${slots.join('')}</div>`;
+
+  // 벤치: 가이딩 슬롯에 배치되지 않은 센티넬/가이드
+  const guidingIds=S.guidingSlots.flatMap(g=>[g.sentinelId,g.guideId]);
+  const sentinels=S.hunters.filter(h=>h.role==='센티넬'&&!guidingIds.includes(h.id));
+  const guides=S.hunters.filter(h=>h.role==='가이드'&&!guidingIds.includes(h.id));
+
+  sBench.innerHTML=sentinels.length?`<div class="training-bench-grid">${sentinels.map(h=>{
+    const fc=fieldColor(h.elem||'');
+    const rw=h.runaway||0;
+    const incap=h.incapacitated;
+    return `<div class="bench-item" onclick="startGuidingSentinel(${h.id})" style="${incap?'border-color:rgba(220,38,38,0.3)':''}">
+      <div style="background:${fc}12;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.sentinel,fc,18)}</div>
+      <div style="font-size:10px;font-weight:700;color:var(--text)">${h.name}</div>
+      <div style="font-size:9px;color:var(--text2)">${h.rank} · ${fieldIcon(h.elem||'',10)} ${h.elem||'?'}</div>
+      <div class="runaway-bar" style="margin-top:3px"><div class="runaway-fill" style="width:${rw}%"></div></div>
+      <div style="font-size:8px;color:${rw>60?'var(--danger)':'var(--warn)'};font-family:'Space Mono',monospace">폭주 ${Math.round(rw)}%</div>
+      ${incap?'<div style="font-size:7px;color:var(--danger);font-weight:700">행동불능</div>':''}
+    </div>`;
+  }).join('')}</div>`:'<div style="font-size:11px;color:var(--text2);padding:12px">센티넬 없음</div>';
+
+  gBench.innerHTML=guides.length?`<div class="training-bench-grid">${guides.map(h=>{
+    const fc=fieldColor(h.elem||'');
+    return `<div class="bench-item" onclick="startGuidingGuide(${h.id})">
+      <div style="background:${fc}12;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.guide,fc,18)}</div>
+      <div style="font-size:10px;font-weight:700;color:var(--text)">${h.name}</div>
+      <div style="font-size:9px;color:var(--text2)">${h.rank} · ${fieldIcon(h.elem||'',10)} ${h.elem||'?'}</div>
+    </div>`;
+  }).join('')}</div>`:'<div style="font-size:11px;color:var(--text2);padding:12px">가이드 없음</div>';
+}
+
+function emptyGuidingSlot(i){
+  return `<div class="training-slot empty-slot" onclick="openGuidingPick()">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    <div style="font-size:10px;color:var(--text3);margin-top:6px">슬롯 ${(i||0)+1}</div>
+  </div>`;
+}
+
+let _guidingPending=null;
+
+function startGuidingSentinel(id){
+  if(S.guidingSlots.length>=GUIDING_SLOTS){notify('슬롯이 가득 찼습니다','err');return;}
+  const h=S.hunters.find(x=>x.id===id);if(!h)return;
+  _guidingPending={id,role:'sentinel'};
+  // 가이드 선택 모달
+  const guidingIds=S.guidingSlots.flatMap(g=>[g.sentinelId,g.guideId]);
+  const candidates=S.hunters.filter(x=>x.role==='가이드'&&!guidingIds.includes(x.id)&&!x.busy);
+  if(!candidates.length){notify('배치 가능한 가이드가 없습니다','err');_guidingPending=null;return;}
+  const picks=candidates.map(c=>{
+    const fc=fieldColor(c.elem||'');
+    return `<div class="pick-item" onclick="confirmGuiding(${c.id})">
+      <div class="p-avatar" style="background:${fc}12">${strokify(SVG.guide,fc,16)}</div>
+      <div class="p-name">${c.name}</div>
+      <div class="p-info" style="color:var(--text2)">${c.rank} Lv.${c.level||1}</div>
+      <div class="p-info">${fieldIcon(c.elem||'',10)} ${c.elem||'?'}</div>
+    </div>`;
+  }).join('');
+  showModal(`
+    <div class="modal-title">${h.name}의 가이드 선택</div>
+    <div class="pick-grid">${picks}</div>
+    <button class="btn btn-outline" style="width:100%;margin-top:10px" onclick="_guidingPending=null;closeModal()">취소</button>
+  `);
+}
+
+function startGuidingGuide(id){
+  if(S.guidingSlots.length>=GUIDING_SLOTS){notify('슬롯이 가득 찼습니다','err');return;}
+  const h=S.hunters.find(x=>x.id===id);if(!h)return;
+  _guidingPending={id,role:'guide'};
+  const guidingIds=S.guidingSlots.flatMap(g=>[g.sentinelId,g.guideId]);
+  const candidates=S.hunters.filter(x=>x.role==='센티넬'&&!guidingIds.includes(x.id)&&(!x.busy||x.incapacitated));
+  if(!candidates.length){notify('배치 가능한 센티넬이 없습니다','err');_guidingPending=null;return;}
+  const picks=candidates.map(c=>{
+    const fc=fieldColor(c.elem||'');const rw=c.runaway||0;
+    return `<div class="pick-item" onclick="confirmGuiding(${c.id})">
+      <div class="p-avatar" style="background:${fc}12">${strokify(SVG.sentinel,fc,16)}</div>
+      <div class="p-name">${c.name}</div>
+      <div class="p-info" style="color:var(--text2)">${c.rank} Lv.${c.level||1}</div>
+      <div style="font-size:8px;color:${rw>60?'var(--danger)':'var(--warn)'}">폭주 ${Math.round(rw)}%</div>
+      ${c.incapacitated?'<div style="font-size:7px;color:var(--danger);font-weight:700">행동불능</div>':''}
+    </div>`;
+  }).join('');
+  showModal(`
+    <div class="modal-title">${h.name}에게 배정할 센티넬 선택</div>
+    <div class="pick-grid">${picks}</div>
+    <button class="btn btn-outline" style="width:100%;margin-top:10px" onclick="_guidingPending=null;closeModal()">취소</button>
+  `);
+}
+
+function openGuidingPick(){
+  if(S.guidingSlots.length>=GUIDING_SLOTS){notify('슬롯이 가득 찼습니다','err');return;}
+  const guidingIds=(S.guidingSlots||[]).flatMap(g=>[g.sentinelId,g.guideId]);
+  const sentinels=S.hunters.filter(h=>h.role==='센티넬'&&!guidingIds.includes(h.id)&&(!h.busy||h.incapacitated));
+  if(!sentinels.length){notify('배치 가능한 센티넬이 없습니다','err');return;}
+  const picks=sentinels.map(h=>{
+    const fc=fieldColor(h.elem||'');const rw=h.runaway||0;
+    return `<div class="pick-item" onclick="closeModal();setTimeout(()=>startGuidingSentinel(${h.id}),150)">
+      <div class="p-avatar" style="background:${fc}12">${strokify(SVG.sentinel,fc,16)}</div>
+      <div class="p-name">${h.name}</div>
+      <div class="p-info" style="color:var(--text2)">${h.rank} Lv.${h.level||1}</div>
+      <div style="font-size:8px;color:${rw>60?'var(--danger)':'var(--warn)'}">폭주 ${Math.round(rw)}%</div>
+      ${h.incapacitated?'<div style="font-size:7px;color:var(--danger);font-weight:700">행동불능</div>':''}
+    </div>`;
+  }).join('');
+  showModal(`
+    <div class="modal-title">가이딩할 센티넬 선택</div>
+    <div class="pick-grid">${picks}</div>
+    <button class="btn btn-outline" style="width:100%;margin-top:10px" onclick="closeModal()">닫기</button>
+  `);
+}
+
+function confirmGuiding(partnerId){
+  if(!_guidingPending)return;
+  const {id,role}=_guidingPending;
+  const sentinelId=role==='sentinel'?id:partnerId;
+  const guideId=role==='sentinel'?partnerId:id;
+  S.guidingSlots=S.guidingSlots||[];
+  // 가이딩 배치 시 busy 플래그 설정
+  const s=S.hunters.find(x=>x.id===sentinelId);
+  const g=S.hunters.find(x=>x.id===guideId);
+  if(s)s.busy=true;
+  if(g)g.busy=true;
+  S.guidingSlots.push({sentinelId,guideId});
+  addLog(`가이딩 배치: ${s?s.name:'?'} ⇄ ${g?g.name:'?'}`);
+  notify(`✓ ${s?s.name:'?'} ⇄ ${g?g.name:'?'} 가이딩 시작`,'ok');
+  _guidingPending=null;
+  closeModal();saveState();renderGuiding();render();
+}
+
+function removeGuiding(idx){
+  const slot=S.guidingSlots[idx];if(!slot)return;
+  const s=S.hunters.find(x=>x.id===slot.sentinelId);
+  const g=S.hunters.find(x=>x.id===slot.guideId);
+  // busy 해제 (행동불능이면 busy 유지하지 않음 — 단 incapacitated 자체가 작전 투입을 막음)
+  if(s&&!s.incapacitated)s.busy=false;
+  if(s&&s.incapacitated)s.busy=false;
+  if(g)g.busy=false;
+  S.guidingSlots.splice(idx,1);
+  notify(`${s?s.name:'?'} ⇄ ${g?g.name:'?'} 가이딩 해제`,'info');
+  saveState();renderGuiding();render();
+}
+
+// ═══════════════════════════════════════════════════════════════════
 // CODEX
 // ═══════════════════════════════════════════════════════════════════
 function renderCodex(){
@@ -2978,10 +3248,12 @@ function init(){
     tickMissions();
     tickRefreshTimers();
     tickTraining();
+    tickGuiding();
     renderRefreshTimers();
     renderAllActiveMissions();
     updateFreeLabel();
     if(_curTab==='training')renderTraining();
+    if(_curTab==='guiding')renderGuiding();
   },1000);
 }
 
