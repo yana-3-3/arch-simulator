@@ -1613,16 +1613,22 @@ function renderSelGrid(){
     const ico=roleIcon(h.role||'센티넬');
     const fSvg=fieldIcon(h.elem||'',12);
     const adv=elemBonus(h.elem,mElem);
-    const advTag=adv>1?`<div style="font-size:8px;color:var(--success);font-weight:700">유리</div>`:adv<1?`<div style="font-size:8px;color:var(--danger);font-weight:700">불리</div>`:'';
-    const paired=h.role==='센티넬'&&findPairGuide(h.id);
-    const pairTag=paired?`<div style="font-size:8px;color:var(--accent);font-weight:700">페어링</div>`:'';
+    const advTag=adv>1?`<div style="font-size:8px;font-weight:700;color:var(--success);background:var(--success-bg);border:1px solid rgba(13,150,104,0.2);border-radius:4px;padding:1px 6px;margin-top:2px">▲ 유리</div>`:adv<1?`<div style="font-size:8px;font-weight:700;color:var(--danger);background:var(--danger-bg);border:1px solid rgba(220,38,38,0.2);border-radius:4px;padding:1px 6px;margin-top:2px">▼ 불리</div>`:'';
+    let pairTag='';
+    if(h.role==='센티넬'){
+      const pg=findPairGuide(h.id);
+      if(pg)pairTag=`<div style="font-size:7px;color:var(--accent);font-weight:700;margin-top:2px">⇄ ${pg.name}</div>`;
+    } else {
+      const pp=(S.pairSlots||[]).find(p=>p.guideId===h.id);
+      if(pp){const ps=S.hunters.find(x=>x.id===pp.sentinelId);if(ps)pairTag=`<div style="font-size:7px;color:var(--accent);font-weight:700;margin-top:2px">⇄ ${ps.name}</div>`;}
+    }
     const sel=_selIds.includes(h.id);
     return `<div class="pick-item${sel?' selected':''}" id="pi-${h.id}" onclick="togglePick(${h.id},${_selContent.maxSlots})">
       <div class="p-avatar" style="background:${fc}12">${strokify(SVG[ico],fc,16)}</div>
       <div class="p-name">${h.name}</div>
       <div style="display:flex;align-items:center;gap:3px;justify-content:center;margin:2px 0">${fSvg}<span style="font-size:9px;color:var(--text2)">${h.rank} Lv.${h.level||1}</span></div>
       <div class="p-info">PWR ${fmtNum(power(h))}</div>
-      ${advTag}${pairTag}
+      ${pairTag}${advTag}
     </div>`;
   }).join('')||'<div style="font-size:11px;color:var(--text2);padding:12px;text-align:center">해당 조건의 요원 없음</div>';
 }
@@ -1650,8 +1656,15 @@ function updateSelInfo(){
   const col=sr>=0.7?'var(--success)':sr>=0.4?'var(--warn)':'var(--danger)';
   const synergyLabel=synergy>1?`<div class="sel-info-row"><span>시너지</span><span style="color:var(--success);font-weight:700">×${synergy.toFixed(2)}</span></div>`:'';
   const elemLabel=`<div class="sel-info-row"><span>적 속성</span><span>${fieldIcon(mElem,12)} ${mElem}</span></div>`;
+  // 속성 유불리 요약
+  const selectedHunters=_selIds.map(id=>S.hunters.find(x=>x.id===id)).filter(Boolean);
+  const advCount=selectedHunters.filter(h=>elemBonus(h.elem,mElem)>1).length;
+  const disCount=selectedHunters.filter(h=>elemBonus(h.elem,mElem)<1).length;
+  const avgBonus=selectedHunters.length?selectedHunters.reduce((s,h)=>s+elemBonus(h.elem,mElem),0)/selectedHunters.length:1;
+  const avgCol=avgBonus>1.05?'var(--success)':avgBonus<0.95?'var(--danger)':'var(--text2)';
+  const elemSummary=`<div class="sel-info-row"><span>속성 상성</span><span style="color:${avgCol};font-weight:700">×${avgBonus.toFixed(2)}${advCount?` <span style="color:var(--success)">▲${advCount}</span>`:''}${disCount?` <span style="color:var(--danger)">▼${disCount}</span>`:''}</span></div>`;
   infoEl.style.display='block';
-  infoEl.innerHTML=`${elemLabel}<div class="sel-info-row"><span>선택 요원</span><span>${_selIds.length}/${_selContent.maxSlots}인</span></div><div class="sel-info-row"><span>총 전투력</span><span>${fmtNum(totalPwr)}</span></div>${synergyLabel}<div class="sel-info-row"><span>성공률</span><span style="color:${col};font-weight:700">${Math.round(sr*100)}%</span></div>`;
+  infoEl.innerHTML=`${elemLabel}<div class="sel-info-row"><span>선택 요원</span><span>${_selIds.length}/${_selContent.maxSlots}인</span></div><div class="sel-info-row"><span>총 전투력</span><span>${fmtNum(totalPwr)}</span></div>${elemSummary}${synergyLabel}<div class="sel-info-row"><span>성공률</span><span style="color:${col};font-weight:700">${Math.round(sr*100)}%</span></div>`;
   confirmBtn.disabled=false;
 }
 
