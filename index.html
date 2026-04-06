@@ -1879,7 +1879,7 @@ let _selContent=null, _selIds=[], _selFilter='all', _selSort='pwr';
 function openSelect(contentId){
   const content=findContent(contentId);
   if(!content)return;
-  _selContent=content; _selIds=[]; _selFilter='all'; _selSort='pwr';
+  _selContent=content; _selIds=[];
   const avail=S.hunters.filter(h=>!h.busy&&!isIncapacitated(h));
   if(!avail.length){notify('투입 가능한 요원이 없습니다.','err');return;}
   const mElem=getMissionElem(content.id);
@@ -1892,15 +1892,15 @@ function openSelect(contentId){
       <span style="margin-left:auto">최대 ${content.maxSlots}인 · PWR ${fmtNum(content.min_power)}+</span>
     </div>
     <div style="display:flex;gap:4px;margin-bottom:6px;flex-wrap:wrap">
-      <button class="btn btn-primary btn-sm" style="font-size:9px;padding:4px 8px" id="sf-all" onclick="setSelFilter('all')">전체</button>
-      <button class="btn btn-outline btn-sm" style="font-size:9px;padding:4px 8px" id="sf-normal" onclick="setSelFilter('normal')">일반</button>
-      <button class="btn btn-outline btn-sm" style="font-size:9px;padding:4px 8px" id="sf-special" onclick="setSelFilter('special')">특수</button>
+      <button class="btn ${_selFilter==='all'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" id="sf-all" onclick="setSelFilter('all')">전체</button>
+<button class="btn ${_selFilter==='normal'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" id="sf-normal" onclick="setSelFilter('normal')">일반</button>
+<button class="btn ${_selFilter==='special'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" id="sf-special" onclick="setSelFilter('special')">특수</button>
       <span style="width:1px;background:var(--border);margin:0 4px"></span>
-      <button class="btn btn-primary btn-sm" style="font-size:9px;padding:4px 8px" id="ss-pwr" onclick="setSelSort('pwr')">전투력</button>
-      <button class="btn btn-outline btn-sm" style="font-size:9px;padding:4px 8px" id="ss-lv" onclick="setSelSort('lv')">레벨순</button>
-      <button class="btn btn-outline btn-sm" style="font-size:9px;padding:4px 8px" id="ss-rank" onclick="setSelSort('rank')">등급순</button>
-      <button class="btn btn-outline btn-sm" style="font-size:9px;padding:4px 8px" id="ss-elem" onclick="setSelSort('elem')">속성순</button>
-      <button class="btn btn-outline btn-sm" style="font-size:9px;padding:4px 8px" id="ss-adv" onclick="setSelSort('adv')">상성</button>
+      <button class="btn ${_selSort==='pwr'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" id="ss-pwr" onclick="setSelSort('pwr')">전투력</button>
+<button class="btn ${_selSort==='lv'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" id="ss-lv" onclick="setSelSort('lv')">레벨순</button>
+<button class="btn ${_selSort==='rank'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" id="ss-rank" onclick="setSelSort('rank')">등급순</button>
+<button class="btn ${_selSort==='elem'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" id="ss-elem" onclick="setSelSort('elem')">속성순</button>
+<button class="btn ${_selSort==='adv'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" id="ss-adv" onclick="setSelSort('adv')">상성</button>
     </div>
     <div class="pick-grid" id="sel-pick-grid"></div>
     <div id="sel-info" class="sel-info-box" style="display:none"></div>
