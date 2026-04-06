@@ -1271,7 +1271,7 @@ const S_CODEX=[
   // 뱅가드 2팀 (S급 센티넬)
   {name:'리암',role:'센티넬',field:'얼음',rank:'S',group:'뱅가드 2팀',bio:'그의 하얀 침묵 속, 퇴로는 존재하지 않는다. 코드네임 리암. 그가 세운 빙벽 앞에서, 모든 전의는 하얗게 얼어붙는다.'},
   {name:'신드롬',role:'센티넬',field:'불',rank:'S',group:'뱅가드 2팀',bio:'가장 높은 곳에서 추락하여, 가장 뜨거운 곳에서 눈을 떴다. 코드네임 신드롬. 잿더미 위에서 타오르는 그의 분노는, 세상을 향한 가장 화려하고 무례한 해방선언이다.'},
-  {name:'바이브',role:'센티넬',field:'풀',rank:'S',group:'뱅가드 2팀',bio:'길들지 않은 바람, 섬세한 감각이 빚어낸 무음의 폭풍. 코드네임 바이브. 그가 흐름(Flow)을 읽는 순간 세계는 조용히 갈라진다.'},
+  {name:'바이브',role:'센티넬',field:'바람',rank:'S',group:'뱅가드 2팀',bio:'길들지 않은 바람, 섬세한 감각이 빚어낸 무음의 폭풍. 코드네임 바이브. 그가 흐름(Flow)을 읽는 순간 세계는 조용히 갈라진다.'},
   // 에이전트 (A급 센티넬)
   {name:'샤드',role:'센티넬',field:'얼음',rank:'A',group:'에이전트',bio:'가장 차가운 칼날은, 가장 뜨거운 노력을 숨긴다. 코드네임 샤드. 그의 침묵은 오만이 아닌, 스스로를 깎아내 온 시간의 증거다.'},
   {name:'카토',role:'센티넬',field:'풀',rank:'A',group:'에이전트',bio:'가장 날카로운 가시는 가장 깊은 잠을 자기 위해 피어난다. 코드네임 카토. 그의 나태는 이제, 당신만이 깨울 수 있는 검이다.'},
@@ -1334,8 +1334,16 @@ const SKIN_DB = {
     default: 'https://i.ibb.co/dsztzHfZ/image.png',
     bloom: null  // 개화 일러스트 URL (없으면 null)
   },
+  '휴고': {
+    default: 'https://i.ibb.co/Dg4MCrpZ/image.png',
+    bloom: null  // 개화 일러스트 URL (없으면 null)
+  },
   '샤드': {
     default: 'https://i.ibb.co/bR32dN98/image.png',
+    bloom: null  // 개화 일러스트 URL (없으면 null)
+  },
+  '해일': {
+    default: 'https://i.ibb.co/CKLRByCq/image.png',
     bloom: null  // 개화 일러스트 URL (없으면 null)
   },
   '노아': {
@@ -1346,8 +1354,24 @@ const SKIN_DB = {
     default: 'https://i.ibb.co/GQgRDKnH/image.png',
     bloom: null  // 개화 일러스트 URL (없으면 null)
   },
-  '휴고': {
-    default: 'https://i.ibb.co/Dg4MCrpZ/image.png',
+  '오아시스': {
+    default: 'https://i.ibb.co/TBTD8cCF/image.png',
+    bloom: null  // 개화 일러스트 URL (없으면 null)
+  },
+  '아모레': {
+    default: 'https://i.ibb.co/5gYF052r/image.png',
+    bloom: null  // 개화 일러스트 URL (없으면 null)
+  },
+  '카토': {
+    default: 'https://i.ibb.co/CxBhmys/image.png',
+    bloom: null  // 개화 일러스트 URL (없으면 null)
+  },
+  '밴스': {
+    default: 'https://i.ibb.co/4nJGQSZW/image.png',
+    bloom: null  // 개화 일러스트 URL (없으면 null)
+  },
+  '자이안': {
+    default: 'https://i.ibb.co/PvbwdqdD/image.png',
     bloom: null  // 개화 일러스트 URL (없으면 null)
   },
   '피피': {
@@ -1497,6 +1521,39 @@ function levelUpIfPossible(h){
 // ═══════════════════════════════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════════════════════════════
+
+function saveTabState(){
+  try{sessionStorage.setItem('tabState',JSON.stringify({
+    curTab:_curTab,
+    agentTab:_agentTab,
+    agentSort:_agentSort,
+    enhanceTab:_enhanceTab,
+    gachaTab:_gachaTab,
+    resonanceFilter:_resonanceFilter,
+    resonanceSort:_resonanceSort,
+    awakenTabFilter:_awakenTabFilter,
+    awakenTabSort:_awakenTabSort,
+    sortDir:_sortDir
+  }));}catch(e){}
+}
+function loadTabState(){
+  try{
+    const d=sessionStorage.getItem('tabState');
+    if(!d)return;
+    const t=JSON.parse(d);
+    if(t.curTab)_curTab=t.curTab;
+    if(t.agentTab)_agentTab=t.agentTab;
+    if(t.agentSort)_agentSort=t.agentSort;
+    if(t.enhanceTab)_enhanceTab=t.enhanceTab;
+    if(t.gachaTab)_gachaTab=t.gachaTab;
+    if(t.resonanceFilter)_resonanceFilter=t.resonanceFilter;
+    if(t.resonanceSort)_resonanceSort=t.resonanceSort;
+    if(t.awakenTabFilter)_awakenTabFilter=t.awakenTabFilter;
+    if(t.awakenTabSort)_awakenTabSort=t.awakenTabSort;
+	if(t.sortDir)_sortDir=t.sortDir;
+  }catch(e){}
+}
+
 let _curTab='dashboard';
 function goTab(tab){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
@@ -1508,12 +1565,24 @@ function goTab(tab){
   const mobBtn=document.getElementById('mob-nav-'+tab);
   if(mobBtn)mobBtn.classList.add('active');
   _curTab=tab;
+  // 필터 버튼 UI 복원
+  if(tab==='agents'){
+    ['all','normal','special','secret'].forEach(t=>{
+      const btn=document.getElementById('agent-tab-'+t);
+      if(btn)btn.className='btn '+(t===_agentTab?'btn-primary':'btn-outline')+' btn-sm';
+    });
+    ['pwr','lv','rank','elem'].forEach(s=>{
+      const btn=document.getElementById('agent-sort-'+s);
+      if(btn)btn.className='btn '+(s===_agentSort?'btn-primary':'btn-outline')+' btn-sm';
+    });
+  }
   if(tab==='achievement')renderAchievements();
   if(tab==='codex')renderCodex();
   if(tab==='enhance')renderEnhance();
   if(tab==='training')renderTraining();
   if(tab==='guiding')renderGuiding();
   if(tab==='dismantle')renderDismantle();
+  saveTabState();
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -1613,6 +1682,7 @@ function switchAgentTab(tab){
     if(btn)btn.className='btn '+(t===tab?'btn-primary':'btn-outline')+' btn-sm';
   });
   renderAgents();
+  saveTabState();
 }
 function setAgentSort(sort){
   if(_agentSort===sort)toggleSortDir('agent',sort);
@@ -1622,6 +1692,7 @@ function setAgentSort(sort){
     if(btn){btn.className='btn '+(s===sort?'btn-primary':'btn-outline')+' btn-sm';btn.style.fontSize='10px';btn.textContent={'pwr':'전투력','lv':'레벨순','rank':'등급순','elem':'속성순'}[s];}
   });
   renderAgents();
+  saveTabState();
 }
 function renderAgents(){
   const grid=document.getElementById('agent-grid');
@@ -2116,6 +2187,7 @@ function switchGachaTab(tab){
   document.getElementById('gacha-tab-secret').className='btn '+(tab==='secret'?'btn-primary':'btn-outline');
   if(tab==='special'){renderSpecialRoster();renderPrimaGrid();updateBonusCounter();}
   if(tab==='secret'){renderSecretRoster();updateSecretCounter();}
+  saveTabState();
 }
 function renderPrimaGrid(){
   const grid=document.getElementById('prima-recruit-grid');if(!grid)return;
@@ -2816,16 +2888,17 @@ function switchEnhanceTab(tab){
     if(btn)btn.style.flex='1';if(btn)btn.style.justifyContent='center';
   });
   renderEnhanceContent();
+  saveTabState();
 }
 function renderEnhance(){
   switchEnhanceTab(_enhanceTab);
 }
 let _resonanceFilter='all',_resonanceSort='pwr';
 let _awakenTabFilter='all',_awakenTabSort='pwr';
-function setResonanceFilter(v){_resonanceFilter=v;renderEnhanceContent();}
-function setResonanceSort(v){if(_resonanceSort===v)toggleSortDir('resonance',v);else{_resonanceSort=v;_sortDir['resonance_'+v]=1;}renderEnhanceContent();}
-function setAwakenTabFilter(v){_awakenTabFilter=v;renderEnhanceContent();}
-function setAwakenTabSort(v){if(_awakenTabSort===v)toggleSortDir('awakentab',v);else{_awakenTabSort=v;_sortDir['awakentab_'+v]=1;}renderEnhanceContent();}
+function setResonanceFilter(v){_resonanceFilter=v;renderEnhanceContent();saveTabState();}
+function setResonanceSort(v){if(_resonanceSort===v)toggleSortDir('resonance',v);else{_resonanceSort=v;_sortDir['resonance_'+v]=1;}renderEnhanceContent();saveTabState();}
+function setAwakenTabFilter(v){_awakenTabFilter=v;renderEnhanceContent();saveTabState();}
+function setAwakenTabSort(v){if(_awakenTabSort===v)toggleSortDir('awakentab',v);else{_awakenTabSort=v;_sortDir['awakentab_'+v]=1;}renderEnhanceContent();saveTabState();}
 
 function renderEnhanceContent(){
   const el=document.getElementById('enhance-content');if(!el)return;
@@ -2835,7 +2908,7 @@ function renderEnhanceContent(){
     else if(_resonanceFilter==='normal')hunters=hunters.filter(h=>!h.isSpecial);
     sortList(hunters,_resonanceSort,'resonance');
     const filterBar=gridFilterBar('Resonance',_resonanceFilter,_resonanceSort,'resonance');
-    const list=hunters.length?hunters.map(h=>agentCardHTML(h,`openGrowthModal(${h.id})`)).join(''):'';
+    const list=hunters.length?hunters.map(h=>agentCardHTML(h,`openResonanceModal(${h.id})`)).join(''):''
     el.innerHTML=`
       <div class="info-box"><strong>공명</strong><br>· 요원을 경험치 재료로 투입하면 레벨업합니다. 투입된 요원은 소멸합니다.<br>· Lv.10 / 20 / 30 / 40에서 레벨 상한에 도달합니다.</div>
       <div class="section-label">성장할 요원 선택</div>
@@ -2847,7 +2920,7 @@ function renderEnhanceContent(){
     else if(_awakenTabFilter==='normal')eligible=eligible.filter(h=>!h.isSpecial);
     sortList(eligible,_awakenTabSort,'awakentab');
     const filterBar=gridFilterBar('AwakenTab',_awakenTabFilter,_awakenTabSort,'awakentab');
-    const list=eligible.map(h=>agentCardHTML(h,`openGrowthModal(${h.id})`)).join('');
+    const list=eligible.map(h=>agentCardHTML(h,`openAwakenModal(${h.id})`)).join('')
     el.innerHTML=`
       <div class="info-box"><strong>각성</strong><br>· 동일 등급 요원 2/3/4/5명을 재료로 공명(★)을 올리면 다음 구간 레벨업이 가능합니다.<br>· 최대 ★4 공명이며, 각성 후 레벨 상한이 +10 확장됩니다.</div>
       <div class="section-label">각성 가능 요원</div>
@@ -2892,6 +2965,7 @@ function renderGrowthPanel(){
 
 let _growthTarget=null,_growthTab='feed',_feedSelected=[],_awakenSelected=[];
 let _feedFilter='all',_feedSort='exp',_awakenFilter='all',_awakenSort='lv';
+let _growthSingleTab=false;
 
 function openGrowthModal(id){
   const h=S.hunters.find(x=>x.id===id);
@@ -3153,14 +3227,30 @@ function renderGrowthModal(){
       </div>
       <div class="exp-bar-track"><div class="exp-bar-fill" style="width:${atCap&&aw<4?100:expPct}%;${atCap&&aw<4?'background:var(--danger)':''}"></div></div>
     </div>
-    <div class="tab-btns">
+    ${_growthSingleTab?'':`<div class="tab-btns">
       <button class="tab-btn ${_growthTab==='feed'?'active':''}" onclick="switchGrowthTab('feed')">⬆ EXP 투입</button>
       <button class="tab-btn ${_growthTab==='awaken'?'active':''}" onclick="switchGrowthTab('awaken')">✦ 공명 각성</button>
-    </div>
+    </div>`}
     <div id="growth-tab-content">${_growthTab==='feed'?feedContent:awakenContent}</div>
     <button class="btn btn-outline" style="width:100%;margin-top:10px" onclick="closeModal()">닫기</button>
   `);
   if(_growthTab==='feed')updateFeedSummary();
+}
+
+function openResonanceModal(id){
+  const h=S.hunters.find(x=>x.id===id);if(!h)return;
+  _growthTarget=h;
+  _growthTab='feed';_feedSelected=[];_awakenSelected=[];
+  _growthSingleTab=true;
+  renderGrowthModal();
+}
+
+function openAwakenModal(id){
+  const h=S.hunters.find(x=>x.id===id);if(!h)return;
+  _growthTarget=h;
+  _growthTab='awaken';_feedSelected=[];_awakenSelected=[];
+  _growthSingleTab=true;
+  renderGrowthModal();
 }
 
 function switchGrowthTab(tab){_growthTab=tab;_feedSelected=[];_awakenSelected=[];_feedFilter='all';_feedSort='exp';_awakenFilter='all';_awakenSort='lv';renderGrowthModal();}
@@ -4240,6 +4330,7 @@ function closeModal(){
   const mc=document.getElementById('modal-content');
   mc.style.maxWidth='';
   mc.style.padding='';
+  _growthSingleTab=false;
 }
 function onModalBg(e){if(e.target.id==='modal')closeModal();}
 
@@ -4248,6 +4339,8 @@ function onModalBg(e){if(e.target.id==='modal')closeModal();}
 // ═══════════════════════════════════════════════════════════════════
 function init(){
   loadState();
+  loadTabState();
+  goTab(_curTab);
   // 기존 가이드 집중 스탯 패치
   S.hunters.forEach(h=>{
     if(h.role==='가이드'&&!h.focus){
