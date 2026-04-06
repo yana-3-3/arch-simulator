@@ -47,9 +47,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
 .panel{display:none;animation:fadeUp .2s ease}
 .panel.active{display:block}
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.logo{font-family:'Noto Sans KR',sans-serif;font-weight:900;font-size:28px;letter-spacing:4px;color:var(--text);display:flex;align-items:center;gap:10px;transform:scaleY(0.85);-webkit-text-stroke:0.5px var(--text)}
+.logo{font-family:'Noto Sans KR',sans-serif;font-weight:900;font-size:28px;letter-spacing:4px;color:var(--text);display:flex;align-items:center;gap:10px;transform:scaleY(0.85);line-height:1.5;-webkit-text-stroke:0.5px var(--text)}
 .logo-icon{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;letter-spacing:0}
-.logo-sub{font-size:10.5px;font-weight:400;letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;margin-top:2px;-webkit-text-stroke:0;transform:scaleY(1.18);display:block;font-family:'Pretendard Variable',Pretendard,sans-serif}
+.logo-sub{font-size:10.5px;font-weight:400;letter-spacing:1.5px;color:var(--text3);text-transform:uppercase;margin-top:-4px;-webkit-text-stroke:0;transform:scaleY(1.18);display:block;font-family:'Pretendard Variable',Pretendard,sans-serif}
 .header-right{display:flex;gap:8px;margin-left:auto;align-items:center}
 .chip{display:flex;align-items:center;gap:6px;border-radius:20px;padding:6px 14px;font-size:13px;font-weight:700;border:1px solid;font-family:'Outfit',sans-serif}
 .chip-credit{background:rgba(194,134,12,0.08);border-color:rgba(194,134,12,0.2);color:var(--gold)}
@@ -76,10 +76,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
 .grid-auto{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:14px}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.agent-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;transition:.2s;cursor:pointer;box-shadow:var(--shadow);display:flex;flex-direction:column;height:300px}
+.agent-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:0;transition:.2s;cursor:pointer;box-shadow:var(--shadow);display:flex;flex-direction:column;height:250px;overflow:hidden}
 .agent-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:var(--shadow-hover)}
-.agent-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
-.agent-avatar{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;position:relative}
+.agent-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:4px}
+.agent-avatar{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0;margin-top:1px}
 .agent-avatar::before{content:'';position:absolute;inset:0;border-radius:10px;opacity:.1;background:currentColor}
 .tier-pill{font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;background:var(--surface2);color:var(--text2);border:1px solid var(--border)}
 .agent-name{font-weight:700;font-size:15px;color:var(--text);letter-spacing:-0.02em}
@@ -89,13 +89,17 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
 .role-guide{background:var(--guide-bg);color:var(--guide)}
 .stat-bars{display:flex;flex-direction:column;gap:6px}
 .sbar{display:flex;align-items:center;gap:8px}
-.sbar-lbl{color:var(--text3);width:34px;font-size:11px;font-weight:600}
+.sbar-lbl{color:var(--text3);width:36px;font-size:11px;font-weight:600;flex-shrink:0;white-space:nowrap}
 .sbar-track{flex:1;height:5px;background:var(--surface3);border-radius:3px;overflow:hidden}
 .sbar-fill{height:100%;border-radius:3px;transition:width .5s}
 .sbar-val{color:var(--text);width:28px;text-align:right;font-size:12px;font-weight:700}
 .agent-footer{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:12px;border-top:1px solid var(--border)}
 .agent-lv{font-size:13px;font-weight:700;color:var(--text)}
 .agent-pwr{font-size:12px;color:var(--text3)}
+.agent-card-inner{padding:14px}
+.agent-top-bar{height:3px;width:100%;margin-bottom:-1px}
+.agent-elem-tag{position:absolute;bottom:-4px;right:-4px;font-size:7px;padding:1px 4px;border-radius:3px;color:#fff;font-weight:600}
+.agent-rank-corner{position:absolute;top:3px;right:0;border-radius:0 0 0 8px;padding:4px 10px;font-size:12px;font-weight:500}
 .busy-tag{font-size:10px;background:var(--warn-bg);color:var(--warn);padding:2px 8px;border-radius:6px;font-weight:700}
 .op-row{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 20px;display:flex;align-items:center;gap:16px;margin-bottom:12px;transition:.2s;box-shadow:var(--shadow)}
 .op-row:hover{border-color:var(--border2);box-shadow:var(--shadow-hover)}
@@ -170,7 +174,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
 
 /* ── MODAL ───────────────────────────────────────────────────── */
 .modal-overlay{position:fixed;inset:0;background:rgba(32,32,40,0.25);display:flex;align-items:center;justify-content:center;z-index:200;animation:fadeUp .2s ease}
-.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;max-width:540px;width:95%;max-height:85vh;overflow-y:auto;box-shadow:0 20px 50px rgba(0,0,0,0.12)}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;max-width:500px;width:100%;max-height:95vh;overflow-y:auto;overflow-y:hidden;box-shadow:0 20px 50px rgba(0,0,0,0.12)}
 .modal-title{font-family:'Syne','Pretendard Variable',sans-serif;font-size:20px;font-weight:800;margin-bottom:16px;letter-spacing:.5px}
 .result-grid{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:20px}
 .result-card{width:82px;padding:10px 5px;border-radius:var(--radius);text-align:center;border:1px solid var(--border);animation:popIn .35s cubic-bezier(.34,1.56,.64,1) backwards;background:var(--surface2)}
@@ -322,9 +326,10 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
   .rate-row{gap:4px;margin-bottom:14px}
   .rate-item{font-size:10px;padding:3px 6px}
   .pity-wrap{padding:6px 10px !important}
-  .agent-card{padding:14px}
-  .agent-top{margin-bottom:8px}
-  .agent-avatar{width:36px;height:36px}
+  .agent-card{padding:0}
+  .agent-top{margin-bottom:3px}
+  .agent-avatar{width:34px;height:34px}
+  .agent-card-inner{padding:12px}
   .agent-name{font-size:13px}
   .agent-role{font-size:11px}
   .agent-footer{margin-top:8px;padding-top:8px}
@@ -414,6 +419,29 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
 .elem-null{background:rgba(166,166,166,0.08);color:#A6A6A6}
 /* ── STARS ───────────────────────────────────────────────────── */
 .stars-row{font-size:10px;letter-spacing:1px;color:var(--accent2)}
+/* ── SECRET ──────────────────────────────────────────────────── */
+.owner-btn{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:var(--surface2);cursor:pointer;transition:.15s;color:var(--text3)}
+.owner-btn:hover{border-color:var(--accent);color:var(--accent)}
+.owner-btn.logged-in{border-color:var(--accent);background:var(--accent-glow);color:var(--accent)}
+
+/* ── HUNTER DETAIL MODAL ─────────────────────────────────────── */
+.hd-wrap{display:flex;flex-direction:column;border-radius:var(--radius-lg);overflow:hidden;width:100%}
+.hd-illust{width:100%;aspect-ratio:832/1216;position:relative;overflow:hidden;flex-shrink:0}
+.hd-illust-bg{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+.hd-illust-overlay{position:absolute;bottom:0;left:0;right:0;padding:16px;background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,rgba(0,0,0,0.6) 60%,rgba(0,0,0,0.2) 85%,transparent 100%);text-shadow:0 1px 4px rgba(0,0,0,0.8),0 0 12px rgba(0,0,0,0.5)}
+.hd-illust-overlay{position:absolute;bottom:0;left:0;right:0;padding:16px;background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,rgba(0,0,0,0.6) 60%,rgba(0,0,0,0.2) 85%,transparent 100%)}
+.hd-illust-name{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff;line-height:1.2}
+.hd-illust-sub{font-size:11px;color:rgba(255,255,255,0.7);margin-top:3px}
+.hd-illust-badges{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
+.hd-info{padding:16px 18px;display:flex;flex-direction:row;gap:14px;align-items:center;background:var(--surface);flex-shrink:0}
+.hd-stat-row{display:flex;flex-direction:column;gap:5px}
+.hd-bio{font-size:11px;color:var(--text2);line-height:1.8;padding:10px 12px;background:var(--surface2);border-radius:var(--radius);border:1px solid var(--border)}
+.hd-skin-btn{position:absolute;top:10px;right:10px;z-index:10;cursor:pointer;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center}
+/* 일반 요원 심플 모달 */
+.hd-simple{padding:4px 0}
+.hd-simple-header{display:flex;align-items:center;gap:14px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.hd-simple-stats{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+
 </style>
 </head>
 <body>
@@ -435,6 +463,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
       <span id="token-val">0</span>
     </div>
     <div class="arch-rank" id="arch-rank">ARCH <span id="rank-txt">Lv.1</span></div>
+	<div class="owner-btn" id="owner-btn" onclick="openOwnerLogin()" title="관리자 로그인">
+	  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+		<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+		<circle cx="12" cy="7" r="4"/>
+	  </svg>
+	</div>
   </div>
 </header>
 <div class="main">
@@ -532,6 +566,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
     <button class="btn btn-primary btn-sm" id="agent-tab-all" onclick="switchAgentTab('all')">전체</button>
     <button class="btn btn-outline btn-sm" id="agent-tab-normal" onclick="switchAgentTab('normal')">일반 요원</button>
     <button class="btn btn-outline btn-sm" id="agent-tab-special" onclick="switchAgentTab('special')">특수 요원</button>
+	<button class="btn btn-outline btn-sm" id="agent-tab-secret" onclick="switchAgentTab('secret')" style="display:none">비밀 요원</button>
   </div>
   <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">
     <button class="btn btn-outline btn-sm" style="font-size:10px" id="agent-sort-pwr" onclick="setAgentSort('pwr')">전투력</button>
@@ -690,6 +725,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
   <div style="display:flex;gap:8px;margin-bottom:16px">
     <button class="btn btn-primary" id="gacha-tab-normal" onclick="switchGachaTab('normal')" style="flex:1;justify-content:center">일반 모집</button>
     <button class="btn btn-outline" id="gacha-tab-special" onclick="switchGachaTab('special')" style="flex:1;justify-content:center">특수 모집</button>
+	<button class="btn btn-outline" id="gacha-tab-secret" onclick="switchGachaTab('secret')" style="flex:1;justify-content:center;display:none">비밀 모집</button>
   </div>
 
   <!-- 일반 모집 -->
@@ -770,6 +806,46 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
     <div class="section-label">특수 요원 목록</div>
     <div id="special-roster-box" class="info-box"></div>
   </div>
+  
+  <!-- 비밀 모집 -->
+<div id="gacha-secret" style="display:none">
+  <div class="gacha-hero" style="border-color:rgba(168,85,247,0.3)">
+    <div class="gacha-title" style="background:linear-gradient(90deg,#a855f7,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">비밀 모집</div>
+    <div class="gacha-sub">비공개 요원 풀 · 다이아 사용</div>
+	<div class="rate-row">
+	  <div class="rate-item">뱅가드 (S) <strong>3%</strong></div>
+	  <div class="rate-item">에이전트 (A) <strong>12%</strong></div>
+	  <div class="rate-item">에이전트 (B) <strong>25%</strong></div>
+	  <div class="rate-item">애콜라이트 (C) <strong>40%</strong></div>
+	  <div class="rate-item">애콜라이트 (D) <strong>20%</strong></div>
+	</div>
+    <div class="gacha-btns">
+      <button class="gacha-btn" onclick="doGachaSecret(1)" style="border-color:rgba(168,85,247,0.4)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        1회 모집 · <span>다이아 30</span>
+      </button>
+      <button class="gacha-btn" onclick="doGachaSecret(10)" style="border-color:rgba(168,85,247,0.4)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        10회 모집 · <span>다이아 300</span>
+      </button>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:16px;position:relative;z-index:1;justify-content:center;flex-wrap:wrap">
+      <div class="pity-wrap" style="display:block;margin:0;padding:8px 12px;flex:1;min-width:120px;max-width:180px">
+        <div style="font-size:10px;font-weight:700;color:#a855f7;margin-bottom:3px">S 천장</div>
+        <div class="pity-track"><div class="pity-fill" id="secret-pity-bar" style="width:0%;background:linear-gradient(90deg,#a855f7,#ec4899)"></div></div>
+        <div style="font-size:11px;margin-top:3px"><strong id="secret-pity-num" style="color:#a855f7">0</strong><span style="color:var(--text3)"> / 100</span></div>
+      </div>
+      <div class="pity-wrap" style="display:block;margin:0;padding:8px 12px;flex:1;min-width:120px;max-width:180px">
+        <div style="font-size:10px;font-weight:700;color:var(--accent);margin-bottom:3px">다이아 환급</div>
+        <div class="pity-track"><div class="pity-fill" id="secret-bonus-bar" style="width:0%;background:linear-gradient(90deg,var(--accent),#a855f7)"></div></div>
+        <div style="font-size:11px;margin-top:3px"><strong id="secret-bonus-num" style="color:var(--accent)">0</strong><span style="color:var(--text3)"> / 30</span></div>
+      </div>
+    </div>
+    <div style="margin-top:8px;font-size:10px;color:var(--text2);position:relative;z-index:1">※ S 획득 시 천장 초기화 · 30회마다 다이아 150 환급</div>
+  </div>
+  <div class="section-label" style="margin-top:16px">비밀 요원 목록</div>
+  <div id="secret-roster-box" class="info-box"></div>
+</div>
 
   <div class="section-label">모집 기록</div>
   <div class="log-area" id="gacha-history"></div>
@@ -1217,6 +1293,93 @@ const S_CODEX=[
   {name:'카르마',role:'가이드',field:'번개',rank:'S',group:'R.S.T.',bio:'모든 죄는 대가를 치른다. 어둠의 밑바닥에서 쏘아 올린 벼락, 코드네임 카르마. 그의 손끝의 뇌전은 자비 없는 구원이자, 벗어날 수 없는 굴레다.'},
 ];
 
+// 비밀 모집 전용 풀
+const SECRET_POOL = [
+  {name:'제퍼',role:'센티넬',field:'바람',rank:'S',group:'뱅가드 3팀',bio:''},
+  {name:'비비안',role:'센티넬',field:'물',rank:'S',group:'뱅가드 3팀',bio:''},
+  {name:'앰버',role:'센티넬',field:'번개',rank:'S',group:'뱅가드 3팀',bio:''},
+  {name:'리오',role:'센티넬',field:'불',rank:'S',group:'뱅가드 3팀',bio:''},
+  {name:'온딘',role:'센티넬',field:'물',rank:'S',group:'뱅가드 4팀',bio:''},
+  {name:'오르빗',role:'센티넬',field:'바람',rank:'S',group:'뱅가드 4팀',bio:''},
+  {name:'백야',role:'센티넬',field:'얼음',rank:'S',group:'뱅가드 4팀',bio:''},
+  {name:'피피',role:'센티넬',field:'얼음',rank:'A',group:'에이전트',bio:''},
+  {name:'세렌',role:'센티넬',field:'무',rank:'A',group:'에이전트',bio:''},
+  {name:'퓨즈',role:'센티넬',field:'번개',rank:'C',group:'애콜라이트',bio:''},
+  {name:'서지',role:'가이드',field:'물',rank:'S',group:'하모니 서포트',bio:''},
+  {name:'청류',role:'가이드',field:'물',rank:'S',group:'하모니 서포트',bio:''},
+  {name:'시그마',role:'가이드',field:'얼음',rank:'S',group:'하모니 서포트',bio:''},
+  {name:'라일',role:'가이드',field:'물',rank:'S',group:'하모니 서포트',bio:''},
+  {name:'티티',role:'가이드',field:'불',rank:'S',group:'하모니 서포트',bio:''},
+  {name:'리',role:'가이드',field:'물',rank:'S',group:'하모니 서포트',bio:''},
+  {name:'릴리',role:'가이드',field:'얼음',rank:'S',group:'하모니 코어',bio:''},
+  {name:'샛별',role:'가이드',field:'불',rank:'S',group:'하모니 코어',bio:''},
+  {name:'에델',role:'가이드',field:'얼음',rank:'S',group:'하모니 코어',bio:''},
+  {name:'라비',role:'가이드',field:'바람',rank:'S',group:'R.S.T.',bio:''},
+  {name:'킨들',role:'가이드',field:'불',rank:'S',group:'R.S.T.',bio:''},
+  {name:'겐틸리스',role:'가이드',field:'바람',rank:'S',group:'R.S.T.',bio:''},
+  {name:'칸나',role:'가이드',field:'얼음',rank:'S',group:'R.S.T.',bio:''},
+];
+
+// 요원별 스킨 DB (전역, 상수 영역에 배치)
+const SKIN_DB = {
+  '헬리오스': {
+    default: 'https://i.ibb.co/Rm6h9gj/image.png',
+    bloom: null  // 개화 일러스트 URL (없으면 null)
+  },
+  '애쉬': {
+    default: 'https://i.ibb.co/Z1hPyJPy/image.png',
+    bloom: null  // 개화 일러스트 URL (없으면 null)
+  },
+  '루비': {
+    default: 'https://i.ibb.co/dsztzHfZ/image.png',
+    bloom: null  // 개화 일러스트 URL (없으면 null)
+  },
+  '샤드': {
+    default: 'https://i.ibb.co/bR32dN98/image.png',
+    bloom: null  // 개화 일러스트 URL (없으면 null)
+  },
+  '노아': {
+    default: 'https://i.ibb.co/h1HFk2Tk/image.png',
+    bloom: null  // 개화 일러스트 URL (없으면 null)
+  },
+  '블루': {
+    default: 'https://i.ibb.co/GQgRDKnH/image.png',
+    bloom: null  // 개화 일러스트 URL (없으면 null)
+  },
+  '휴고': {
+    default: 'https://i.ibb.co/Dg4MCrpZ/image.png',
+    bloom: null  // 개화 일러스트 URL (없으면 null)
+  },
+  '피피': {
+    default: 'https://i.ibb.co/9HQVKH98/image.png',
+    bloom: null
+  }
+  // 나중에 스킨 가챠 추가 시: gacha_01: 'url', gacha_02: 'url' 등 확장
+};
+
+// 요원의 현재 활성 스킨 이미지 URL 반환
+function getActiveSkin(h) {
+  const skins = SKIN_DB[h.name];
+  if (!skins) return null;
+  const skinId = h.activeSkin || (h.bloomed && skins.bloom ? 'bloom' : 'default');
+  return skins[skinId] || skins.default || null;
+}
+
+// 요원이 보유한 스킨 목록 반환
+function getOwnedSkins(h) {
+  const skins = SKIN_DB[h.name];
+  if (!skins) return [];
+  const owned = [{ id: 'default', label: '기본', url: skins.default }];
+  if (h.bloomed && skins.bloom) {
+    owned.push({ id: 'bloom', label: '개화', url: skins.bloom });
+  }
+  // 가챠 등으로 획득한 추가 스킨
+  (h.ownedSkins || []).forEach(sid => {
+    if (skins[sid]) owned.push({ id: sid, label: skins[sid].label || sid, url: skins[sid].url || skins[sid] });
+  });
+  return owned;
+}
+
 // ═══════════════════════════════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════════════════════════════
@@ -1224,7 +1387,7 @@ let S={
   gold:50000, dia:0, shards:0, crystals:{'불':0,'물':0,'풀':0,'번개':0,'바람':0,'얼음':0},
   hunters:[], missions:[],
   completed:0, fame:0, guildLv:1,
-  pity:0, pitySS:0, specialPulls:0, nextId:1,
+  pity:0, pitySS:0, specialPulls:0, secretPity:0, secretPulls:0, nextId:1,
   logs:[], gachaLogs:[],
   activeQuests:[], lastQuestRefresh:0,
   lastExpeditionRefresh:0, lastDungeonRefresh:0, lastRaidRefresh:0,
@@ -1320,6 +1483,7 @@ function levelUpIfPossible(h){
     h.exp-=needed;
     h.level=(h.level||1)+1;
     h.atk=Math.floor(h.atk*1.04);h.def=Math.floor(h.def*1.04);h.spd=Math.floor(h.spd*1.04);
+	if(h.role==='가이드'&&h.focus)h.focus=Math.floor(h.focus*1.03);
     changed=true;
   }
   // 레벨캡 도달 시 초과 경험치 제거
@@ -1391,53 +1555,46 @@ function agentCardHTML(h,onclick=''){
   const ico=roleIcon(h.role||'센티넬');
   const pwr=power(h);
   const busyBadge=h.incapacitated?`<span class="busy-tag" style="margin-left:4px;background:var(--danger-bg);color:var(--danger)">행동불능</span>`:isInGuiding(h.id)?`<span class="busy-tag" style="margin-left:4px;background:var(--guide-bg);color:var(--guide)">가이딩중</span>`:h.busy?`<span class="busy-tag" style="margin-left:4px">작전중</span>`:'';
-  const fSvg=fieldIcon(h.elem||'',14);
-  const fLabel=h.elem?`<span class="elem-icon">${fSvg}</span> ${h.elem}`:'';
-  const fieldTag=h.elem?`<span class="field-badge ${fieldCls(h.elem)}">${fLabel}</span>`:'';
   const aw=h.awakening||0;
   const stars='★'.repeat(aw)+'☆'.repeat(4-aw)+(h.bloomed?'<span style="color:var(--gold)">★</span>':'<span style="color:var(--border2)">☆</span>');
   const capLv=levelCap(h);
-  const atCap=(h.level||1)>=capLv&&aw<4;
-  const capBadge=atCap?`<span class="level-cap-badge">레벨 한도</span>`:'';
-  const roleCssClass=roleCls(h.role||'센티넬');
   const isSentinel=(h.role||'센티넬')==='센티넬';
-  const GROUP_DISPLAY={'아크 프리마':'아크 프리마','뱅가드 1팀':'뱅가드 1팀','뱅가드 2팀':'뱅가드 2팀','에이전트':'에이전트','애콜라이트':'애콜라이트','R.S.T.':'R.S.T.','하모니 서포트':'서포트','하모니 코어':'코어'};
-  const GROUP_CSS={'아크 프리마':'grp-prima','뱅가드 1팀':'grp-vanguard1','뱅가드 2팀':'grp-vanguard2','에이전트':'grp-agent','애콜라이트':'grp-acolyte','R.S.T.':'grp-rst','하모니 서포트':'grp-support','하모니 코어':'grp-core'};
-  const groupLabel=h.group?GROUP_DISPLAY[h.group]||h.group:'';
-  const groupCss=h.group?GROUP_CSS[h.group]||'':'';
-  const groupBadge=h.group?`<span class="group-badge ${groupCss}">${groupLabel}</span>`:'';
   const runawayVal=h.runaway||0;
-  const runawayBar=isSentinel?`<div class="runaway-bar"><div class="runaway-fill" style="width:${runawayVal}%;${h.incapacitated?"background:var(--danger)":""}"></div></div><div class="runaway-label" style="${h.incapacitated?"color:var(--danger)":""}">폭주 ${Math.round(runawayVal)}%${h.incapacitated?" · 행동불능":""}</div>`:'<div style="font-size:10px;color:var(--guide);font-weight:600;margin-top:4px">가이딩 가능</div>';
+  const focusVal=h.focus||0;
   const lblA=isSentinel?'능력':'가이딩';
   const lblD=isSentinel?'방어':'방호';
   const lblS=isSentinel?'속도':'반응';
-  return `<div class="agent-card" style="border-color:${fc}18" ${onclick?`onclick="${onclick}"`:''}">
-    <div class="agent-top">
-      <div class="agent-avatar" style="color:${fc};background:${fb}">
-        ${strokify(SVG[ico],fc,22)}
+  const elemTag=h.elem?`<span class="agent-elem-tag" style="background:${fc}">${h.elem}</span>`:'';
+
+  return `<div class="agent-card" style="border-color:${fc}18;border-top:3px solid ${fc}" ${onclick?`onclick="${onclick}"`:''}">
+    <div class="agent-card-inner" style="display:flex;flex-direction:column;flex:1;position:relative">
+      <div class="agent-top">
+        <div style="position:relative">
+          <div class="agent-avatar" style="color:${fc};background:${fb};border:1.5px solid ${fc}30">
+            ${strokify(SVG[ico],fc,18)}
+          </div>
+          ${elemTag}
+        </div>
+        <div>
+          <div style="display:flex;align-items:center;gap:5px"><span class="agent-name">${h.name}</span><span style="font-size:9px;font-weight:600;padding:1px 5px;border-radius:4px;background:${fc}15;color:${fc};border:0.5px solid ${fc}30">${h.rank}</span>${busyBadge}</div>
+          <div style="font-size:9px;color:var(--text3);margin-top:2px">${h.role||'센티넬'} · ${h.group||''}</div>
+        </div>
       </div>
-      <div style="display:flex;align-items:center;gap:4px">
-        ${fieldTag}
-        <span class="tier-pill tier-${h.rank}">${h.rank}</span>
+      <div class="stars-row" style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid var(--border);font-size:12px">${stars} <span style="float:right;font-weight:700;font-size:12px">Lv.${h.level||1} <span style="font-size:9px;opacity:0.5">/ ${capLv}</span></span></div>
+      <div class="stat-bars">
+        <div class="sbar"><span class="sbar-lbl" style="width:32px;font-size:8px;flex-shrink:0;white-space:nowrap">${lblA}</span><div class="sbar-track"><div class="sbar-fill" style="width:${Math.min(100,h.atk/4)}%;background:${fc}"></div></div><span class="sbar-val">${h.atk}</span></div>
+        <div class="sbar"><span class="sbar-lbl" style="width:32px;font-size:8px;flex-shrink:0;white-space:nowrap">${lblD}</span><div class="sbar-track"><div class="sbar-fill" style="width:${Math.min(100,h.def/4)}%;background:${fc}80"></div></div><span class="sbar-val">${h.def}</span></div>
+        <div class="sbar"><span class="sbar-lbl" style="width:32px;font-size:8px;flex-shrink:0;white-space:nowrap">${lblS}</span><div class="sbar-track"><div class="sbar-fill" style="width:${Math.min(100,h.spd/4)}%;background:${fc}50"></div></div><span class="sbar-val">${h.spd}</span></div>
+        ${isSentinel
+          ?`<div class="sbar"><span class="sbar-lbl" style="width:32px;font-size:8px;color:var(--danger);font-weight:600;flex-shrink:0">폭주</span><div class="sbar-track"><div class="sbar-fill" style="width:${runawayVal}%;background:var(--danger)"></div></div></div>`
+          :`<div class="sbar"><span class="sbar-lbl" style="width:32px;font-size:8px;color:#3b82f6;font-weight:600;flex-shrink:0">집중</span><div class="sbar-track"><div class="sbar-fill" style="width:${focusVal}%;background:#3b82f6"></div></div></div>`
+        }
       </div>
-    </div>
-    <div class="agent-name">${h.name}${busyBadge}</div>
-    <div class="agent-role">
-      <span class="role-badge role-${roleCssClass}">${h.role||'센티넬'}</span>
-      ${groupBadge}
-	  ${capBadge}
-    </div>
-    <div class="stars-row" style="margin-bottom:6px">${stars}</div>
-    ${runawayBar}
-    <div class="stat-bars" style="margin-top:6px">
-      <div class="sbar"><span class="sbar-lbl" style="width:32px;font-size:8px">${lblA}</span><div class="sbar-track"><div class="sbar-fill" style="width:${Math.min(100,h.atk/4)}%;background:${fc}"></div></div><span class="sbar-val">${h.atk}</span></div>
-      <div class="sbar"><span class="sbar-lbl" style="width:32px;font-size:8px">${lblD}</span><div class="sbar-track"><div class="sbar-fill" style="width:${Math.min(100,h.def/4)}%;background:${fc}80"></div></div><span class="sbar-val">${h.def}</span></div>
-      <div class="sbar"><span class="sbar-lbl" style="width:32px;font-size:8px">${lblS}</span><div class="sbar-track"><div class="sbar-fill" style="width:${Math.min(100,h.spd/4)}%;background:${fc}50"></div></div><span class="sbar-val">${h.spd}</span></div>
-    </div>
-    <div class="agent-footer">
-      <span class="agent-lv">Lv.${h.level||1}</span>
-      <span class="agent-pwr" style="margin-left:auto">PWR ${pwr}</span>
-      <span style="cursor:pointer;margin-left:8px;display:flex;align-items:center;opacity:${h.locked?1:0.3}" onclick="event.stopPropagation();toggleLock(${h.id})" title="${h.locked?'잠금 해제':'잠금'}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${h.locked?'var(--accent)':'var(--text3)'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${h.locked?'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>':'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>'}</svg></span>
+      <div class="agent-footer">
+        <span class="agent-pwr">PWR</span>
+        <span style="font-size:13px;font-weight:700;margin-left:auto">${pwr}</span>
+        <span style="cursor:pointer;margin-left:8px;display:flex;align-items:center;opacity:${h.locked?1:0.3}" onclick="event.stopPropagation();toggleLock(${h.id})" title="${h.locked?'잠금 해제':'잠금'}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${h.locked?'var(--accent)':'var(--text3)'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${h.locked?'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>':'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/>'}</svg></span>
+      </div>
     </div>
   </div>`;
 }
@@ -1451,7 +1608,7 @@ function toggleLock(id){
 let _agentTab='all',_agentSort='pwr';
 function switchAgentTab(tab){
   _agentTab=tab;
-  ['all','normal','special'].forEach(t=>{
+  ['all','normal','special','secret'].forEach(t=>{
     const btn=document.getElementById('agent-tab-'+t);
     if(btn)btn.className='btn '+(t===tab?'btn-primary':'btn-outline')+' btn-sm';
   });
@@ -1472,8 +1629,9 @@ function renderAgents(){
   if(!grid||!emp)return;
   let list=[...S.hunters];
   // 탭 필터
-  if(_agentTab==='special')list=list.filter(h=>h.isSpecial);
+  if(_agentTab==='special')list=list.filter(h=>h.isSpecial&&!h.isSecret);
   else if(_agentTab==='normal')list=list.filter(h=>!h.isSpecial);
+  else if(_agentTab==='secret')list=list.filter(h=>h.isSecret);
   if(!list.length){grid.innerHTML='';emp.style.display='';return;}
   emp.style.display='none';
   // 정렬
@@ -1952,9 +2110,12 @@ function switchGachaTab(tab){
   _gachaTab=tab;
   document.getElementById('gacha-normal').style.display=tab==='normal'?'block':'none';
   document.getElementById('gacha-special').style.display=tab==='special'?'block':'none';
+  document.getElementById('gacha-secret').style.display=tab==='secret'?'block':'none';
   document.getElementById('gacha-tab-normal').className='btn '+(tab==='normal'?'btn-primary':'btn-outline');
   document.getElementById('gacha-tab-special').className='btn '+(tab==='special'?'btn-primary':'btn-outline');
+  document.getElementById('gacha-tab-secret').className='btn '+(tab==='secret'?'btn-primary':'btn-outline');
   if(tab==='special'){renderSpecialRoster();renderPrimaGrid();updateBonusCounter();}
+  if(tab==='secret'){renderSecretRoster();updateSecretCounter();}
 }
 function renderPrimaGrid(){
   const grid=document.getElementById('prima-recruit-grid');if(!grid)return;
@@ -2040,8 +2201,10 @@ function makeAgentNormal(tier){
   } else {
     atk=rnd(base[0]*0.4,base[1]*0.4);def=rnd(base[0]*1.2,base[1]*1.2);spd=rnd(base[0]*1.3,base[1]*1.3);
   }
-  const runaway=isSentinel?Math.floor(Math.random()*60):0;
-  return {id,name,rank:tier,role,elem,atk:Math.round(atk),def:Math.round(def),spd:Math.round(spd),level:1,exp:0,awakening:0,busy:false,runaway};
+  const runaway=0;
+  const focusBase={A:[20,35],B:[12,25],C:[8,18],D:[4,10]}[tier]||[4,10];
+  const focus=isSentinel?0:rnd(focusBase[0],focusBase[1]);
+  return {id,name,rank:tier,role,elem,atk:Math.round(atk),def:Math.round(def),spd:Math.round(spd),level:1,exp:0,awakening:0,busy:false,runaway,focus};
 }
 
 function makeAgentSpecial(tier){
@@ -2063,8 +2226,10 @@ function makeAgentSpecial(tier){
     } else {
       atk=rnd(base[0]*0.4,base[1]*0.4);def=rnd(base[0]*1.2,base[1]*1.2);spd=rnd(base[0]*1.3,base[1]*1.3);
     }
-    const runaway=isSentinel?Math.floor(Math.random()*60):0;
-    return {id,name:pick.name,rank:tier,role:pick.role,elem:pick.field,group:pick.group,atk:Math.round(atk),def:Math.round(def),spd:Math.round(spd),level:1,exp:0,awakening:0,busy:false,runaway,isSpecial:true};
+    const runaway=0;
+  const focusBase={SS:[40,60],S:[30,50],A:[20,35],C:[8,18]}[tier]||[15,30];
+  const focus=isSentinel?0:rnd(focusBase[0],focusBase[1]);
+    return {id,name:pick.name,rank:tier,role:pick.role,elem:pick.field,group:pick.group,atk:Math.round(atk),def:Math.round(def),spd:Math.round(spd),level:1,exp:0,awakening:0,busy:false,runaway,focus,isSpecial:true};
   } else {
     // 일반 풀에서 뽑기
     return makeAgentNormal(tier==='SS'?'A':tier==='S'?'A':tier);
@@ -2107,7 +2272,8 @@ function doGachaSpecial(count){
     if(tier==='SS'){S.stats.sSummons++;S.pitySS=0;}
     if(tier==='S'){S.stats.sSummons++;S.pity=0;}
   }
-  // 30회 보너스 체크
+  
+// 30회 보너스 체크
   const bonusCount=Math.floor(S.specialPulls/SPECIAL_BONUS_INTERVAL)-Math.floor((S.specialPulls-count)/SPECIAL_BONUS_INTERVAL);
   if(bonusCount>0){
     const bonusDia=bonusCount*SPECIAL_BONUS_DIA;
@@ -2124,6 +2290,106 @@ function doGachaSpecial(count){
   S.gachaLogs.unshift({t:timeStr(),msg,type:specials.length?'special':''});
   addLog(msg,specials.length?'special':'');
   saveState();render();
+}
+  
+// ═══════════════════════════════════════
+// 비밀 모집
+// ═══════════════════════════════════════
+const SECRET_COST_1=30;
+const SECRET_COST_10=300;
+const SECRET_BONUS_INTERVAL_S=30;
+const SECRET_BONUS_DIA=150;
+
+function rollTierSecret(){
+  S.secretPity=(S.secretPity||0)+1;
+  if(S.secretPity>=100){S.secretPity=0;return 'S';}
+  const r=Math.random()*100;
+  if(r<3)return 'S';
+  if(r<15)return 'A';
+  if(r<40)return 'B';
+  if(r<80)return 'C';
+  return 'D';
+}
+
+function makeAgentSecret(tier){
+  const id=S.nextId++;
+  const pool=SECRET_POOL.filter(c=>c.rank===tier);
+  if(pool.length>0){
+    const pick=pool[Math.floor(Math.random()*pool.length)];
+    if(!S.codexSeen.includes(pick.name))S.codexSeen.push(pick.name);
+    const base={S:[80,140],A:[55,100],C:[20,45],D:[10,25]}[tier]||[10,25];
+    const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a));
+    const isSentinel=pick.role==='센티넬';
+    let atk,def,spd;
+    if(isSentinel){atk=rnd(base[0]*1.4,base[1]*1.4);def=rnd(base[0]*0.5,base[1]*0.5);spd=rnd(base[0]*0.8,base[1]*0.8);}
+    else{atk=rnd(base[0]*0.4,base[1]*0.4);def=rnd(base[0]*1.2,base[1]*1.2);spd=rnd(base[0]*1.3,base[1]*1.3);}
+    const runaway=0;
+	const focusBase={SS:[40,60],S:[30,50],A:[20,35],C:[8,18]}[tier]||[15,30];
+	focus=isSentinel?0:rnd(focusBase[0],focusBase[1]);
+    return {id,name:pick.name,rank:tier,role:pick.role,field:pick.field,elem:pick.field,group:pick.group,atk:Math.round(atk),def:Math.round(def),spd:Math.round(spd),level:1,exp:0,awakening:0,busy:false,runaway,focus,isSpecial:true,isSecret:true};
+  }
+  return makeAgentNormal(tier==='S'?'A':tier);
+}
+
+function doGachaSecret(count){
+  if(!_isOwner){notify('로그인이 필요합니다','err');return;}
+  const cost=count===1?SECRET_COST_1:SECRET_COST_10;
+  if(S.dia<cost){notify(`다이아가 부족합니다 (필요: ${cost})`,'err');return;}
+  S.dia-=cost;
+  const results=[];
+  for(let i=0;i<count;i++){
+    const tier=rollTierSecret();
+    const agent=makeAgentSecret(tier);
+    S.hunters.push(agent);
+    results.push(agent);
+    S.stats.totalSummons++;
+    S.secretPulls=(S.secretPulls||0)+1;
+    if(tier==='S'){S.stats.sSummons++;S.secretPity=0;}
+  }
+  const bonusCount=Math.floor(S.secretPulls/SECRET_BONUS_INTERVAL_S)-Math.floor((S.secretPulls-count)/SECRET_BONUS_INTERVAL_S);
+  if(bonusCount>0){
+    const bonusDia=bonusCount*SECRET_BONUS_DIA;
+    S.dia+=bonusDia;
+    notify(`★ ${SECRET_BONUS_INTERVAL_S}회 환급! 다이아 +${bonusDia}`,'ok');
+    addLog(`비밀 모집 ${SECRET_BONUS_INTERVAL_S}회 환급: 다이아 +${bonusDia}`,'special');
+  }
+  recalcStats();updateAchBadge();
+  showGachaResult(results,'special');
+  const specials=results.filter(r=>r.isSpecial);
+  const msg=specials.length?`[비밀] ${specials.map(r=>(r.rank==='S'?'★ ':'')+r.name).join(', ')} 모집!`:`[비밀] ${count}회 모집 완료`;
+  S.gachaLogs.unshift({t:timeStr(),msg,type:specials.length?'special':''});
+  addLog(msg,specials.length?'special':'');
+  updateSecretCounter();
+  saveState();render();
+}
+
+function updateSecretCounter(){
+  const pityEl=document.getElementById('secret-pity-num');
+  const pityBar=document.getElementById('secret-pity-bar');
+  const bonusEl=document.getElementById('secret-bonus-num');
+  const bonusBar=document.getElementById('secret-bonus-bar');
+  if(pityEl)pityEl.textContent=S.secretPity||0;
+  if(pityBar)pityBar.style.width=`${Math.min(100,((S.secretPity||0)/100)*100)}%`;
+  if(bonusEl)bonusEl.textContent=(S.secretPulls||0)%SECRET_BONUS_INTERVAL_S;
+  if(bonusBar)bonusBar.style.width=`${Math.min(100,(((S.secretPulls||0)%SECRET_BONUS_INTERVAL_S)/SECRET_BONUS_INTERVAL_S)*100)}%`;
+}
+
+function renderSecretRoster(){
+  const box=document.getElementById('secret-roster-box');if(!box)return;
+  const groups={};
+  SECRET_POOL.forEach(c=>{const g=c.group||'기타';if(!groups[g])groups[g]=[];groups[g].push(c);});
+  let html='<strong>비밀 요원 목록</strong><br>';
+  for(const[g,agents] of Object.entries(groups)){
+    const ranks=[...new Set(agents.map(a=>a.rank))];
+    const rankStr=ranks.join('/');
+    const names=agents.map(a=>{
+      const fc=fieldColor(a.field);
+      const rkTag=ranks.length>1?`<span style="color:var(--text3);font-size:9px">${a.rank}</span> `:'';
+      return `<span style="display:inline-flex;align-items:center;gap:2px;vertical-align:middle">${rkTag}${fieldIcon(a.field,11)}<span style="color:${fc}">${a.name}</span></span>`;
+    }).join(' · ');
+    html+=`· <span style="color:var(--text2);font-weight:700">${rankStr}급</span> ${g}: ${names}<br>`;
+  }
+  box.innerHTML=html;
 }
 
 // 아크 프리마 확정 영입
@@ -2628,10 +2894,178 @@ let _growthTarget=null,_growthTab='feed',_feedSelected=[],_awakenSelected=[];
 let _feedFilter='all',_feedSort='exp',_awakenFilter='all',_awakenSort='lv';
 
 function openGrowthModal(id){
-  _growthTarget=S.hunters.find(h=>h.id===id);
-  _growthTab='feed';_feedSelected=[];_awakenSelected=[];
-  if(!_growthTarget)return;
-  renderGrowthModal();
+  const h=S.hunters.find(x=>x.id===id);
+  if(!h)return;
+  if(h.isSpecial){
+    openHunterDetailModal(id);
+  } else {
+    openSimpleHunterModal(id);
+  }
+}
+
+function openHunterDetailModal(id){
+  document.getElementById('modal-content').style.maxWidth='500px';
+  document.getElementById('modal-content').style.padding='0';
+  const h=S.hunters.find(x=>x.id===id);if(!h)return;
+  const ec=fieldColor(h.elem||h.field||'');
+  const ico=roleIcon(h.role||'센티넬');
+  const aw=h.awakening||0;
+  const bl=h.bloom||0;
+  const cap=levelCap(h);
+  const totalStars=aw+bl;
+  const stars='★'.repeat(totalStars)+'☆'.repeat(5-totalStars);
+  const isSentinel=h.role==='센티넬';
+  const runawayVal=h.runaway||0;
+  const focusVal=h.focus||0;
+  const pwr=power(h);
+  
+  const imgSrc=getActiveSkin(h);
+  
+  const illustInner=imgSrc
+    ?`<img src="${imgSrc}" style="width:100%;height:100%;object-fit:cover;object-position:top">`
+    :`<div class="hd-illust-bg" style="background:linear-gradient(160deg,${ec}30,${ec}08)">
+        ${strokify(SVG[ico],ec,90)}
+      </div>`;
+
+  showModal(`
+    <div class="hd-wrap">
+      <div class="hd-illust">
+        ${illustInner}
+        <div class="hd-skin-btn" onclick="event.stopPropagation();openSkinSelect(${h.id})" title="스킨 선택">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a3 3 0 0 0-3 3c0 1.1.6 2.1 1.5 2.6L9 9l-5.5 4.5a2 2 0 0 0 1.3 3.5h14.4a2 2 0 0 0 1.3-3.5L15 9l-1.5-1.4A3 3 0 0 0 15 5a3 3 0 0 0-3-3z"/>
+            <line x1="12" y1="17" x2="12" y2="22"/>
+          </svg>
+        </div>
+        <div class="hd-illust-overlay">
+          <div style="display:flex;align-items:center;gap:6px">
+            <div class="hd-illust-name">${h.name}</div>
+            <span class="tier-pill tier-${h.rank}" style="background:rgba(255,255,255,0.2);border-color:rgba(255,255,255,0.3);color:#fff;font-size:9px">${h.rank}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:3px">
+            <span style="font-size:11px;color:rgba(255,255,255,0.75)">${h.role||'센티넬'} · ${h.group||''}</span>
+            <span style="font-size:13px;font-weight:500;color:#fff">Lv.${h.level||1} <span style="font-size:10px;opacity:0.7">/ ${cap}</span></span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:3px;margin-bottom:12px">
+            <span style="font-size:11px;color:rgba(255,255,255,0.8)">${stars}</span>
+            <span style="font-size:12px;color:rgba(255,255,255,0.75);font-weight:500">PWR ${pwr}</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div class="sbar"><span class="sbar-lbl" style="width:36px;font-size:10px;color:rgba(255,255,255,0.75)">${isSentinel?'능력':'가이딩'}</span><div class="sbar-track" style="background:rgba(255,255,255,0.12)"><div class="sbar-fill" style="width:${Math.min(100,(h.atk||0)/4)}%;background:${ec}"></div></div><span class="sbar-val" style="color:#fff">${h.atk||0}</span></div>
+            <div class="sbar"><span class="sbar-lbl" style="width:36px;font-size:10px;color:rgba(255,255,255,0.75)">${isSentinel?'방어':'방호'}</span><div class="sbar-track" style="background:rgba(255,255,255,0.12)"><div class="sbar-fill" style="width:${Math.min(100,(h.def||0)/4)}%;background:${ec}80"></div></div><span class="sbar-val" style="color:#fff">${h.def||0}</span></div>
+            <div class="sbar"><span class="sbar-lbl" style="width:36px;font-size:10px;color:rgba(255,255,255,0.75)">${isSentinel?'속도':'반응'}</span><div class="sbar-track" style="background:rgba(255,255,255,0.12)"><div class="sbar-fill" style="width:${Math.min(100,(h.spd||0)/4)}%;background:${ec}50"></div></div><span class="sbar-val" style="color:#fff">${h.spd||0}</span></div>
+            ${isSentinel
+              ?`<div class="sbar"><span class="sbar-lbl" style="width:36px;font-size:10px;color:#f09595;font-weight:600">폭주</span><div class="sbar-track" style="background:rgba(255,255,255,0.12)"><div class="sbar-fill" style="width:${runawayVal}%;background:#e24b4a"></div></div><span class="sbar-val" style="color:#f09595">${Math.round(runawayVal)}</span></div>`
+              :`<div class="sbar"><span class="sbar-lbl" style="width:36px;font-size:10px;color:#93c5fd;font-weight:600">집중</span><div class="sbar-track" style="background:rgba(255,255,255,0.12)"><div class="sbar-fill" style="width:${focusVal}%;background:#3b82f6"></div></div><span class="sbar-val" style="color:#93c5fd">${Math.round(focusVal)}</span></div>`
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  `);
+}
+
+function openSkinSelect(id) {
+  const h = S.hunters.find(x => x.id === id); if (!h) return;
+  const skins = getOwnedSkins(h);
+  const ec = fieldColor(h.elem || h.field || '');
+  const ico = roleIcon(h.role || '센티넬');
+  const current = h.activeSkin || (h.bloomed && SKIN_DB[h.name]?.bloom ? 'bloom' : 'default');
+
+  if (!skins.length) {
+    notify('사용 가능한 스킨이 없습니다', 'err');
+    return;
+  }
+
+  const skinCards = skins.map(s => {
+    const isActive = s.id === current;
+    const preview = s.url
+      ? `<img src="${s.url}" style="width:100%;height:100%;object-fit:cover;object-position:top;border-radius:6px">`
+      : `<div style="width:100%;height:100%;background:linear-gradient(160deg,${ec}30,${ec}08);display:flex;align-items:center;justify-content:center;border-radius:6px">${strokify(SVG[ico], ec, 30)}</div>`;
+    return `
+      <div style="cursor:pointer;border:2px solid ${isActive ? ec : 'var(--border)'};border-radius:8px;overflow:hidden;transition:.2s;opacity:${isActive ? 1 : 0.7}"
+           onclick="selectSkin(${h.id},'${s.id}')"
+           onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='${isActive ? 1 : 0.7}'">
+        <div style="width:100%;aspect-ratio:832/1216;overflow:hidden">${preview}</div>
+        <div style="padding:6px;text-align:center">
+          <div style="font-size:11px;font-weight:500;color:${isActive ? ec : 'var(--text2)'}">${s.label}</div>
+          ${isActive ? '<div style="font-size:9px;color:var(--text3);margin-top:2px">적용 중</div>' : ''}
+        </div>
+      </div>`;
+  }).join('');
+
+  showModal(`
+    <div style="padding:20px">
+      <div style="font-size:16px;font-weight:500;margin-bottom:4px">${h.name}</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:16px">스킨 선택</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px">
+        ${skinCards}
+      </div>
+      <button class="btn btn-outline" style="width:100%;margin-top:16px" onclick="closeModal();setTimeout(()=>openHunterDetailModal(${h.id}),100)">돌아가기</button>
+    </div>
+  `);
+}
+
+function selectSkin(id, skinId) {
+  const h = S.hunters.find(x => x.id === id); if (!h) return;
+  h.activeSkin = skinId;
+  saveState();
+  closeModal();
+  setTimeout(() => openHunterDetailModal(id), 100);
+  notify('스킨이 변경되었습니다', 'ok');
+}
+
+function openSimpleHunterModal(id){
+  document.getElementById('modal-content').style.maxWidth='340px';
+  document.getElementById('modal-content').style.padding='0';
+  const h=S.hunters.find(x=>x.id===id);if(!h)return;
+  const ec=fieldColor(h.elem||'');
+  const ico=roleIcon(h.role||'센티넬');
+  const aw=h.awakening||0;
+  const cap=levelCap(h);
+  const isSentinel=h.role==='센티넬';
+  const pwr=power(h);
+  const runawayVal=h.runaway||0;
+  const focusVal=h.focus||0;
+  const stars='★'.repeat(aw)+'☆'.repeat(4-aw);
+  const elemTag=h.elem?`<span style="position:absolute;bottom:-3px;right:-3px;font-size:7px;padding:1px 4px;border-radius:3px;background:${ec};color:#fff;font-weight:600">${h.elem}</span>`:'';
+
+  showModal(`
+    <div style="border-top:3px solid ${ec};padding:20px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+        <div style="position:relative;flex-shrink:0">
+          <div style="width:38px;height:38px;border-radius:8px;background:${ec}10;display:flex;align-items:center;justify-content:center;border:1.5px solid ${ec}30">
+            ${strokify(SVG[ico],ec,18)}
+          </div>
+          ${elemTag}
+        </div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:5px">
+            <span style="font-size:16px;font-weight:500">${h.name}</span>
+            <span style="font-size:9px;font-weight:600;padding:1px 5px;border-radius:4px;background:${ec}15;color:${ec};border:0.5px solid ${ec}30">${h.rank}</span>
+          </div>
+          <div style="font-size:11px;color:var(--text3);margin-top:2px">${h.role||'센티넬'}</div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border);font-size:12px">
+        <span style="color:var(--text3)">${stars}</span>
+        <span style="font-weight:500">Lv.${h.level||1} <span style="font-size:10px;color:var(--text3)">/ ${cap}</span></span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:14px">
+        <div class="sbar"><span class="sbar-lbl" style="width:36px;font-size:10px">${isSentinel?'능력':'가이딩'}</span><div class="sbar-track"><div class="sbar-fill" style="width:${Math.min(100,(h.atk||0)/4)}%;background:${ec}"></div></div><span class="sbar-val">${h.atk||0}</span></div>
+        <div class="sbar"><span class="sbar-lbl" style="width:36px;font-size:10px">${isSentinel?'방어':'방호'}</span><div class="sbar-track"><div class="sbar-fill" style="width:${Math.min(100,(h.def||0)/4)}%;background:${ec}80"></div></div><span class="sbar-val">${h.def||0}</span></div>
+        <div class="sbar"><span class="sbar-lbl" style="width:36px;font-size:10px">${isSentinel?'속도':'반응'}</span><div class="sbar-track"><div class="sbar-fill" style="width:${Math.min(100,(h.spd||0)/4)}%;background:${ec}50"></div></div><span class="sbar-val">${h.spd||0}</span></div>
+        ${isSentinel
+          ?`<div class="sbar"><span class="sbar-lbl" style="width:36px;font-size:10px;color:var(--danger);font-weight:600">폭주</span><div class="sbar-track"><div class="sbar-fill" style="width:${runawayVal}%;background:var(--danger)"></div></div><span class="sbar-val" style="color:var(--danger)">${Math.round(runawayVal)}</span></div>`
+          :`<div class="sbar"><span class="sbar-lbl" style="width:36px;font-size:10px;color:#3b82f6;font-weight:600">집중</span><div class="sbar-track"><div class="sbar-fill" style="width:${focusVal}%;background:#3b82f6"></div></div><span class="sbar-val" style="color:#3b82f6">${Math.round(focusVal)}</span></div>`
+        }
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--border)">
+        <span style="font-size:11px;color:var(--text3)">PWR</span>
+        <span style="font-size:14px;font-weight:500">${pwr}</span>
+      </div>
+    </div>
+  `);
 }
 
 function renderGrowthModal(){
@@ -2915,6 +3349,7 @@ function doAwaken(){
   const names=_awakenSelected.map(id=>{const f=S.hunters.find(x=>x.id===id);return f?f.name:'?';});
   S.hunters=S.hunters.filter(x=>!_awakenSelected.includes(x.id));
   h.awakening=aw+1;
+  if(h.role==='가이드'&&h.focus)h.focus=Math.floor(h.focus*1.15);
   const newCap=levelCap(h);
   addLog(`공명각성: ${h.name} ★${aw} → ★${aw+1}! CAP Lv.${newCap} 확장 (재료: ${names.join(', ')})`,'special');
   notify(`✦ ${h.name} ★${aw+1} 공명 성공!`,'ok');
@@ -3097,13 +3532,36 @@ function tickGuiding(){
   S.guidingSlots.forEach(slot=>{
     const s=S.hunters.find(x=>x.id===slot.sentinelId);
     if(!s)return;
+    const g=S.hunters.find(x=>x.id===slot.guideId);
+    const focusBonus=g?(g.focus||0)/50:0;
+    const reduceAmount=GUIDING_REDUCE_PER_TICK+focusBonus;
     if((s.runaway||0)>0){
-      s.runaway=Math.max(0,(s.runaway||0)-GUIDING_REDUCE_PER_TICK);
+      s.runaway=Math.max(0,(s.runaway||0)-reduceAmount);
       changed=true;
       if(s.runaway<=0&&s.incapacitated){
         s.incapacitated=false;
         addLog(`${s.name} 행동불능 해제 — 작전 투입 가능`,'good');
         notify(`✓ ${s.name} 행동불능 해제!`,'ok');
+      }
+    }
+  });
+  // 페어링된 센티넬: 가이드 집중에 따라 자동 폭주 감소
+  S.hunters.forEach(h=>{
+    if(h.role!=='센티넬')return;
+    if(isInGuiding(h.id))return; // 가이딩 중이면 위에서 처리
+    const pairSlot=(S.pairSlots||[]).find(p=>p.sentinelId===h.id);
+	const pair=pairSlot?S.hunters.find(g=>g.id===pairSlot.guideId):null;
+    if(!pair)return;
+    if((h.runaway||0)>0){
+      const passiveReduce=(pair.focus||0)/500;
+      if(passiveReduce>0){
+        h.runaway=Math.max(0,(h.runaway||0)-passiveReduce);
+        changed=true;
+        if(h.runaway<=0&&h.incapacitated){
+          h.incapacitated=false;
+          addLog(`${h.name} 페어링 효과로 행동불능 해제`,'good');
+          notify(`✓ ${h.name} 행동불능 해제!`,'ok');
+        }
       }
     }
   });
@@ -3127,6 +3585,13 @@ function tickGuiding(){
 // 작전 완료 시 폭주율 증가
 function addRunaway(h,amount){
   if(h.role!=='센티넬')return;
+  // 페어링된 센티넬은 폭주 증가량 감소
+  const pairSlot=(S.pairSlots||[]).find(p=>p.sentinelId===h.id);
+  const pair=pairSlot?S.hunters.find(g=>g.id===pairSlot.guideId):null;
+  if(pair){
+    const reduction=Math.min(0.5,(pair.focus||0)/200);
+    amount=Math.round(amount*(1-reduction));
+  }
   h.runaway=Math.min(100,(h.runaway||0)+amount);
   if(h.runaway>=100&&!h.incapacitated){
     h.incapacitated=true;
@@ -3546,9 +4011,11 @@ function doBloom(id){
   S.hunters=S.hunters.filter(x=>x.id!==dupes[0].id); // 1장 소모
   // 개화 적용
   h.bloomed=true;
+  if(SKIN_DB[h.name]?.bloom) h.activeSkin='bloom';
   h.atk=Math.floor(h.atk*1.35);
   h.def=Math.floor(h.def*1.35);
   h.spd=Math.floor(h.spd*1.35);
+  if(h.focus)h.focus=Math.floor(h.focus*1.35);
   addLog(`✦ ${h.name} 개화 완료! 능력치 대폭 상승`,'special');
   notify(`✦ ${h.name} 개화 성공!`,'ok');
   recalcStats();updateAchBadge();
@@ -3768,7 +4235,12 @@ function showModal(html){
   document.getElementById('modal-content').innerHTML=html;
   document.getElementById('modal').style.display='flex';
 }
-function closeModal(){document.getElementById('modal').style.display='none';}
+function closeModal(){
+  document.getElementById('modal').style.display='none';
+  const mc=document.getElementById('modal-content');
+  mc.style.maxWidth='';
+  mc.style.padding='';
+}
 function onModalBg(e){if(e.target.id==='modal')closeModal();}
 
 // ═══════════════════════════════════════════════════════════════════
@@ -3776,6 +4248,17 @@ function onModalBg(e){if(e.target.id==='modal')closeModal();}
 // ═══════════════════════════════════════════════════════════════════
 function init(){
   loadState();
+  // 기존 가이드 집중 스탯 패치
+  S.hunters.forEach(h=>{
+    if(h.role==='가이드'&&!h.focus){
+      const base={SS:[40,60],S:[30,50],A:[20,35],B:[12,25],C:[8,18],D:[4,10]}[h.rank]||[4,10];
+      let focus=base[0]+Math.floor(Math.random()*(base[1]-base[0]));
+      for(let i=1;i<(h.level||1);i++) focus=Math.floor(focus*1.03);
+      for(let i=0;i<(h.awakening||0);i++) focus=Math.floor(focus*1.15);
+      if(h.bloomed) focus=Math.floor(focus*1.35);
+      h.focus=focus;
+    }
+  });
   const now=Date.now();
   // 최초 실행 시에만 풀 초기화 & 타이머 시작점 설정
   if(!S.lastQuestRefresh){
@@ -3811,6 +4294,74 @@ function init(){
     if(_curTab==='training')renderTrainingSlots();
     if(_curTab==='guiding')renderGuidingSlots();
   },1000);
+}
+
+// ═══════════════════════════════════════
+// OWNER LOGIN
+// ═══════════════════════════════════════
+const OWNER_ID = 'yana0913';
+const OWNER_PW_HASH = '56ab42ed9a7ad843b83538af59f6765a299ce9d3ea7dddd6c39a984a21dfcf0d';
+let _isOwner = false;
+
+async function hashStr(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return [...new Uint8Array(buf)].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+
+function openOwnerLogin() {
+  if (_isOwner) {
+    _isOwner = false;
+	const secretTab=document.getElementById('agent-tab-secret');
+	if(secretTab)secretTab.style.display='none';
+	if(_agentTab==='secret'){switchAgentTab('all');}
+	sessionStorage.removeItem('ownerLoggedIn');
+    document.getElementById('owner-btn').classList.remove('logged-in');
+    document.getElementById('gacha-tab-secret').style.display = 'none';
+    if(_gachaTab==='secret') switchGachaTab('normal');
+    notify('로그아웃되었습니다', 'ok');
+    render();
+    return;
+  }
+  showModal(`
+    <div class="modal-title">로그인</div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
+      <input id="ow-id" placeholder="아이디" style="padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;background:var(--surface2);color:var(--text);outline:none" />
+      <input id="ow-pw" type="password" placeholder="비밀번호" style="padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:13px;background:var(--surface2);color:var(--text);outline:none" onkeydown="if(event.key==='Enter')doOwnerLogin()" />
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" style="flex:1" onclick="doOwnerLogin()">로그인</button>
+      <button class="btn btn-outline" style="flex:1" onclick="closeModal()">취소</button>
+    </div>
+  `);
+  setTimeout(()=>document.getElementById('ow-id')?.focus(), 100);
+}
+
+async function doOwnerLogin() {
+  const id = document.getElementById('ow-id')?.value.trim();
+  const pw = document.getElementById('ow-pw')?.value;
+  if (!id || !pw) { notify('아이디와 비밀번호를 입력해주세요', 'err'); return; }
+  const hash = await hashStr(pw);
+  if (id === OWNER_ID && hash === OWNER_PW_HASH) {
+    _isOwner = true;
+	const secretTab=document.getElementById('agent-tab-secret');
+	if(secretTab)secretTab.style.display='';
+	sessionStorage.setItem('ownerLoggedIn', '1');
+    document.getElementById('owner-btn').classList.add('logged-in');
+    document.getElementById('gacha-tab-secret').style.display = 'flex';
+    closeModal();
+    notify('✓ 로그인되었습니다', 'ok');
+    render();
+  } else {
+    notify('아이디 또는 비밀번호가 틀렸습니다', 'err');
+  }
+}
+
+if(sessionStorage.getItem('ownerLoggedIn')==='1'){
+  _isOwner=true;
+  document.getElementById('owner-btn').classList.add('logged-in');
+  document.getElementById('gacha-tab-secret').style.display='flex';
+  const secretTab=document.getElementById('agent-tab-secret');
+  if(secretTab)secretTab.style.display='';
 }
 
 init();
