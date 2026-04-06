@@ -1546,7 +1546,7 @@ function getOwnedSkins(h) {
 // ═══════════════════════════════════════════════════════════════════
 let S={
   missionResults:{},
-  gold:50000, dia:0, shards:0, crystals:{'불':0,'물':0,'풀':0,'번개':0,'바람':0,'얼음':0},
+  gold:0, dia:500, shards:0, crystals:{'불':0,'물':0,'풀':0,'번개':0,'바람':0,'얼음':0},
   hunters:[], missions:[],
   completed:0, fame:0, guildLv:1,
   pity:0, pitySS:0, specialPulls:0, secretPity:0, secretPulls:0, nextId:1,
@@ -4744,6 +4744,7 @@ function tutDone(){
   // 마지막 스텝이었으면 모집 탭으로 이동
   if(_tutStep===TUT_STEPS.length-1){
     goTab('gacha');
+    setTimeout(()=>switchGachaTab('special'), 100);
   }
 }
 
