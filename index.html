@@ -3486,13 +3486,13 @@ function recalcStats(){
   S.stats.windCount=S.hunters.filter(h=>h.elem==='바람').length;
   S.stats.iceCount=S.hunters.filter(h=>h.elem==='얼음').length;
   // 특수 요원 그룹 카운트
-  S.stats.vanguard1Count=S.hunters.filter(h=>h.isSpecial&&h.group==='뱅가드 1팀').length;
-  S.stats.vanguard2Count=S.hunters.filter(h=>h.isSpecial&&h.group==='뱅가드 2팀').length;
-  S.stats.harmonySupportCount=S.hunters.filter(h=>h.isSpecial&&h.group==='하모니 서포트').length;
-  S.stats.harmonyCoreCount=S.hunters.filter(h=>h.isSpecial&&h.group==='하모니 코어').length;
-  S.stats.rstCount=S.hunters.filter(h=>h.isSpecial&&h.group==='R.S.T.').length;
-  S.stats.agentGroupCount=S.hunters.filter(h=>h.isSpecial&&h.group==='에이전트').length;
-  S.stats.acolyteGroupCount=S.hunters.filter(h=>h.isSpecial&&h.group==='애콜라이트').length;
+  S.stats.vanguard1Count=new Set(S.hunters.filter(h=>h.isSpecial&&h.group==='뱅가드 1팀').map(h=>h.name)).size;
+  S.stats.vanguard2Count=new Set(S.hunters.filter(h=>h.isSpecial&&h.group==='뱅가드 2팀').map(h=>h.name)).size;
+  S.stats.harmonySupportCount=new Set(S.hunters.filter(h=>h.isSpecial&&h.group==='하모니 서포트').map(h=>h.name)).size;
+  S.stats.harmonyCoreCount=new Set(S.hunters.filter(h=>h.isSpecial&&h.group==='하모니 코어').map(h=>h.name)).size;
+  S.stats.rstCount=new Set(S.hunters.filter(h=>h.isSpecial&&h.group==='R.S.T.').map(h=>h.name)).size;
+  S.stats.agentGroupCount=new Set(S.hunters.filter(h=>h.isSpecial&&h.group==='에이전트').map(h=>h.name)).size;
+  S.stats.acolyteGroupCount=new Set(S.hunters.filter(h=>h.isSpecial&&h.group==='애콜라이트').map(h=>h.name)).size;
   // 완성된 그룹 수
   let sgc=0;
   if(S.stats.vanguard1Count>=6)sgc++;if(S.stats.vanguard2Count>=3)sgc++;
