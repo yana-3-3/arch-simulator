@@ -1694,7 +1694,7 @@ function setAgentSort(sort){
   else{_agentSort=sort;_sortDir['agent_'+sort]=1;}
   ['pwr','lv','rank','elem'].forEach(s=>{
     const btn=document.getElementById('agent-sort-'+s);
-    if(btn){btn.className='btn '+(s===sort?'btn-primary':'btn-outline')+' btn-sm';btn.style.fontSize='10px';btn.textContent={'pwr':'전투력','lv':'레벨순','rank':'등급순','elem':'속성순'}[s];}
+    if(btn){btn.className='btn '+(s===sort?'btn-primary':'btn-outline')+' btn-sm';btn.style.fontSize='10px';btn.textContent={'pwr':'전투력','lv':'레벨순','rank':'등급순','elem':'속성순'}[s]+sortDirArrow('agent',sort,s);}
   });
   renderAgents();
   saveTabState();
@@ -1930,7 +1930,7 @@ function setSelSort(s){
   else{_selSort=s;_sortDir['sel_'+s]=1;}
   ['pwr','lv','rank','elem','adv'].forEach(t=>{
     const btn=document.getElementById('ss-'+t);
-    if(btn){btn.className='btn '+(t===s?'btn-primary':'btn-outline')+' btn-sm';btn.style.fontSize='9px';btn.style.padding='4px 8px';btn.textContent={'pwr':'전투력','lv':'레벨순','rank':'등급순','elem':'속성순','adv':'상성'}[t];}
+    if(btn){btn.className='btn '+(t===s?'btn-primary':'btn-outline')+' btn-sm';btn.style.fontSize='9px';btn.style.padding='4px 8px';btn.textContent={'pwr':'전투력','lv':'레벨순','rank':'등급순','elem':'속성순','adv':'상성'}[t]+sortDirArrow('sel',s,t);}
   });
   renderSelGrid();
 }
@@ -3274,7 +3274,7 @@ function growthFilterSortBar(mode){
     <button class="btn ${f==='normal'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="${setF}('normal')">일반</button>
     <button class="btn ${f==='special'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="${setF}('special')">특수</button>
     <span style="width:1px;background:var(--border);margin:0 4px"></span>
-    ${sortOpts.map(([k,v])=>`<button class="btn ${s===k?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="${setS}('${k}')">${v}</button>`).join('')}
+    ${sortOpts.map(([k,v])=>`<button class="btn ${s===k?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="${setS}('${k}')">${v}${sortDirArrow(mode==='feed'?'feed':'awaken',s,k)}</button>`).join('')}
   </div>`;
 }
 
@@ -3763,16 +3763,16 @@ function rebuildBench(tab,role){
 function benchFilterBar(tab,role){
   const f=_benchFilter[tab+role];
   const s=_benchSort[tab+role];
-  const runawayBtn=(tab==='guiding'&&role==='S')?`<button class="btn ${s==='runaway'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setBenchSort('${tab}','${role}','runaway')">폭주순</button>`:'';
+  const runawayBtn=(tab==='guiding'&&role==='S')?`<button class="btn ${s==='runaway'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setBenchSort('${tab}','${role}','runaway')">폭주순${sortDirArrow('bench_'+tab+role,s,'runaway')}</button>`:'';
   return `<div style="display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap">
     <button class="btn ${f==='all'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setBenchFilter('${tab}','${role}','all')">전체</button>
     <button class="btn ${f==='normal'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setBenchFilter('${tab}','${role}','normal')">일반</button>
     <button class="btn ${f==='special'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setBenchFilter('${tab}','${role}','special')">특수</button>
     <span style="width:1px;background:var(--border);margin:0 4px"></span>
-    <button class="btn ${s==='pwr'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setBenchSort('${tab}','${role}','pwr')">전투력</button>
-    <button class="btn ${s==='lv'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setBenchSort('${tab}','${role}','lv')">레벨순</button>
-    <button class="btn ${s==='rank'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setBenchSort('${tab}','${role}','rank')">등급순</button>
-    <button class="btn ${s==='elem'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setBenchSort('${tab}','${role}','elem')">속성순</button>
+    <button class="btn ${s==='pwr'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setBenchSort('${tab}','${role}','pwr')">전투력${sortDirArrow('bench_'+tab+role,s,'pwr')}</button>
+	<button class="btn ${s==='lv'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setBenchSort('${tab}','${role}','lv')">레벨순${sortDirArrow('bench_'+tab+role,s,'lv')}</button>
+	<button class="btn ${s==='rank'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setBenchSort('${tab}','${role}','rank')">등급순${sortDirArrow('bench_'+tab+role,s,'rank')}</button>
+	<button class="btn ${s==='elem'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setBenchSort('${tab}','${role}','elem')">속성순${sortDirArrow('bench_'+tab+role,s,'elem')}</button>
     ${runawayBtn}
   </div>`;
 }
@@ -3935,11 +3935,11 @@ function renderGuidingPickModal(h,targetLabel,targetIcon){
   sortList(candidates,_guidingPickSort,'guidingPick');
   const s=_guidingPickSort;
   const sortBar=`<div style="display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap">
-    <button class="btn ${s==='pwr'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setGuidingPickSort('pwr')">전투력</button>
-    <button class="btn ${s==='lv'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setGuidingPickSort('lv')">레벨순</button>
-    <button class="btn ${s==='rank'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setGuidingPickSort('rank')">등급순</button>
-    <button class="btn ${s==='elem'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setGuidingPickSort('elem')">속성순</button>
-    ${targetLabel==='센티넬'?`<button class="btn ${s==='runaway'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setGuidingPickSort('runaway')">폭주순</button>`:''}
+    <button class="btn ${s==='pwr'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setGuidingPickSort('pwr')">전투력${sortDirArrow('guidingPick',s,'pwr')}</button>
+	<button class="btn ${s==='lv'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setGuidingPickSort('lv')">레벨순${sortDirArrow('guidingPick',s,'lv')}</button>
+	<button class="btn ${s==='rank'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setGuidingPickSort('rank')">등급순${sortDirArrow('guidingPick',s,'rank')}</button>
+	<button class="btn ${s==='elem'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setGuidingPickSort('elem')">속성순${sortDirArrow('guidingPick',s,'elem')}</button>
+	${targetLabel==='센티넬'?`<button class="btn ${s==='runaway'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setGuidingPickSort('runaway')">폭주순${sortDirArrow('guidingPick',s,'runaway')}</button>`:''}
   </div>`;
   const picks=candidates.map(c=>{
     const fc=fieldColor(c.elem||'');const rw=c.runaway||0;
@@ -3968,9 +3968,9 @@ function openGuidingPick(){
   sortList(sentinels,_guidingPickSort,'guidingPick');
   const s=_guidingPickSort;
   const sortBar=`<div style="display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap">
-    <button class="btn ${s==='pwr'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setGuidingPickSort('pwr')">전투력</button>
-    <button class="btn ${s==='lv'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setGuidingPickSort('lv')">레벨순</button>
-    <button class="btn ${s==='runaway'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setGuidingPickSort('runaway')">폭주순</button>
+    <button class="btn ${s==='pwr'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setGuidingPickSort('pwr')">전투력${sortDirArrow('guidingPick',s,'pwr')}</button>
+	<button class="btn ${s==='lv'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setGuidingPickSort('lv')">레벨순${sortDirArrow('guidingPick',s,'lv')}</button>
+	<button class="btn ${s==='runaway'?'btn-primary':'btn-outline'} btn-sm" style="font-size:9px;padding:4px 8px" onclick="setGuidingPickSort('runaway')">폭주순${sortDirArrow('guidingPick',s,'runaway')}</button>
   </div>`;
   const picks=sentinels.map(h=>{
     const fc=fieldColor(h.elem||'');const rw=h.runaway||0;
