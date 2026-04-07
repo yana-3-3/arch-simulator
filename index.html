@@ -1814,9 +1814,11 @@ function agentCardHTML(h,onclick=''){
     <div class="agent-card-inner" style="display:flex;flex-direction:column;flex:1;position:relative">
       <div class="agent-top">
         <div style="position:relative">
-          <div class="agent-avatar" style="color:${fc};background:${fb};border:1.5px solid ${fc}30">
-            ${strokify(SVG[ico],fc,18)}
-          </div>
+          <div class="agent-avatar" style="color:${fc};background:${fb};border:1.5px solid ${fc}30;overflow:hidden">
+		    ${(typeof _thumbCache!=='undefined'&&_thumbCache[getActiveSkin(h)])
+			  ?`<img src="${_thumbCache[getActiveSkin(h)]}" style="width:100%;height:100%;object-fit:cover;object-position:top">`
+			  :strokify(SVG[ico],fc,18)}
+		  </div>
           ${elemTag}
         </div>
         <div>
@@ -3274,6 +3276,7 @@ function openHunterDetailModal(id){
   const pwr=power(h);
   
   const imgSrc=getActiveSkin(h);
+  ensureLoaded(imgSrc);
   
   const illustInner=imgSrc
     ?`<img src="${imgSrc}" style="width:100%;height:100%;object-fit:cover;object-position:top">`
@@ -4787,6 +4790,29 @@ function init(){
   saveState();
   recalcStats();updateAchBadge();
   render();
+  // init()에 넣을 배치 프리로딩 (기존 코드 교체)
+  const _imgCache = {};
+  const _allSkinUrls = Object.values(SKIN_DB)
+    .flatMap(s => Object.values(s)).filter(Boolean);
+  (function loadBatch(i) {
+    _allSkinUrls.slice(i, i + 5).forEach(url => {
+      if (!_imgCache[url]) {
+        const img = new Image();
+        img.src = url;
+        _imgCache[url] = img;
+      }
+    });
+    if (i + 5 < _allSkinUrls.length)
+      setTimeout(() => loadBatch(i + 5), 300);
+  })(0);
+
+  // 어디서든 호출 가능한 헬퍼
+  window.ensureLoaded = function(url) {
+    if (!url || _imgCache[url]) return;
+    const img = new Image();
+    img.src = url;
+    _imgCache[url] = img;
+  };
   S.exchAmt=S.exchAmt||1;
   // Tick loop
   setInterval(()=>{
