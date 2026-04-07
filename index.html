@@ -293,100 +293,151 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
 .exchange-val{font-size:24px;font-family:'Pretendard Variable',Pretendard,sans-serif;font-weight:800;min-width:60px;text-align:center;color:var(--text)}
 
 /* ── MOBILE NAV ──────────────────────────────────────────────── */
-.mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;background:var(--surface);border-top:1px solid var(--border);padding:6px 0 env(safe-area-inset-bottom)}
-.mob-nav-inner{display:flex;overflow-x:auto;gap:2px;padding:0 4px}
-.mob-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 10px;border:none;background:none;color:var(--text3);cursor:pointer;font-size:10px;font-weight:600;border-radius:8px;transition:.15s;position:relative;white-space:nowrap;font-family:'Pretendard Variable',Pretendard,sans-serif;min-width:52px}
-.mob-btn.active{color:var(--accent)}
-.mob-nav-sub{display:flex;justify-content:center;gap:4px;padding:6px 8px;background:var(--surface2);border-bottom:1px solid var(--border)}
+.mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;background:var(--surface);border-top:1px solid var(--border);padding:4px 6px 0;padding-bottom:env(safe-area-inset-bottom)}
+.mob-nav-inner{display:flex;gap:0;padding:0}
+.mob-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 2px 8px;border:none;background:none;color:var(--text3);cursor:pointer;font-size:9px;font-weight:600;border-radius:12px;transition:all .2s;position:relative;white-space:nowrap;font-family:'Pretendard Variable',Pretendard,sans-serif;min-width:0}
+.mob-btn.active{background:rgba(79,70,229,0.06);color:var(--accent)}
+.mob-btn svg{transition:all .2s}
+.mob-nav-sub{display:flex;gap:4px;padding:6px 10px;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch}
+.mob-nav-sub::-webkit-scrollbar{display:none}
 .mob-nav-sub:empty{display:none}
-.mob-sub-btn{padding:5px 14px;border-radius:16px;border:1px solid var(--border);background:var(--surface);color:var(--text2);font-size:11px;font-weight:600;white-space:nowrap;cursor:pointer;transition:.15s;font-family:'Pretendard Variable',Pretendard,sans-serif}
-.mob-sub-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-.mob-btn-dot{position:absolute;top:4px;right:8px;width:6px;height:6px;border-radius:50%;background:var(--sentinel)}
+.mob-sub-btn{padding:6px 14px;border-radius:10px;border:none;background:transparent;color:var(--text3);font-size:11px;font-weight:600;white-space:nowrap;cursor:pointer;transition:.15s;font-family:'Pretendard Variable',Pretendard,sans-serif}
+.mob-sub-btn.active{background:var(--text);color:#fff;box-shadow:0 2px 8px rgba(30,32,48,0.15)}
+.mob-btn-dot{position:absolute;top:4px;right:calc(50% - 14px);width:5px;height:5px;border-radius:50%;background:var(--sentinel);border:1.5px solid var(--surface)}
+.mob-btn-count{position:absolute;top:2px;right:calc(50% - 18px);font-size:7px;font-weight:800;padding:1px 3px;border-radius:6px;background:var(--sentinel);color:#fff;min-width:12px;text-align:center;border:1.5px solid var(--surface)}
+.dash-quick-actions{display:none}
+.gacha-type-tabs{display:none}
 @media(max-width:768px){
   .main{grid-template-columns:1fr}
   .sidebar{display:none}
   .mob-nav{display:block}
   .content{padding:14px 12px;padding-bottom:130px}
-  .stat-row{grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:18px}
-  .stat-box{padding:14px 12px}
-  .stat-val{font-size:22px}
-  .stat-lbl{font-size:11px}
+  /* ── 헤더 다크 HUD ── */
+  .header{padding:0 12px;gap:6px;background:linear-gradient(135deg,#1e2030,#2a2d45);border-bottom:none}
+  .logo{font-size:14px;gap:6px;color:#fff;-webkit-text-stroke:0.5px #fff}
+  .logo-sub{display:none}
+  .logo-icon{display:none}
+  .chip{padding:3px 8px;font-size:10px;gap:3px;border-radius:10px}
+  .chip-credit{background:rgba(194,134,12,0.2);border-color:rgba(194,134,12,0.3);color:#fbbf24}
+  .chip-token{background:rgba(129,140,248,0.2);border-color:rgba(129,140,248,0.3);color:#a5b4fc}
+  .arch-rank{padding:3px 8px;font-size:9px;background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7)}
+  .arch-rank span{color:rgba(255,255,255,0.9)}
+  /* ── 페이지 타이틀 ── */
+  .page-title{font-size:18px}
+  .page-sub{font-size:11px;margin-bottom:14px}
+  /* ── 스탯 박스 ── */
+  .stat-row{grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:14px}
+  .stat-box{padding:12px;border-radius:12px;overflow:hidden;position:relative}
+  .stat-box::before{display:none}
+  .stat-box::after{content:'';position:absolute;top:-8px;right:-8px;width:40px;height:40px;border-radius:50%;opacity:0.06;background:var(--accent)}
+  .stat-box:nth-child(1)::after{background:#4f46e5}
+  .stat-box:nth-child(2)::after{background:#0e7490}
+  .stat-box:nth-child(3)::after{background:#0d9668}
+  .stat-box:nth-child(4)::after{background:#c2860c}
+  .stat-val{font-size:22px;font-weight:800}
+  .stat-lbl{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+  /* ── 요원 카드 리스트 뷰 ── */
+  .grid-auto{grid-template-columns:1fr;gap:6px}
+  .agent-card{height:auto;border-radius:12px;border-top:none;border-left:none;border-right:none;overflow:hidden}
+  .agent-card:hover{transform:none}
+  .agent-top-bar{height:2.5px}
+  .agent-card-inner{padding:10px 12px;display:flex;flex-direction:row;align-items:center;gap:10px}
+  .agent-top{margin-bottom:0;flex:1;min-width:0}
+  .agent-avatar{width:36px;height:36px;border-radius:10px}
+  .agent-elem-tag{display:none}
+  .agent-name{font-size:13px}
+  .agent-role{font-size:10px;min-height:auto}
+  .stat-bars{display:none}
+  .stars-row{display:none}
+  .agent-footer{margin-top:0;padding-top:0;border-top:none;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0}
+  .agent-footer .agent-pwr{font-size:9px;color:var(--text3)}
+  .agent-footer span[style*="font-size:13px"]{font-size:14px !important;font-weight:800 !important}
+  .agent-footer span[style*="cursor:pointer"]{display:none}
+  /* ── 그리드 ── */
   .grid-3{grid-template-columns:1fr}
   .grid-2{grid-template-columns:1fr}
-  .grid-auto{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
-  .page-title{font-size:18px}
-  .page-sub{font-size:12px;margin-bottom:16px}
-  .header{padding:0 12px;gap:8px}
-  .logo-sub{display:none}
-  .logo{font-size:14px;gap:6px}
-  .logo-icon{width:28px;height:28px;font-size:11px}
-  .arch-rank{padding:4px 10px;font-size:10px}
-  .chip{padding:4px 10px;font-size:11px;gap:4px}
-  .gacha-hero{padding:20px 14px}
-  .gacha-title{font-size:20px}
-  .gacha-sub{font-size:11px;margin-bottom:16px}
-  .gacha-btn{padding:10px 14px;font-size:11px;gap:6px;flex:1;justify-content:center;min-width:0}
-  .gacha-btns{gap:6px}
-  .rate-row{gap:4px;margin-bottom:14px}
-  .rate-item{font-size:10px;padding:3px 6px}
-  .pity-wrap{padding:6px 10px !important}
-  .agent-card{padding:0}
-  .agent-top{margin-bottom:3px}
-  .agent-avatar{width:34px;height:34px}
-  .agent-card-inner{padding:12px}
-  .agent-name{font-size:13px}
-  .agent-role{font-size:11px}
-  .agent-footer{margin-top:8px;padding-top:8px}
+  /* ── 작전/의뢰 ── */
   .op-row{padding:12px 14px;gap:10px;flex-wrap:wrap}
   .op-icon{width:36px;height:36px}
   .op-name{font-size:13px}
   .op-desc{font-size:12px;margin-bottom:6px}
   .op-tags{gap:4px}
   .tag{font-size:10px;padding:3px 7px}
+  /* ── 컨텐츠 카드 ── */
   .content-card .cc-header{padding:12px 14px;gap:10px}
   .cc-icon{width:36px;height:36px}
   .cc-name{font-size:13px}
   .cc-desc{font-size:11px}
   .cc-body{padding:12px 14px}
+  /* ── 가챠 ── */
+  .gacha-hero{padding:18px 14px;border-radius:14px;text-align:left;margin-bottom:14px}
+  .gacha-hero::before{background:linear-gradient(135deg,rgba(79,70,229,0.06),rgba(99,102,241,0.03))}
+  .gacha-title{font-size:18px}
+  .gacha-sub{font-size:10px;margin-bottom:12px}
+  .gacha-btns{flex-direction:column;gap:5px}
+  .gacha-btn{padding:11px 14px;font-size:12px;gap:6px;flex:none;width:100%;justify-content:center;border-radius:10px;font-weight:700}
+  .gacha-btn:first-child{background:linear-gradient(135deg,#4f46e5,#6366f1);color:#fff;border-color:#4f46e5;box-shadow:0 4px 12px rgba(79,70,229,0.25)}
+  .rate-row{gap:3px;margin-bottom:14px;justify-content:flex-start}
+  .rate-item{font-size:9px;padding:4px 8px;border-radius:6px;background:rgba(255,255,255,0.7)}
+  .pity-wrap{padding:10px 12px !important;border-radius:10px;display:block;width:100%;margin-top:6px}
+  /* ── 버튼 ── */
   .btn{padding:8px 14px;font-size:12px}
   .btn-sm{padding:5px 10px;font-size:10px}
-  .section-label{font-size:10px;margin:14px 0 8px}
+  /* ── 기타 ── */
+  .section-label{font-size:9px;margin:14px 0 8px;letter-spacing:1.5px}
+  .section-label::before{width:2px;height:12px}
+  .section-label::after{content:'';flex:1;height:0.5px;background:var(--border)}
   .info-box{padding:12px 14px;font-size:12px;line-height:1.8}
   .modal{padding:20px;width:92%}
   .modal-title{font-size:16px !important}
-  .log-area{max-height:200px}
+  .log-area{max-height:200px;border-radius:10px}
   .ach-card{padding:12px}
   .ach-icon{width:28px;height:28px}
   .ach-name{font-size:12px}
   .ach-desc{font-size:10px}
   .codex-card{padding:12px 8px}
   .notif{right:12px;left:12px;bottom:80px;max-width:none;font-size:12px;padding:10px 14px}
-  .mob-nav-inner{display:flex;justify-content:space-around;gap:0;padding:0 4px}
+  /* ── 퀵 액션 ── */
+  .dash-quick-actions{display:flex;gap:6px;margin-bottom:14px}
+  .dash-qa{flex:1;background:var(--surface);border-radius:10px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;border:1px solid var(--border);cursor:pointer;transition:.15s}
+  .dash-qa:active{transform:scale(0.97)}
+  .dash-qa-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center}
+  .dash-qa-label{font-size:9px;font-weight:600;color:var(--text2)}
+  /* ── 가챠 상단 탭 (요원/스킨) ── */
+  .gacha-type-tabs{display:flex;gap:4px;margin-bottom:12px}
+  .gacha-type-tab{flex:1;padding:10px 8px;border-radius:10px;text-align:center;font-size:11px;font-weight:700;border:1px solid var(--border);background:var(--surface);color:var(--text2);cursor:pointer;transition:.15s;position:relative}
+  .gacha-type-tab.active{background:var(--text);color:#fff;border-color:var(--text);box-shadow:0 2px 8px rgba(30,32,48,0.15)}
+  .gacha-type-tab .soon-badge{font-size:7px;font-weight:700;padding:1px 4px;border-radius:3px;background:rgba(79,70,229,0.1);color:var(--accent);position:absolute;top:-4px;right:-2px}
 }
 @media(max-width:400px){
   .app{grid-template-rows:46px 1fr}
   .header{padding:0 8px;gap:4px}
   .logo{font-size:13px;gap:4px}
-  .logo-icon{width:24px;height:24px;font-size:10px;border-radius:6px}
-  .chip{padding:3px 8px;font-size:10px;border-radius:14px}
-  .arch-rank{padding:3px 8px;font-size:9px}
-  .content{padding:10px 8px;padding-bottom:85px}
-  .stat-row{gap:6px;margin-bottom:14px}
-  .stat-box{padding:10px 8px;border-radius:8px}
+  .chip{padding:2px 6px;font-size:9px}
+  .arch-rank{padding:2px 6px;font-size:8px}
+  .content{padding:10px 8px;padding-bottom:90px}
+  .stat-row{gap:5px}
+  .stat-box{padding:10px 8px;border-radius:10px}
   .stat-val{font-size:18px}
-  .stat-lbl{font-size:10px;margin-top:3px}
+  .stat-lbl{font-size:8px;margin-top:2px}
   .page-title{font-size:16px}
-  .gacha-hero{padding:16px 10px}
-  .gacha-title{font-size:18px}
-  .gacha-btn{padding:8px 10px;font-size:10px}
+  .gacha-hero{padding:14px 10px}
+  .gacha-title{font-size:16px}
+  .gacha-btn{padding:9px 10px;font-size:10px}
   .exchange-control{gap:6px;margin:12px 0}
   .exchange-btn{padding:8px 10px;font-size:11px}
   .exchange-val{font-size:20px;min-width:44px}
-  .grid-auto{grid-template-columns:1fr 1fr;gap:8px}
+  .grid-auto{grid-template-columns:1fr;gap:5px}
   .ach-grid{grid-template-columns:1fr}
   .codex-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}
-  .mob-btn{padding:6px 6px;font-size:9px;min-width:44px}
+  .mob-btn{padding:5px 2px 7px;font-size:8px}
   .mob-btn svg{width:16px;height:16px}
+  .dash-quick-actions{gap:4px}
+  .dash-qa{padding:8px 4px}
+  .dash-qa-icon{width:24px;height:24px}
+  .dash-qa-label{font-size:8px}
+  .gacha-type-tabs{gap:3px}
+  .gacha-type-tab{padding:8px 4px;font-size:10px}
 }
 
 /* ── FIELD BADGE ─────────────────────────────────────────────── */
@@ -754,6 +805,20 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
     <div class="stat-box"><div class="stat-val" id="st-completed">0</div><div class="stat-lbl">완료 작전</div></div>
     <div class="stat-box"><div class="stat-val" id="st-fame">0</div><div class="stat-lbl">ARCH 명성</div></div>
   </div>
+  <div class="dash-quick-actions" id="dash-quick-actions">
+    <div class="dash-qa" onclick="goTab('gacha')">
+      <div class="dash-qa-icon" style="background:rgba(220,38,72,0.06)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#dc2648" stroke-width="2" stroke-linecap="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+      <div class="dash-qa-label">모집</div>
+    </div>
+    <div class="dash-qa" onclick="goTab('enhance')">
+      <div class="dash-qa-icon" style="background:rgba(79,70,229,0.06)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+      <div class="dash-qa-label">강화</div>
+    </div>
+    <div class="dash-qa" onclick="goTab('missions')">
+      <div class="dash-qa-icon" style="background:rgba(194,134,12,0.06)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#c2860c" stroke-width="2" stroke-linecap="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+      <div class="dash-qa-label">미션</div>
+    </div>
+  </div>
   <div style="display:flex;gap:14px;margin-bottom:20px" id="dash-mission-row"></div>
   <div class="section-label">활동 로그</div>
   <div class="log-area" id="log-area"></div>
@@ -944,6 +1009,13 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
   <div class="page-title">요원 모집</div>
   <div class="page-sub">ARCH 데이터베이스 — 센티넬 & 가이드 모집 시스템</div>
 
+  <!-- 요원/스킨 전환 탭 (모바일 표시) -->
+  <div class="gacha-type-tabs" id="gacha-type-tabs">
+    <div class="gacha-type-tab active" onclick="switchGachaType('agent')">요원</div>
+    <div class="gacha-type-tab" onclick="switchGachaType('skin')" style="position:relative">스킨<span class="soon-badge">SOON</span></div>
+  </div>
+
+  <div id="gacha-agent-wrap">
   <!-- 모집 타입 탭 -->
   <div style="display:flex;gap:8px;margin-bottom:16px">
     <button class="btn btn-primary" id="gacha-tab-normal" onclick="switchGachaTab('normal')" style="flex:1;justify-content:center">일반 모집</button>
@@ -1072,6 +1144,16 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
 
   <div class="section-label">모집 기록</div>
   <div class="log-area" id="gacha-history"></div>
+  </div><!-- /gacha-agent-wrap -->
+
+  <!-- 스킨 가챠 (준비 중) -->
+  <div id="gacha-skin-wrap" style="display:none">
+    <div style="text-align:center;padding:60px 20px;color:var(--text3)">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--border2)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 12px;display:block"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      <div style="font-size:14px;font-weight:700;color:var(--text2);margin-bottom:4px">스킨 모집 준비 중</div>
+      <div style="font-size:11px">곧 새로운 스킨 모집이 추가됩니다!</div>
+    </div>
+  </div>
 </div>
 
 <!-- ACHIEVEMENT -->
@@ -1154,7 +1236,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
   <div class="mob-nav-sub" id="mob-sub"></div>
   <div class="mob-nav-inner">
     <button class="mob-btn active" onclick="goMobCat('home')" id="mob-cat-home">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>홈
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>본부
     </button>
     <button class="mob-btn" onclick="goMobCat('ops')" id="mob-cat-ops">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>작전
@@ -1919,7 +2001,7 @@ function goTab(tab){
   const navBtn=document.getElementById('nav-'+tab);
   if(navBtn)navBtn.classList.add('active');
   // 모바일 카테고리 동기화
-  const _catMap={dashboard:'home',agents:'home',quest:'ops',expedition:'ops',dungeon:'ops',raid:'ops',guiding:'grow',training:'grow',enhance:'grow',dismantle:'grow',gacha:'gacha',missions:'etc',achievement:'etc',codex:'etc',settings:'etc'};
+  const _catMap={dashboard:'home',agents:'home',missions:'home',quest:'ops',expedition:'ops',dungeon:'ops',raid:'ops',guiding:'grow',training:'grow',enhance:'grow',dismantle:'grow',gacha:'gacha',achievement:'etc',codex:'etc',settings:'etc'};
   const newCat=_catMap[tab]||'home';
   if(_mobCat!==newCat){
     _mobCat=newCat;
@@ -1958,11 +2040,11 @@ function goTab(tab){
 // MOBILE CATEGORY NAV
 // ═══════════════════════════════════════
 const MOB_CATS={
-  home:{tabs:['dashboard','agents'], labels:['대시보드','요원']},
+  home:{tabs:['dashboard','agents','missions'], labels:['대시보드','요원','미션']},
   ops:{tabs:['quest','expedition','dungeon','raid'], labels:['의뢰','파견','이상구역','폭주진압']},
   grow:{tabs:['guiding','training','enhance','dismantle'], labels:['가이딩','페어링','강화','분해']},
   gacha:{tabs:['gacha'], labels:['모집']},
-  etc:{tabs:['missions','achievement','codex','settings'], labels:['미션','공적','도감','설정']}
+  etc:{tabs:['achievement','codex','settings'], labels:['공적','도감','설정']}
 };
 let _mobCat='home';
 
@@ -1982,6 +2064,24 @@ function goMobCat(cat){
     `<button class="mob-sub-btn${_curTab===t?' active':''}" onclick="goTab('${t}')">${c.labels[i]}</button>`
   ).join('');
   if(!c.tabs.includes(_curTab)) goTab(c.tabs[0]);
+}
+
+// 가챠 타입 전환 (요원/스킨)
+function switchGachaType(type){
+  const agentWrap=document.getElementById('gacha-agent-wrap');
+  const skinWrap=document.getElementById('gacha-skin-wrap');
+  const tabs=document.querySelectorAll('.gacha-type-tab');
+  if(!agentWrap||!skinWrap)return;
+  tabs.forEach(t=>t.classList.remove('active'));
+  if(type==='skin'){
+    agentWrap.style.display='none';
+    skinWrap.style.display='block';
+    if(tabs[1])tabs[1].classList.add('active');
+  }else{
+    agentWrap.style.display='';
+    skinWrap.style.display='none';
+    if(tabs[0])tabs[0].classList.add('active');
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════════
