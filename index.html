@@ -593,6 +593,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
 #quest-list{max-height:600px;overflow-y:auto}
 #expedition-list{max-height:600px;overflow-y:auto}
 
+.agent-card.dismantle-selected{outline:3px solid var(--accent);outline-offset:-3px;opacity:.85}
+.agent-card.dismantle-selected::after{content:'✓';position:absolute;top:8px;right:8px;background:var(--accent);color:#fff;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;z-index:5}
+.dismantle-bar{display:flex;gap:10px;align-items:center;margin-bottom:12px;padding:12px 16px;background:var(--surface);border:1px solid var(--accent-line);border-radius:var(--radius);flex-wrap:wrap}
+.dismantle-bar .count{font-size:14px;font-weight:700;color:var(--accent)}
+
 </style>
 </head>
 <body>
@@ -855,6 +860,12 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
   <div id="dismantle-crystals"></div>
   <div class="section-label" style="margin-top:16px">분해할 요원 선택</div>
   <div id="dismantle-filter"></div>
+  <div id="dismantle-selection-bar" class="dismantle-bar" style="display:none">
+  <span class="count" id="dismantle-sel-count">0명 선택</span>
+  <button class="btn btn-outline btn-sm" onclick="dismantleSelectAll()">전체 선택</button>
+  <button class="btn btn-outline btn-sm" onclick="dismantleClearAll()">선택 해제</button>
+  <button class="btn btn-danger btn-sm" style="margin-left:auto" onclick="doDismantleSelected()">분해하기</button>
+</div>
   <div class="grid-auto" id="dismantle-grid"></div>
   <div id="dismantle-empty" style="display:none">
     <div class="empty"><div style="font-size:12px">분해할 요원이 없습니다.</div></div>
@@ -4762,6 +4773,7 @@ function renderCrystalsBar(targetId){
 
 let _bloomFilter='all',_bloomSort='pwr';
 let _dismantleFilter='all',_dismantleSort='pwr';
+let _dismantleSelected=[];
 
 function setBloomFilter(v){_bloomFilter=v;renderBloom();}
 function setBloomSort(v){if(_bloomSort===v)toggleSortDir('bloom',v);else{_bloomSort=v;_sortDir['bloom_'+v]=1;}renderBloom();}
@@ -5107,38 +5119,100 @@ function renderDismantle(){
   if(!grid||!emp)return;
   let available=S.hunters.filter(h=>!h.busy&&!isInGuiding(h.id)&&!h.locked);
   available=applyGridFilterSort([...available],_dismantleFilter,_dismantleSort,'dismantle');
-  if(!available.length){grid.innerHTML='';emp.style.display='';return;}
+  // 존재하지 않는 요원 선택 해제
+  const availIds=new Set(available.map(h=>h.id));
+  _dismantleSelected=_dismantleSelected.filter(id=>availIds.has(id));
+  if(!available.length){grid.innerHTML='';emp.style.display='';updateDismantleBar();return;}
   emp.style.display='none';
-  grid.innerHTML=available.map(h=>agentCardHTML(h,`openDismantleModal(${h.id})`)).join('');
+  grid.innerHTML=available.map(h=>{
+    const sel=_dismantleSelected.includes(h.id);
+    return agentCardHTML(h,`toggleDismantleSelect(${h.id})`).replace(
+      'class="agent-card"',
+      `class="agent-card${sel?' dismantle-selected':''}" style="position:relative"`
+    );
+  }).join('');
+  updateDismantleBar();
 }
 
-function openDismantleModal(id){
-  const h=S.hunters.find(x=>x.id===id);if(!h)return;
-  const range=SHARD_RANGE[h.rank]||[0,0];
-  const fc=fieldColor(h.elem||'');
-  showModal(`
-    <div class="modal-title">분해 — ${h.name}</div>
-    <div style="font-size:12px;color:var(--text2);margin-bottom:16px">${h.rank}등급 · ${h.role} · Lv.${h.level||1}${h.isSpecial?' · 특수 요원':''}</div>
-    <div style="background:var(--surface2);border-radius:var(--radius);padding:12px 16px;margin-bottom:16px;font-size:13px;color:var(--text2)">
-      분해 시 <strong style="color:var(--text)">결정 파편 ${range[0]}~${range[1]}개</strong>를 획득합니다.<br>
-      <span style="color:var(--danger);font-size:11px">이 요원은 영구적으로 소멸합니다.</span>
-    </div>
-    <div style="display:flex;gap:8px">
-      <button class="btn btn-danger" style="flex:1" onclick="doDismantle(${h.id})">분해 실행</button>
-      <button class="btn btn-outline" style="flex:1" onclick="closeModal()">취소</button>
-    </div>
-  `);
+function toggleDismantleSelect(id){
+  const idx=_dismantleSelected.indexOf(id);
+  if(idx===-1)_dismantleSelected.push(id);
+  else _dismantleSelected.splice(idx,1);
+  renderDismantle();
 }
 
-function doDismantle(id){
-  const h=S.hunters.find(x=>x.id===id);if(!h)return;
-  const range=SHARD_RANGE[h.rank]||[0,0];
-  const gained=range[0]+Math.floor(Math.random()*(range[1]-range[0]+1));
-  S.shards=(S.shards||0)+gained;
-  const name=h.name;const rank=h.rank;
-  S.hunters=S.hunters.filter(x=>x.id!==id);
-  addLog(`분해: ${name}(${rank}) → 결정 파편 +${gained}`);
-  notify(`✓ ${name} 분해 — 파편 +${gained}`,'ok');
+function dismantleSelectAll(){
+  const available=S.hunters.filter(h=>!h.busy&&!isInGuiding(h.id)&&!h.locked);
+  _dismantleSelected=available.map(h=>h.id);
+  renderDismantle();
+}
+
+function dismantleClearAll(){
+  _dismantleSelected=[];
+  renderDismantle();
+}
+
+function updateDismantleBar(){
+  const bar=document.getElementById('dismantle-selection-bar');
+  const countEl=document.getElementById('dismantle-sel-count');
+  if(!bar)return;
+  if(_dismantleSelected.length>0){
+    bar.style.display='flex';
+    if(countEl)countEl.textContent=_dismantleSelected.length+'명 선택';
+  }else{
+    bar.style.display='none';
+  }
+}
+
+function doDismantleSelected(){
+  if(!_dismantleSelected.length){notify('분해할 요원을 선택해주세요','err');return;}
+  const selected=_dismantleSelected.map(id=>S.hunters.find(x=>x.id===id)).filter(Boolean);
+  // 특수 요원 또는 각성된 일반 요원 체크
+  const warned=selected.filter(h=>h.isSpecial||((!h.isSpecial)&&(h.awakening||0)>0));
+  if(warned.length>0){
+    const warnList=warned.map(h=>{
+      const reasons=[];
+      if(h.isSpecial)reasons.push('특수 요원');
+      if((h.awakening||0)>0&&!h.isSpecial)reasons.push('각성 '+(h.awakening||0)+'단계');
+      return `<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)">
+        <span style="font-weight:700;color:var(--text)">${h.name}</span>
+        <span style="font-size:11px;color:var(--text3)">${h.rank}등급</span>
+        <span style="font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;background:var(--danger-bg);color:var(--danger)">${reasons.join(', ')}</span>
+      </div>`;
+    }).join('');
+    showModal(`
+      <div class="modal-title">⚠ 주의</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:12px">
+        선택한 ${selected.length}명 중 아래의 요원이 포함되어 있습니다.<br>분해하시겠습니까?
+      </div>
+      <div style="background:var(--surface2);border-radius:var(--radius);padding:10px 14px;margin-bottom:16px;max-height:200px;overflow-y:auto">
+        ${warnList}
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-danger" style="flex:1" onclick="executeDismantleAll()">분해 실행</button>
+        <button class="btn btn-outline" style="flex:1" onclick="closeModal()">취소</button>
+      </div>
+    `);
+  }else{
+    executeDismantleAll();
+  }
+}
+
+function executeDismantleAll(){
+  const selected=_dismantleSelected.map(id=>S.hunters.find(x=>x.id===id)).filter(Boolean);
+  let totalGained=0;
+  const names=[];
+  selected.forEach(h=>{
+    const range=SHARD_RANGE[h.rank]||[0,0];
+    const gained=range[0]+Math.floor(Math.random()*(range[1]-range[0]+1));
+    S.shards=(S.shards||0)+gained;
+    totalGained+=gained;
+    names.push(h.name);
+    S.hunters=S.hunters.filter(x=>x.id!==h.id);
+  });
+  addLog(`일괄 분해: ${names.length}명 → 결정 파편 +${totalGained}`);
+  notify(`✓ ${names.length}명 분해 — 파편 +${totalGained}`,'ok');
+  _dismantleSelected=[];
   recalcStats();updateAchBadge();
   closeModal();saveState();render();renderDismantle();
 }
