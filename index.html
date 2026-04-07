@@ -2737,7 +2737,7 @@ function doGachaNormal(count){
     S.stats.totalSummons++;
   }
   recalcStats();updateAchBadge();
-  playGachaCutscene(results,'normal');
+  showGachaResult(results,'normal');
   const msg=count===10?`[일반] 10+1회 모집 완료`:`[일반] ${count}회 모집 완료`;
   S.gachaLogs.unshift({t:timeStr(),msg,type:''});
   addLog(msg);
@@ -2912,7 +2912,7 @@ function doGachaFree(){
   S.hunters.push(agent);
   S.stats.totalSummons++;
   recalcStats();updateAchBadge();
-  playGachaCutscene([agent],'normal');
+  showGachaResult([agent],'normal');
   const msg=`[무료] ${agent.rank} ${agent.name} 모집`;
   S.gachaLogs.unshift({t:timeStr(),msg,type:''});
   addLog(msg);
