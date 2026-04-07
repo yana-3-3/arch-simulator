@@ -308,6 +308,24 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
 .dash-quick-actions{display:none}
 .gacha-type-tabs{display:none}
 @media(max-width:768px){
+  /* ── 모바일 요원 리스트 카드 ── */
+  .agent-card-mob{height:auto !important;border:none !important;border-radius:12px !important;overflow:hidden;padding:0 !important;box-shadow:none !important;border:0.5px solid rgba(0,0,0,0.03) !important}
+  .agent-card-mob:hover{transform:none !important}
+  .agent-mob-topbar{height:2.5px;width:100%}
+  .agent-mob-inner{padding:10px 12px;display:flex;align-items:center;gap:10px}
+  .agent-mob-av{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;overflow:hidden}
+  .agent-mob-av-ring{position:absolute;inset:-2px;border-radius:12px;border:1.5px solid;opacity:0.3}
+  .agent-mob-info{flex:1;min-width:0}
+  .agent-mob-name{font-size:13px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .agent-mob-rank{font-size:8px;font-weight:800;padding:2px 6px;border-radius:4px;letter-spacing:0.5px;flex-shrink:0}
+  .agent-mob-role{font-size:10px;color:var(--text3);display:flex;gap:4px;align-items:center;margin-top:1px}
+  .agent-mob-role-tag{font-size:9px;font-weight:600;padding:1px 6px;border-radius:4px}
+  .mob-role-sen{background:var(--sentinel-bg);color:var(--sentinel)}
+  .mob-role-gui{background:var(--guide-bg);color:var(--guide)}
+  .agent-mob-elem{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+  .agent-mob-right{display:flex;flex-direction:column;align-items:flex-end;gap:1px;flex-shrink:0}
+  .agent-mob-pwr{font-size:15px;font-weight:800;color:var(--text)}
+  .agent-mob-lv{font-size:9px;font-weight:600;color:var(--text3)}
   .main{grid-template-columns:1fr}
   .sidebar{display:none}
   .mob-nav{display:block}
@@ -814,9 +832,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
       <div class="dash-qa-icon" style="background:rgba(79,70,229,0.06)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
       <div class="dash-qa-label">강화</div>
     </div>
-    <div class="dash-qa" onclick="goTab('missions')">
-      <div class="dash-qa-icon" style="background:rgba(194,134,12,0.06)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#c2860c" stroke-width="2" stroke-linecap="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
-      <div class="dash-qa-label">미션</div>
+    <div class="dash-qa" onclick="goTab('achievement')">
+      <div class="dash-qa-icon" style="background:rgba(194,134,12,0.06)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#c2860c" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg></div>
+      <div class="dash-qa-label">공적</div>
     </div>
   </div>
   <div style="display:flex;gap:14px;margin-bottom:20px" id="dash-mission-row"></div>
@@ -2122,6 +2140,30 @@ function agentCardHTML(h,onclick=''){
   const fb=fieldBg(h.elem||'');
   const ico=roleIcon(h.role||'센티넬');
   const pwr=power(h);
+  // ── 모바일 컴팩트 리스트 뷰 ──
+  if(window.innerWidth<=768){
+    const isSen=(h.role||'센티넬')==='센티넬';
+    const busyBadge=h.incapacitated?`<span class="busy-tag" style="margin-left:4px;background:var(--danger-bg);color:var(--danger);font-size:9px;padding:1px 6px">행동불능</span>`:isInGuiding(h.id)?`<span class="busy-tag" style="margin-left:4px;background:var(--guide-bg);color:var(--guide);font-size:9px;padding:1px 6px">가이딩중</span>`:h.busy?`<span class="busy-tag" style="margin-left:4px;font-size:9px;padding:1px 6px">작전중</span>`:'';
+    const thumb=(typeof _thumbCache!=='undefined'&&_thumbCache[getActiveSkin(h)]);
+    return `<div class="agent-card agent-card-mob" ${onclick?`onclick="${onclick}"`:''}">
+      <div class="agent-mob-topbar" style="background:linear-gradient(90deg,${fc},${fc}88)"></div>
+      <div class="agent-mob-inner">
+        <div class="agent-mob-av" style="background:${fb}">
+          <div class="agent-mob-av-ring" style="border-color:${fc}"></div>
+          ${thumb?`<img src="${_thumbCache[getActiveSkin(h)]}" style="width:100%;height:100%;object-fit:cover;object-position:top;border-radius:9px">`
+            :strokify(SVG[ico],fc,16)}
+        </div>
+        <div class="agent-mob-info">
+          <div class="agent-mob-name">${h.name} <span class="agent-mob-rank" style="background:${fc}12;color:${fc};border:0.5px solid ${fc}30">${h.rank}</span>${busyBadge}</div>
+          <div class="agent-mob-role"><span class="agent-mob-role-tag ${isSen?'mob-role-sen':'mob-role-gui'}">${h.role||'센티넬'}</span> <span class="agent-mob-elem" style="background:${fc}"></span> ${h.elem||''}</div>
+        </div>
+        <div class="agent-mob-right">
+          <div class="agent-mob-pwr">${pwr}</div>
+          <div class="agent-mob-lv">Lv.${h.level||1}</div>
+        </div>
+      </div>
+    </div>`;
+  }
   const busyBadge=h.incapacitated?`<span class="busy-tag" style="margin-left:4px;background:var(--danger-bg);color:var(--danger)">행동불능</span>`:isInGuiding(h.id)?`<span class="busy-tag" style="margin-left:4px;background:var(--guide-bg);color:var(--guide)">가이딩중</span>`:h.busy?`<span class="busy-tag" style="margin-left:4px">작전중</span>`:'';
   const aw=h.awakening||0;
   const stars='★'.repeat(aw)+'☆'.repeat(4-aw)+(h.bloomed?'<span style="color:var(--gold)">★</span>':'<span style="color:var(--border2)">☆</span>');
