@@ -590,6 +590,8 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
   50%{opacity:.4}
   100%{transform:translate(-50%,-50%) scale(1.2);opacity:.15}
 }
+#quest-list{max-height:600px;overflow-y:auto}
+#expedition-list{max-height:600px;overflow-y:auto}
 
 </style>
 </head>
@@ -2070,7 +2072,7 @@ function renderQuestList(){
 
 function renderExpeditionList(){
   const el=document.getElementById('expedition-list');if(!el)return;
-  const pool=(S.expeditionPool||[0,1,2,3,4,5,6,7,8]).slice(0,6);
+  const pool=(S.expeditionPool||[0,1,2,3,4,5,6,7,8]).slice(0,8);
   const items=pool.map(i=>EXPEDITIONS[i]).filter(Boolean);
   if(!items.length){el.innerHTML=`<div class="empty"><div style="font-size:12px;color:var(--text2)">파견 목록 로딩 중</div></div>`;return;}
   el.innerHTML=items.map(q=>{
@@ -2100,7 +2102,7 @@ function renderExpeditionList(){
 
 function renderDungeonGrid(){
   const el=document.getElementById('dungeon-grid');if(!el)return;
-  const pool=(S.dungeonPool||[0,1,2,3,4,5]).slice(0,6);
+  const pool=(S.dungeonPool||[0,1,2,3,4,5]).slice(0,8);
   const items=pool.map(i=>DUNGEONS[i]).filter(Boolean);
   if(!items.length){el.innerHTML=`<div class="empty"><div style="font-size:12px;color:var(--text2)">구역 로딩 중</div></div>`;return;}
   el.innerHTML=items.map(q=>{
@@ -2550,7 +2552,7 @@ function tickRefreshTimers(){
   if(S.lastQuestRefresh>0 && now-S.lastQuestRefresh>QUEST_REFRESH){
     S.lastQuestRefresh=now;
 	QUESTS.forEach(q=>{delete S.missionResults[q.id];});
-    const pool=[...QUESTS].sort(()=>Math.random()-.5).slice(0,5);
+    const pool=[...QUESTS].sort(()=>Math.random()-.5).slice(0,10);
     S.activeQuests=pool.map(q=>({quest:q,expireAt:now+QUEST_REFRESH}));
     document.getElementById('mob-dot-quest')&&(document.getElementById('mob-dot-quest').style.display='block');
     saveState();
@@ -5443,7 +5445,7 @@ function init(){
   // 최초 실행 시에만 풀 초기화 & 타이머 시작점 설정
   if(!S.lastQuestRefresh){
     S.lastQuestRefresh=now;
-    const pool=[...QUESTS].sort(()=>Math.random()-.5).slice(0,5);
+    const pool=[...QUESTS].sort(()=>Math.random()-.5).slice(0,10);
 	// 의뢰 결과 초기화
     QUESTS.forEach(q=>{delete S.missionResults[q.id];});
     S.activeQuests=pool.map(q=>({quest:q,expireAt:now+QUEST_REFRESH}));
