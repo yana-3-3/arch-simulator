@@ -6061,16 +6061,17 @@ function renderSkinCollection(){
   }
   const selected=agentSkinData.find(a=>a.name===_skinOpenAgent);
 
-  // 상단 아이콘 바 — SKIN_DB의 default 이미지를 썸네일로 사용
+  // 상단 아이콘 바 — default.png 우선, 없으면 base.png, 그래도 없으면 아이콘 폴백
   const iconBar=agentSkinData.map(ag=>{
     const isActive=ag.name===_skinOpenAgent;
-    const thumbUrl=ag.skins[0]?.url||'';
+    const baseUrl=ag.skins[0]?.url||'';
+    const iconUrl=baseUrl?baseUrl.replace(/\/base\.png$/,'/default.png'):'';
     const codexEntry=[...(S_CODEX||[]),...(SECRET_POOL||[])].find(c=>c.name===ag.name);
     const col=codexEntry?fieldColor(codexEntry.field):'var(--accent)';
     const ico=codexEntry?roleIcon(codexEntry.role):'sword';
     const fallbackHtml=`<div style="width:100%;height:100%;background:${col}15;display:flex;align-items:center;justify-content:center">${strokify(SVG[ico],col,22)}</div>`;
-    const imgHtml=thumbUrl
-      ?`<img src="${thumbUrl}" alt="${ag.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div style="display:none;width:100%;height:100%;background:${col}15;align-items:center;justify-content:center">${strokify(SVG[ico],col,22)}</div>`
+    const imgHtml=iconUrl
+      ?`<img src="${iconUrl}" alt="${ag.name}" onerror="this.onerror=null;if(this.src.includes('/default.png')){this.src='${baseUrl}';}else{this.style.display='none';this.nextElementSibling.style.display='flex';}"><div style="display:none;width:100%;height:100%;background:${col}15;align-items:center;justify-content:center">${strokify(SVG[ico],col,22)}</div>`
       :fallbackHtml;
     return `<div class="skin-icon-btn${isActive?' active':''}" onclick="selectSkinAgent('${ag.name}')">
       <div class="skin-icon-img">${imgHtml}</div>
