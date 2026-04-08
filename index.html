@@ -3658,10 +3658,11 @@ function getPairBonus(sentinel,guide){
   if(!sentinel||!guide)return null;
   const sameElem=sentinel.elem&&sentinel.elem===guide.elem;
   const guideRankMult={SS:1.5,S:1.3,A:1.15,B:1.05,C:1.0,D:1.0}[guide.rank]||1.0;
+  const focusMult=1+((guide.focus||0)/200); // 집중력 40→1.2, 80→1.4
   return {
-    atkMult:sameElem?1.25:1.15,
-    defBonus:Math.floor((guide.def||0)*0.15*guideRankMult),
-    spdBonus:Math.floor((guide.spd||0)*0.1*guideRankMult),
+    atkMult:(sameElem?1.25:1.15)*focusMult,
+    defBonus:Math.floor((guide.def||0)*0.15*guideRankMult*focusMult),
+    spdBonus:Math.floor((guide.spd||0)*0.1*guideRankMult*focusMult),
     runawayReduce:sameElem?35:20,
     expMult:sameElem?1.5:1.0,
     sameElem
@@ -3750,7 +3751,7 @@ function renderTraining(){
           ${sameTag}
           <div style="font-size:11px;color:var(--text2);font-family:'Space Mono',monospace;line-height:1.6;margin-top:4px">
             ATK ×${bonus.atkMult.toFixed(2)} · DEF +${bonus.defBonus} · SPD +${bonus.spdBonus}<br>
-            폭주 -${bonus.runawayReduce} · EXP ×${bonus.expMult.toFixed(1)}
+            폭주 -${bonus.runawayReduce} · EXP ×${bonus.expMult.toFixed(1)} · 집중 ${g.focus||0}
           </div>
           <button class="btn btn-outline btn-sm" style="margin-top:8px;font-size:11px;width:100%" onclick="removePair(${i})">해제</button>
         </div>`);
@@ -3817,7 +3818,7 @@ function renderTrainingSlots(){
             <div style="font-size:16px;color:var(--text3)">⇄</div>
             <div style="text-align:center"><div style="background:${gc}12;width:44px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center">${strokify(SVG.guide,gc,22)}</div><div style="font-size:12px;font-weight:700;color:var(--text);margin-top:3px">${g.name}</div><div style="font-size:11px;color:var(--text2)">${g.rank} Lv.${g.level||1}</div></div>
           </div>${sameTag}
-          <div style="font-size:11px;color:var(--text2);font-family:'Space Mono',monospace;line-height:1.6;margin-top:4px">ATK ×${bonus.atkMult.toFixed(2)} · DEF +${bonus.defBonus} · SPD +${bonus.spdBonus}<br>폭주 -${bonus.runawayReduce} · EXP ×${bonus.expMult.toFixed(1)}</div>
+          <div style="font-size:11px;color:var(--text2);font-family:'Space Mono',monospace;line-height:1.6;margin-top:4px">ATK ×${bonus.atkMult.toFixed(2)} · DEF +${bonus.defBonus} · SPD +${bonus.spdBonus}<br>폭주 -${bonus.runawayReduce} · EXP ×${bonus.expMult.toFixed(1)} · 집중 ${g.focus||0}</div>
           <button class="btn btn-outline btn-sm" style="margin-top:8px;font-size:11px;width:100%" onclick="removePair(${i})">해제</button>
         </div>`);
       } else {slots.push(emptyPairSlot(i));}
@@ -4733,7 +4734,7 @@ function tickGuiding(){
     const s=S.hunters.find(x=>x.id===slot.sentinelId);
     if(!s)return;
     const g=S.hunters.find(x=>x.id===slot.guideId);
-    const focusBonus=g?(g.focus||0)/50:0;
+    const focusBonus=g?(g.focus||0)/20:0;
     const reduceAmount=GUIDING_REDUCE_PER_TICK+focusBonus;
     if((s.runaway||0)>0){
       s.runaway=Math.max(0,(s.runaway||0)-reduceAmount);
@@ -4753,7 +4754,7 @@ function tickGuiding(){
 	const pair=pairSlot?S.hunters.find(g=>g.id===pairSlot.guideId):null;
     if(!pair)return;
     if((h.runaway||0)>0){
-      const passiveReduce=(pair.focus||0)/500;
+      const passiveReduce=(pair.focus||0)/150;
       if(passiveReduce>0){
         h.runaway=Math.max(0,(h.runaway||0)-passiveReduce);
         changed=true;
@@ -4789,7 +4790,7 @@ function addRunaway(h,amount){
   const pairSlot=(S.pairSlots||[]).find(p=>p.sentinelId===h.id);
   const pair=pairSlot?S.hunters.find(g=>g.id===pairSlot.guideId):null;
   if(pair){
-    const reduction=Math.min(0.5,(pair.focus||0)/200);
+    const reduction=Math.min(0.6,(pair.focus||0)/120);
     amount=Math.round(amount*(1-reduction));
   }
   h.runaway=Math.min(100,(h.runaway||0)+amount);
