@@ -613,6 +613,25 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
 .mission-nav-dot{width:7px;height:7px;border-radius:50%;background:var(--danger);position:absolute;top:8px;right:8px;display:none}
 
 /* ── BLOOM CUTSCENE ─────────────────────────────────────────── */
+.promote-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;overflow:hidden;pointer-events:all}
+.promote-bg{position:absolute;inset:0;background:#08080f;opacity:0;transition:opacity .6s}
+.promote-center{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:24px}
+.promote-stage{display:flex;align-items:center;gap:32px}
+.promote-card{display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;transform:scale(.8)}
+.promote-hex{width:110px;height:110px;display:flex;align-items:center;justify-content:center;position:relative}
+.promote-hex-bg{position:absolute;inset:0;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);transition:all .6s}
+.promote-hex-icon{position:relative;z-index:2}
+.promote-rank{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;letter-spacing:3px;text-shadow:0 0 20px currentColor}
+.promote-name{font-family:'Syne','Pretendard Variable',sans-serif;font-size:20px;font-weight:800;color:#fff;opacity:0;letter-spacing:1px;text-shadow:0 0 30px rgba(255,255,255,0.3)}
+.promote-info{font-size:12px;color:rgba(255,255,255,0.4);opacity:0}
+.promote-arrow-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;opacity:0}
+.promote-arrow-line{width:60px;height:2px;border-radius:1px;transform:scaleX(0);transform-origin:left}
+.promote-arrow-text{font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;opacity:0}
+.promote-particle{position:absolute;border-radius:50%;pointer-events:none;z-index:1}
+@keyframes promoteParticleRise{0%{opacity:0;transform:translateY(0) scale(0)}30%{opacity:1;transform:translateY(var(--dy)) scale(1)}100%{opacity:0;transform:translateY(calc(var(--dy) * 2.5)) scale(0)}}
+@keyframes promoteGlow{0%,100%{opacity:.4}50%{opacity:1}}
+.promote-burst-ring{position:absolute;top:50%;left:50%;border-radius:50%;border:2px solid;transform:translate(-50%,-50%) scale(.3);opacity:0;z-index:1;pointer-events:none}
+@keyframes promoteBurstRing{0%{transform:translate(-50%,-50%) scale(.3);opacity:.7}100%{transform:translate(-50%,-50%) scale(2.5);opacity:0}}
 .bloom-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;overflow:hidden;pointer-events:all}
 .bloom-bg{position:absolute;inset:0;background:#0a0a12;opacity:0;transition:opacity .6s}
 .bloom-center{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:16px}
@@ -1029,10 +1048,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
 <!-- ENHANCE (강화: 공명/각성/개화) -->
 <div class="panel" id="panel-enhance">
   <div class="page-title">강화</div>
-  <div class="page-sub">요원의 능력을 강화합니다 · 공명 / 각성 / 개화</div>
+  <div class="page-sub">요원의 능력을 강화합니다 · 공명 / 각성 / 승급 / 개화</div>
   <div style="display:flex;gap:8px;margin-bottom:16px">
     <button class="btn btn-primary" id="enhance-tab-resonance" onclick="switchEnhanceTab('resonance')" style="flex:1;justify-content:center">공명</button>
     <button class="btn btn-outline" id="enhance-tab-awaken" onclick="switchEnhanceTab('awaken')" style="flex:1;justify-content:center">각성</button>
+    <button class="btn btn-outline" id="enhance-tab-promote" onclick="switchEnhanceTab('promote')" style="flex:1;justify-content:center">승급</button>
     <button class="btn btn-outline" id="enhance-tab-bloom" onclick="switchEnhanceTab('bloom')" style="flex:1;justify-content:center">개화</button>
   </div>
   <div id="enhance-content"></div>
@@ -1422,7 +1442,7 @@ function strokify(svg,color,size=18){
 // WORLD DATA — ARCH
 // ═══════════════════════════════════════════════════════════════════
 // 6가지 원소 속성 (세계관 설정 반영)
-const FIELDS=['불','물','풀','번개','바람','얼음'];
+const FIELDS=['불','물','풀','번개','바람','얼음','무'];
 const FIELD_LABEL={'불':'Pyre','물':'Aqua','풀':'Verde','번개':'Fulmen','바람':'Aero','얼음':'Glacies','무':'Null'};
 const FIELD_SVG_KEY={'불':'e_pyre','물':'e_aqua','풀':'e_verde','번개':'e_fulmen','바람':'e_aero','얼음':'e_glacies','무':'e_null'};
 const FIELD_COLOR={'불':'#E74C3C','물':'#3498DB','풀':'#6AAA64','번개':'#F1C40F','바람':'#2ECC71','얼음':'#8ECCCC','무':'#A6A6A6'};
@@ -1947,7 +1967,7 @@ function getOwnedSkins(h) {
 // ═══════════════════════════════════════════════════════════════════
 let S={
   missionResults:{},
-  gold:0, dia:500, shards:0, crystals:{'불':0,'물':0,'풀':0,'번개':0,'바람':0,'얼음':0},
+  gold:0, dia:500, shards:0, crystals:{'불':0,'물':0,'풀':0,'번개':0,'바람':0,'얼음':0,'무':0},
   hunters:[], missions:[],
   completed:0, fame:0, guildLv:1,
   pity:0, pitySS:0, specialPulls:0, secretPity:0, secretPulls:0, nextId:1,
@@ -3985,7 +4005,7 @@ function renderPairPickModal(){
 let _enhanceTab='resonance';
 function switchEnhanceTab(tab){
   _enhanceTab=tab;
-  ['resonance','awaken','bloom'].forEach(t=>{
+  ['resonance','awaken','promote','bloom'].forEach(t=>{
     const btn=document.getElementById('enhance-tab-'+t);
     if(btn)btn.className='btn '+(t===tab?'btn-primary':'btn-outline');
     if(btn)btn.style.flex='1';if(btn)btn.style.justifyContent='center';
@@ -4029,14 +4049,300 @@ function renderEnhanceContent(){
       <div class="section-label">각성 가능 요원</div>
       ${filterBar}
       <div class="grid-auto">${list||'<div class="empty"><div style="font-size:12px">각성 가능한 요원이 없습니다.<br><span style="color:var(--text3)">레벨 상한(Lv.10/20/30/40)에 도달한 요원이 필요합니다.</span></div></div>'}</div>`;
+  } else if(_enhanceTab==='promote'){
+    renderPromoteInEnhance(el);
   } else if(_enhanceTab==='bloom'){
     renderBloomInEnhance(el);
   }
 }
+const PROMOTE_COST={C:{crystals:10,gold:1000000},B:{crystals:30,gold:3000000}};
+let _promoteFilter='all',_promoteSort='pwr';
+function setPromoteFilter(v){_promoteFilter=v;renderEnhanceContent();}
+function setPromoteSort(v){if(_promoteSort===v)toggleSortDir('promote',v);else{_promoteSort=v;_sortDir['promote_'+v]=1;}renderEnhanceContent();}
+
+function canPromote(h){
+  if(!h)return false;
+  const r=h.rank;
+  if(r!=='C'&&r!=='B')return false;
+  const cap=levelCap(h);
+  if((h.level||1)<cap)return false;
+  if((h.awakening||0)<4)return false;
+  return true;
+}
+
+function getPromoteNextRank(rank){return rank==='C'?'B':rank==='B'?'A':null;}
+
+function renderPromoteInEnhance(el){
+  if(!el)el=document.getElementById('enhance-content');
+  if(!el)return;
+  S.crystals=S.crystals||{'불':0,'물':0,'풀':0,'번개':0,'바람':0,'얼음':0,'무':0};
+  if(!('무' in S.crystals))S.crystals['무']=0;
+  const crystalsBar=`<div style="display:flex;gap:8px;flex-wrap:wrap">${FIELDS.map(f=>{
+    const c=S.crystals[f]||0;const fc=fieldColor(f);
+    return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:8px 14px;display:flex;align-items:center;gap:6px;min-width:90px">
+      ${fieldIcon(f,14)}<span style="font-size:11px;color:var(--text2)">${f}</span>
+      <span style="font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;color:${fc};margin-left:auto">${c}</span>
+    </div>`;
+  }).join('')}</div>`;
+  let eligible=S.hunters.filter(h=>canPromote(h));
+  if(_promoteFilter==='special')eligible=eligible.filter(h=>h.isSpecial);
+  else if(_promoteFilter==='normal')eligible=eligible.filter(h=>!h.isSpecial);
+  sortList(eligible,_promoteSort,'promote');
+  const filterBar=gridFilterBar('Promote',_promoteFilter,_promoteSort,'promote');
+  const list=eligible.map(h=>{
+    const nextRank=getPromoteNextRank(h.rank);
+    const cost=PROMOTE_COST[h.rank];
+    const elem=h.elem||'무';
+    const hasCrystals=(S.crystals[elem]||0)>=cost.crystals;
+    const hasGold=S.gold>=cost.gold;
+    const canDo=hasCrystals&&hasGold;
+    return agentCardHTML(h,`openPromoteModal(${h.id})`);
+  }).join('');
+  el.innerHTML=`
+    <div class="info-box"><strong>승급</strong><br>· C등급 또는 B등급 요원을 한 단계 위 등급으로 승급시킵니다.<br>· 승급 조건: Lv.50 + ★4 공명 완료<br>· 승급 시 Lv.1, ★0으로 초기화되며 등급이 한 단계 올라갑니다.<br>· C→B: 속성 결정 10개 + 100만 골드<br>· B→A: 속성 결정 30개 + 300만 골드</div>
+    <div class="section-label">보유 결정</div>
+    ${crystalsBar}
+    <div class="section-label" style="margin-top:16px">승급 가능 요원</div>
+    ${filterBar}
+    <div class="grid-auto">${list||'<div class="empty"><div style="font-size:12px">승급 가능한 요원이 없습니다.<br><span style="color:var(--text3)">Lv.50 + ★4 공명 완료된 C·B등급 요원이 필요합니다.</span></div></div>'}</div>`;
+}
+
+function openPromoteModal(id){
+  const h=S.hunters.find(x=>x.id===id);if(!h||!canPromote(h))return;
+  const nextRank=getPromoteNextRank(h.rank);
+  const cost=PROMOTE_COST[h.rank];
+  const elem=h.elem||'무';
+  const ec=fieldColor(elem);
+  const hasCrystals=(S.crystals[elem]||0)>=cost.crystals;
+  const hasGold=S.gold>=cost.gold;
+  const canDo=hasCrystals&&hasGold;
+  const ico=roleIcon(h.role||'센티넬');
+  showModal(`
+    <div class="modal-title">승급 확인</div>
+    <div class="growth-modal-header">
+      <div class="growth-avatar" style="background:${ec}15">${strokify(SVG[ico],ec,26)}</div>
+      <div style="flex:1;min-width:0">
+        <div class="growth-name">${h.name}</div>
+        <div class="growth-sub">${h.rank}등급 → <span style="color:var(--accent);font-weight:700">${nextRank}등급</span> · ${h.role||'센티넬'} · ${fieldIcon(elem,12)} ${elem}</div>
+      </div>
+    </div>
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin:12px 0;font-size:12px;line-height:1.8">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="color:var(--text2)">${elem} 속성 결정</span>
+        <span style="font-weight:700;color:${hasCrystals?'var(--success)':'var(--danger)'}">${S.crystals[elem]||0} / ${cost.crystals}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="color:var(--text2)">골드</span>
+        <span style="font-weight:700;color:${hasGold?'var(--success)':'var(--danger)'}">${fmtNum(S.gold)} / ${fmtNum(cost.gold)}</span>
+      </div>
+      <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);color:var(--warn);font-size:11px">⚠ 승급 시 레벨이 1로, 공명이 ★0으로 초기화됩니다.</div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" style="flex:1" ${canDo?'':'disabled'} onclick="doPromote(${h.id})">승급 실행</button>
+      <button class="btn btn-outline" style="flex:1" onclick="closeModal()">취소</button>
+    </div>
+  `);
+}
+
+function doPromote(id){
+  const h=S.hunters.find(x=>x.id===id);if(!h||!canPromote(h))return;
+  const nextRank=getPromoteNextRank(h.rank);if(!nextRank)return;
+  const cost=PROMOTE_COST[h.rank];
+  const elem=h.elem||'무';
+  if((S.crystals[elem]||0)<cost.crystals){notify('속성 결정이 부족합니다','err');return;}
+  if(S.gold<cost.gold){notify('골드가 부족합니다','err');return;}
+  S.crystals[elem]-=cost.crystals;
+  S.gold-=cost.gold;
+  const oldRank=h.rank;
+  const wasbloomed=h.bloomed;
+  if(h.bloomed){
+    const bloomCost=BLOOM_COST[oldRank];
+    if(bloomCost){
+      S.crystals[elem]=(S.crystals[elem]||0)+bloomCost.crystals;
+      S.gold+=bloomCost.gold;
+      addLog(`개화 재료 반환: ${elem} 결정 +${bloomCost.crystals}, 골드 +${fmtNum(bloomCost.gold)}`,'good');
+    }
+    h.bloomed=false;
+    if(h.activeSkin==='bloom')h.activeSkin='default';
+  }
+  h.rank=nextRank;
+  h.level=1;
+  h.exp=0;
+  h.awakening=0;
+  const newBase={A:[55,100],B:[35,70]}[nextRank]||[35,70];
+  const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a));
+  const isSentinel=h.role==='센티넬';
+  if(isSentinel){
+    h.atk=Math.round(rnd(newBase[0]*1.4,newBase[1]*1.4));
+    h.def=Math.round(rnd(newBase[0]*0.5,newBase[1]*0.5));
+    h.spd=Math.round(rnd(newBase[0]*0.8,newBase[1]*0.8));
+  } else {
+    h.atk=Math.round(rnd(newBase[0]*0.4,newBase[1]*0.4));
+    h.def=Math.round(rnd(newBase[0]*1.2,newBase[1]*1.2));
+    h.spd=Math.round(rnd(newBase[0]*1.3,newBase[1]*1.3));
+    const focusBase={A:[20,35],B:[12,25]}[nextRank]||[12,25];
+    h.focus=rnd(focusBase[0],focusBase[1]);
+  }
+  addLog(`✦ ${h.name} 승급! ${oldRank}등급 → ${nextRank}등급`,'special');
+  S.stats.totalPromotions=(S.stats.totalPromotions||0)+1;
+  recalcStats();updateAchBadge();
+  logMissionAction('promoteDone',1);
+  closeModal();saveState();render();renderEnhance();
+  playPromoteCutscene(h,oldRank,nextRank,elem,wasbloomed);
+}
+
+function playPromoteCutscene(h,oldRank,newRank,elem,wasbloomed){
+  const ec=fieldColor(elem);
+  const ico=roleIcon(h.role||'센티넬');
+  const tierColors={SS:'#c2860c',S:'#dc2648',A:'#6366f1',B:'#0e7490',C:'#0d9668',D:'#64748b'};
+  const oldColor=tierColors[oldRank]||'#888';
+  const newColor=tierColors[newRank]||'#888';
+
+  const ov=document.createElement('div');
+  ov.className='promote-overlay';
+  ov.innerHTML=`
+    <div class="promote-bg"></div>
+    <div class="promote-center">
+      <div class="promote-stage">
+        <div class="promote-card" id="promo-old">
+          <div class="promote-hex">
+            <div class="promote-hex-bg" style="background:${oldColor}25;border:2px solid ${oldColor}40"></div>
+            <div class="promote-hex-icon">${strokify(SVG[ico],oldColor,42)}</div>
+          </div>
+          <div class="promote-rank" style="color:${oldColor}">${oldRank}</div>
+        </div>
+        <div class="promote-arrow-wrap" id="promo-arrow">
+          <div class="promote-arrow-line" style="background:linear-gradient(90deg,${oldColor},${newColor})"></div>
+          <div class="promote-arrow-text" style="color:${newColor}">PROMOTE</div>
+        </div>
+        <div class="promote-card" id="promo-new">
+          <div class="promote-hex">
+            <div class="promote-hex-bg" style="background:${newColor}25;border:2px solid ${newColor}60;box-shadow:0 0 40px ${newColor}30"></div>
+            <div class="promote-hex-icon">${strokify(SVG[ico],newColor,42)}</div>
+          </div>
+          <div class="promote-rank" style="color:${newColor}">${newRank}</div>
+        </div>
+      </div>
+      <div class="promote-name" id="promo-name">${h.name}</div>
+      <div class="promote-info" id="promo-info">${h.role||'센티넬'} · ${elem}${wasbloomed?' · 개화 재료 반환됨':''}</div>
+    </div>
+  `;
+  document.body.appendChild(ov);
+  ov.addEventListener('mousedown',e=>e.preventDefault());
+  ov.addEventListener('selectstart',e=>e.preventDefault());
+
+  const bg=ov.querySelector('.promote-bg');
+  const oldCard=ov.querySelector('#promo-old');
+  const newCard=ov.querySelector('#promo-new');
+  const arrowWrap=ov.querySelector('#promo-arrow');
+  const arrowLine=arrowWrap.querySelector('.promote-arrow-line');
+  const arrowText=arrowWrap.querySelector('.promote-arrow-text');
+  const nameEl=ov.querySelector('#promo-name');
+  const infoEl=ov.querySelector('#promo-info');
+
+  function spawnParticles(color,count){
+    for(let i=0;i<count;i++){
+      const p=document.createElement('div');
+      p.className='promote-particle';
+      const size=2+Math.random()*4;
+      const x=30+Math.random()*40;
+      const dy=-(40+Math.random()*120);
+      p.style.cssText=`width:${size}px;height:${size}px;background:${color};top:55%;left:${x}%;box-shadow:0 0 ${size*3}px ${color};--dy:${dy}px;animation:promoteParticleRise ${1.2+Math.random()*1}s ${Math.random()*0.8}s ease-out forwards`;
+      ov.appendChild(p);
+      p.addEventListener('animationend',()=>p.remove());
+    }
+  }
+
+  function burstRings(color){
+    for(let i=0;i<3;i++){
+      const ring=document.createElement('div');
+      ring.className='promote-burst-ring';
+      ring.style.cssText=`width:${80+i*40}px;height:${80+i*40}px;border-color:${color};animation:promoteBurstRing ${.8+i*.2}s ${i*.1}s ease-out forwards`;
+      ov.appendChild(ring);
+      ring.addEventListener('animationend',()=>ring.remove());
+    }
+  }
+
+  // Phase 1: bg fade in
+  requestAnimationFrame(()=>{bg.style.opacity='1';});
+
+  // Phase 2: old card appears
+  setTimeout(()=>{
+    oldCard.style.transition='opacity .5s, transform .5s cubic-bezier(.17,.67,.35,1.2)';
+    oldCard.style.opacity='1';oldCard.style.transform='scale(1)';
+    spawnParticles(oldColor,12);
+  },400);
+
+  // Phase 3: old card glows + shakes
+  setTimeout(()=>{
+    const hexBg=oldCard.querySelector('.promote-hex-bg');
+    hexBg.style.background=`${oldColor}50`;
+    hexBg.style.boxShadow=`0 0 30px ${oldColor}60, inset 0 0 20px ${oldColor}30`;
+    let cnt=0;
+    const shake=setInterval(()=>{
+      const x=(Math.random()-.5)*5,y=(Math.random()-.5)*5;
+      oldCard.style.transform=`scale(1) translate(${x}px,${y}px)`;
+      cnt++;if(cnt>16){clearInterval(shake);oldCard.style.transform='scale(1)';}
+    },40);
+  },1200);
+
+  // Phase 4: flash + arrow line draws
+  setTimeout(()=>{
+    const flash=document.createElement('div');
+    flash.style.cssText=`position:absolute;inset:0;background:#fff;opacity:0;z-index:10;pointer-events:none`;
+    ov.appendChild(flash);
+    requestAnimationFrame(()=>{flash.style.transition='opacity .12s';flash.style.opacity='.5';});
+    setTimeout(()=>{flash.style.transition='opacity .5s';flash.style.opacity='0';setTimeout(()=>flash.remove(),500);},120);
+
+    arrowWrap.style.opacity='1';
+    arrowWrap.style.transition='opacity .3s';
+    arrowLine.style.transition='transform .5s cubic-bezier(.22,1,.36,1)';
+    arrowLine.style.transform='scaleX(1)';
+    setTimeout(()=>{arrowText.style.transition='opacity .4s';arrowText.style.opacity='1';},300);
+  },2000);
+
+  // Phase 5: new card pops in with burst
+  setTimeout(()=>{
+    burstRings(newColor);
+    spawnParticles(newColor,20);
+    newCard.style.transition='opacity .4s, transform .6s cubic-bezier(.17,.67,.35,1.5)';
+    newCard.style.opacity='1';newCard.style.transform='scale(1)';
+    const newHex=newCard.querySelector('.promote-hex-bg');
+    newHex.style.animation='promoteGlow 1.5s ease-in-out infinite';
+  },2700);
+
+  // Phase 6: name + info
+  setTimeout(()=>{
+    nameEl.style.transition='opacity .5s, transform .5s';nameEl.style.opacity='1';
+  },3300);
+  setTimeout(()=>{
+    infoEl.style.transition='opacity .5s';infoEl.style.opacity='1';
+  },3600);
+
+  // Phase 7: click to close
+  setTimeout(()=>{
+    ov.style.cursor='pointer';
+    const hint=document.createElement('div');
+    hint.style.cssText='position:absolute;bottom:36px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,0.3);font-size:12px;font-weight:500;letter-spacing:1px;animation:fadeUp .5s ease';
+    hint.textContent='화면을 탭하여 계속';
+    ov.appendChild(hint);
+    function closePromo(){
+      ov.removeEventListener('click',closePromo);
+      bg.style.transition='opacity .4s';bg.style.opacity='0';
+      ov.querySelector('.promote-center').style.transition='opacity .3s, transform .3s';
+      ov.querySelector('.promote-center').style.opacity='0';
+      ov.querySelector('.promote-center').style.transform='scale(.95)';
+      setTimeout(()=>ov.remove(),400);
+    }
+    ov.addEventListener('click',closePromo);
+  },4000);
+}
+
 function renderBloomInEnhance(el){
   if(!el)el=document.getElementById('enhance-content');
   if(!el)return;
-  S.crystals=S.crystals||{'불':0,'물':0,'풀':0,'번개':0,'바람':0,'얼음':0};
+  S.crystals=S.crystals||{'불':0,'물':0,'풀':0,'번개':0,'바람':0,'얼음':0,'무':0};
+  if(!('무' in S.crystals))S.crystals['무']=0;
   const crystalsBar=`<div style="display:flex;gap:8px;flex-wrap:wrap">${FIELDS.map(f=>{
     const c=S.crystals[f]||0;const fc=fieldColor(f);
     return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:8px 14px;display:flex;align-items:center;gap:6px;min-width:90px">
@@ -5566,7 +5872,8 @@ function canBloom(h){
 
 function renderCrystalsBar(targetId){
   const el=document.getElementById(targetId);if(!el)return;
-  S.crystals=S.crystals||{'불':0,'물':0,'풀':0,'번개':0,'바람':0,'얼음':0};
+  S.crystals=S.crystals||{'불':0,'물':0,'풀':0,'번개':0,'바람':0,'얼음':0,'무':0};
+  if(!('무' in S.crystals))S.crystals['무']=0;
   el.innerHTML=`<div style="display:flex;gap:8px;flex-wrap:wrap">${FIELDS.map(f=>{
     const c=S.crystals[f]||0;const fc=fieldColor(f);
     return `<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:8px 14px;display:flex;align-items:center;gap:6px;min-width:90px">
@@ -6037,7 +6344,8 @@ function craftCrystal(){
   if((S.shards||0)<10){notify('결정 파편이 부족합니다 (필요: 10)','err');return;}
   S.shards-=10;
   const elem=FIELDS[Math.floor(Math.random()*FIELDS.length)];
-  S.crystals=S.crystals||{'불':0,'물':0,'풀':0,'번개':0,'바람':0,'얼음':0};
+  S.crystals=S.crystals||{'불':0,'물':0,'풀':0,'번개':0,'바람':0,'얼음':0,'무':0};
+  if(!('무' in S.crystals))S.crystals['무']=0;
   S.crystals[elem]=(S.crystals[elem]||0)+1;
   const fc=fieldColor(elem);
   addLog(`결정 제작: 파편 10 → ${elem} 결정 +1`,'good');
