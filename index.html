@@ -285,6 +285,25 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
 .codex-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;text-align:center;transition:.2s;box-shadow:var(--shadow)}
 .codex-card.seen:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover)}
 .codex-card.unseen{opacity:.25;filter:grayscale(1)}
+.skin-icon-bar{display:flex;gap:4px;overflow-x:auto;padding:4px 2px 12px;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.skin-icon-bar::-webkit-scrollbar{height:4px}
+.skin-icon-bar::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.skin-icon-btn{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;flex-shrink:0;min-width:56px;transition:.15s}
+.skin-icon-btn .skin-icon-img{width:48px;height:48px;border-radius:10px;overflow:hidden;border:2.5px solid var(--border);transition:.2s;background:var(--surface2);display:flex;align-items:center;justify-content:center}
+.skin-icon-btn .skin-icon-img img{width:100%;height:100%;object-fit:cover}
+.skin-icon-btn:hover .skin-icon-img{border-color:var(--accent);transform:scale(1.05)}
+.skin-icon-btn.active .skin-icon-img{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-glow),0 2px 8px rgba(79,70,229,0.2)}
+.skin-icon-btn .skin-icon-name{font-size:10px;font-weight:600;color:var(--text3);white-space:nowrap;max-width:56px;overflow:hidden;text-overflow:ellipsis;text-align:center}
+.skin-icon-btn.active .skin-icon-name{color:var(--accent);font-weight:700}
+.skin-display-area{margin-top:8px}
+.skin-display-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px}
+.skin-display-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;cursor:pointer;transition:.2s;box-shadow:var(--shadow);aspect-ratio:3/4;position:relative}
+.skin-display-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:var(--shadow-hover)}
+.skin-display-card img{width:100%;height:100%;object-fit:cover}
+.skin-display-card .skin-card-label{position:absolute;bottom:0;left:0;right:0;padding:8px 10px;background:linear-gradient(transparent,rgba(0,0,0,0.75));color:#fff;font-size:11px;font-weight:600;text-align:center}
+.skin-display-empty{text-align:center;color:var(--text3);padding:60px 0;font-size:13px}
+.skin-lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:pointer;animation:fadeUp .2s ease}
+.skin-lightbox img{max-width:92vw;max-height:92vh;object-fit:contain;border-radius:var(--radius-lg);box-shadow:0 0 60px rgba(0,0,0,0.5)}
 
 /* ── EXCHANGE ────────────────────────────────────────────────── */
 .exchange-control{display:flex;align-items:center;justify-content:center;gap:12px;margin:20px 0}
@@ -816,7 +835,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
   </button>
   <button class="nav-item" onclick="goTab('codex')" id="nav-codex">
     <svg class="ni" width="15" height="15" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-    요원 도감
+    도감
   </button>
   <button class="nav-item" onclick="goTab('settings')" id="nav-settings">
     <svg class="ni" width="15" height="15" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -1197,9 +1216,26 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
 
 <!-- CODEX -->
 <div class="panel" id="panel-codex">
-  <div class="page-title">요원 도감</div>
-  <div class="page-sub">특수 모집 요원 기록 · 아크 프리마 / 뱅가드 / 에이전트 / 하모니 / R.S.T.</div>
-  <div class="codex-grid" id="codex-grid"></div>
+  <div class="page-title">도감</div>
+  <div style="display:flex;gap:8px;margin-bottom:20px">
+    <button class="btn btn-primary btn-sm" id="codex-tab-agent" onclick="switchCodexTab('agent')">요원</button>
+    <button class="btn btn-outline btn-sm" id="codex-tab-skin" onclick="switchCodexTab('skin')">스킨</button>
+  </div>
+  <div id="codex-agent-section">
+    <div class="page-sub">특수 모집 요원 기록 · 아크 프리마 / 뱅가드 / 에이전트 / 하모니 / R.S.T.</div>
+    <div class="codex-grid" id="codex-grid"></div>
+  </div>
+  <div id="codex-skin-section" style="display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div class="page-sub" style="margin-bottom:0">획득한 스킨 일러스트 컬렉션</div>
+      <select id="skin-sort-select" onchange="renderSkinCollection()" style="padding:6px 10px;border:1px solid var(--border);border-radius:var(--radius);font-size:12px;background:var(--surface);color:var(--text);cursor:pointer">
+        <option value="newest">최신 획득 순</option>
+        <option value="most">많은 이미지 순</option>
+        <option value="least">적은 이미지 순</option>
+      </select>
+    </div>
+    <div id="skin-collection-grid"></div>
+  </div>
 </div>
 
 <!-- SETTINGS -->
@@ -1902,7 +1938,7 @@ let S={
   expeditionPool:[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14], dungeonPool:[0,1,2,3,4,5,6,7,8,9,10,11,12,13], raidPool:[0,1,2,3,4,5,6,7,8,9,10],
   lastFreeGacha:0,
   stats:{totalSummons:0,sSummons:0,sOwned:0,ssOwned:0,hunterCount:0,elemVariety:0,clsVariety:0,totalMissions:0,raidCleared:0,dungeonCleared:0,expeditionCleared:0,questCleared:0,totalGoldEarned:0,totalFame:0,maxHunterLv:1,totalAwakens:0,maxAwakening:0,totalPairings:0,sameElemPairings:0,maxPower:0,guideCount:0,codexCount:0,guildLevel:1,totalFeeds:0,totalDiaEarned:0,maxConcurrentMissions:0,fireCount:0,waterCount:0,grassCount:0,lightningCount:0,windCount:0,iceCount:0,vanguard1Count:0,vanguard2Count:0,harmonySupportCount:0,harmonyCoreCount:0,rstCount:0,agentGroupCount:0,acolyteGroupCount:0,specialGroupsComplete:0},
-  achClaimed:{}, codexSeen:[], clearedContent:{}, trainingSlots:[], pairSlots:[], guidingSlots:[],
+  achClaimed:{}, codexSeen:[], clearedContent:{}, trainingSlots:[], pairSlots:[], guidingSlots:[], skinAcquiredAt:{},
   exchAmt:1,
   // 일일/주간 미션
   dailyMissions:null, weeklyMissions:null,
@@ -2085,7 +2121,7 @@ function goTab(tab){
   }
   if(tab==='missions')renderMissions();
   if(tab==='achievement')renderAchievements();
-  if(tab==='codex')renderCodex();
+  if(tab==='codex'){if(_codexTab==='skin')renderSkinCollection();else renderCodex();}
   if(tab==='enhance')renderEnhance();
   if(tab==='training')renderTraining();
   if(tab==='guiding')renderGuiding();
@@ -3032,6 +3068,8 @@ function doGachaNormal(count){
     const tier=rollTierNormal();
     const agent=makeAgentNormal(tier);
     S.hunters.push(agent);
+	if(!S.skinAcquiredAt)S.skinAcquiredAt={};
+    if(!S.skinAcquiredAt[agent.name+'::default'])S.skinAcquiredAt[agent.name+'::default']=Date.now();
     results.push(agent);
     S.stats.totalSummons++;
   }
@@ -3058,6 +3096,8 @@ function doGachaSpecial(count){
     const tier=rollTierSpecial();
     const agent=makeAgentSpecial(tier);
     S.hunters.push(agent);
+	if(!S.skinAcquiredAt)S.skinAcquiredAt={};
+    if(!S.skinAcquiredAt[agent.name+'::default'])S.skinAcquiredAt[agent.name+'::default']=Date.now();
     results.push(agent);
     S.stats.totalSummons++;
     S.specialPulls=(S.specialPulls||0)+1;
@@ -3137,6 +3177,8 @@ function doGachaSecret(count){
     const tier=rollTierSecret();
     const agent=makeAgentSecret(tier);
     S.hunters.push(agent);
+	if(!S.skinAcquiredAt)S.skinAcquiredAt={};
+    if(!S.skinAcquiredAt[agent.name+'::default'])S.skinAcquiredAt[agent.name+'::default']=Date.now();
     results.push(agent);
     S.stats.totalSummons++;
     S.secretPulls=(S.secretPulls||0)+1;
@@ -3203,6 +3245,8 @@ function doRecruitPrima(name){
   agent.name=entry.name;agent.elem=entry.field;agent.group=entry.group;
   if(!S.codexSeen.includes(entry.name))S.codexSeen.push(entry.name);
   S.hunters.push(agent);
+  if(!S.skinAcquiredAt)S.skinAcquiredAt={};
+    if(!S.skinAcquiredAt[agent.name+'::default'])S.skinAcquiredAt[agent.name+'::default']=Date.now();
   S.stats.totalSummons++;S.stats.sSummons++;
   S.stats.sOwned=S.hunters.filter(h=>h.rank==='S'||h.rank==='SS').length;
   recalcStats();updateAchBadge();
@@ -3223,6 +3267,8 @@ function doGachaFree(){
   const tier=rollTierNormal();
   const agent=makeAgentNormal(tier);
   S.hunters.push(agent);
+  if(!S.skinAcquiredAt)S.skinAcquiredAt={};
+    if(!S.skinAcquiredAt[agent.name+'::default'])S.skinAcquiredAt[agent.name+'::default']=Date.now();
   S.stats.totalSummons++;
   recalcStats();updateAchBadge();
   showGachaResult([agent],'normal');
@@ -5538,6 +5584,8 @@ function doBloom(id){
   S.hunters=S.hunters.filter(x=>x.id!==dupes[0].id);
   // 개화 적용
   h.bloomed=true;
+  if(!S.skinAcquiredAt)S.skinAcquiredAt={};
+  if(!S.skinAcquiredAt[h.name+'::bloom'])S.skinAcquiredAt[h.name+'::bloom']=Date.now();
   if(SKIN_DB[h.name]?.bloom) h.activeSkin='bloom';
   h.atk=Math.floor(h.atk*1.35);
   h.def=Math.floor(h.def*1.35);
@@ -5949,6 +5997,135 @@ function renderCodex(){
 }
 
 // ═══════════════════════════════════════════════════════════════════
+// CODEX SUB-TABS (요원/스킨)
+// ═══════════════════════════════════════════════════════════════════
+let _codexTab='agent';
+function switchCodexTab(tab){
+  _codexTab=tab;
+  document.getElementById('codex-tab-agent').className='btn '+(tab==='agent'?'btn-primary':'btn-outline')+' btn-sm';
+  document.getElementById('codex-tab-skin').className='btn '+(tab==='skin'?'btn-primary':'btn-outline')+' btn-sm';
+  document.getElementById('codex-agent-section').style.display=tab==='agent'?'':'none';
+  document.getElementById('codex-skin-section').style.display=tab==='skin'?'':'none';
+  if(tab==='agent')renderCodex();
+  if(tab==='skin')renderSkinCollection();
+}
+
+let _skinOpenAgent=null;
+function renderSkinCollection(){
+  if(!S.skinAcquiredAt)S.skinAcquiredAt={};
+  const grid=document.getElementById('skin-collection-grid');if(!grid)return;
+  const sortMode=document.getElementById('skin-sort-select')?.value||'newest';
+
+  // 특수 요원 중 보유한 요원만 (이름 기준 중복 제거)
+  const ownedSpecialNames=[...new Set(S.hunters.filter(h=>h.isSpecial).map(h=>h.name))];
+  if(!ownedSpecialNames.length){
+    grid.innerHTML='<div class="skin-display-empty">아직 획득한 특수 요원이 없습니다.</div>';
+    return;
+  }
+
+  // 요원별 스킨 데이터 수집
+  const agentSkinData=ownedSpecialNames.map(name=>{
+    const skins=SKIN_DB[name];
+    if(!skins)return null;
+    const hunterInstances=S.hunters.filter(h=>h.name===name);
+    const ownedList=[];
+    if(skins.default) ownedList.push({id:'default',label:'기본',url:skins.default,acquiredAt:S.skinAcquiredAt[name+'::default']||0});
+    if(skins.bloom && hunterInstances.some(h=>h.bloomed)) ownedList.push({id:'bloom',label:'개화',url:skins.bloom,acquiredAt:S.skinAcquiredAt[name+'::bloom']||0});
+    hunterInstances.forEach(h=>{
+      (h.ownedSkins||[]).forEach(sid=>{
+        if(skins[sid]&&!ownedList.find(o=>o.id===sid)){
+          const url=typeof skins[sid]==='string'?skins[sid]:(skins[sid].url||null);
+          const label=typeof skins[sid]==='string'?sid:(skins[sid].label||sid);
+          ownedList.push({id:sid,label,url,acquiredAt:S.skinAcquiredAt[name+'::'+sid]||0});
+        }
+      });
+    });
+    if(!ownedList.length)return null;
+    const firstAcquired=Math.min(...ownedList.map(s=>s.acquiredAt||Infinity));
+    return {name,skins:ownedList,firstAcquired,count:ownedList.length};
+  }).filter(Boolean);
+
+  if(!agentSkinData.length){
+    grid.innerHTML='<div class="skin-display-empty">스킨 데이터가 없습니다.</div>';
+    return;
+  }
+
+  // 정렬
+  if(sortMode==='newest') agentSkinData.sort((a,b)=>b.firstAcquired-a.firstAcquired);
+  else if(sortMode==='most') agentSkinData.sort((a,b)=>b.count-a.count||(b.firstAcquired-a.firstAcquired));
+  else if(sortMode==='least') agentSkinData.sort((a,b)=>a.count-b.count||(b.firstAcquired-a.firstAcquired));
+
+  // 선택된 요원이 없거나 목록에 없으면 첫 번째로
+  if(!_skinOpenAgent || !agentSkinData.find(a=>a.name===_skinOpenAgent)){
+    _skinOpenAgent=agentSkinData[0].name;
+  }
+  const selected=agentSkinData.find(a=>a.name===_skinOpenAgent);
+
+  // 상단 아이콘 바 — SKIN_DB의 default 이미지를 썸네일로 사용
+  const iconBar=agentSkinData.map(ag=>{
+    const isActive=ag.name===_skinOpenAgent;
+    const thumbUrl=ag.skins[0]?.url||'';
+    const codexEntry=[...(S_CODEX||[]),...(SECRET_POOL||[])].find(c=>c.name===ag.name);
+    const col=codexEntry?fieldColor(codexEntry.field):'var(--accent)';
+    const ico=codexEntry?roleIcon(codexEntry.role):'sword';
+    const fallbackHtml=`<div style="width:100%;height:100%;background:${col}15;display:flex;align-items:center;justify-content:center">${strokify(SVG[ico],col,22)}</div>`;
+    const imgHtml=thumbUrl
+      ?`<img src="${thumbUrl}" alt="${ag.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div style="display:none;width:100%;height:100%;background:${col}15;align-items:center;justify-content:center">${strokify(SVG[ico],col,22)}</div>`
+      :fallbackHtml;
+    return `<div class="skin-icon-btn${isActive?' active':''}" onclick="selectSkinAgent('${ag.name}')">
+      <div class="skin-icon-img">${imgHtml}</div>
+      <div class="skin-icon-name">${ag.name}</div>
+    </div>`;
+  }).join('');
+
+  // 하단 갤러리
+  let gallery='';
+  if(selected){
+    const codexEntry=[...(S_CODEX||[]),...(SECRET_POOL||[])].find(c=>c.name===selected.name);
+    const agentInfo=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+      <div style="font-size:16px;font-weight:800;color:var(--text)">${selected.name}</div>
+      ${codexEntry?`<span style="font-size:11px;color:var(--text3)">${codexEntry.group||''}</span>`:''}
+      <span style="font-size:12px;color:var(--text3);margin-left:auto">${selected.count}장</span>
+    </div>`;
+
+    gallery=`${agentInfo}<div class="skin-display-grid">
+      ${selected.skins.map(sk=>{
+        const skinLabel=sk.label||sk.id;
+        return `<div class="skin-display-card" onclick="openSkinLightbox('${sk.url}')">
+          <img src="${sk.url}" alt="${skinLabel}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=\\'padding:40px 20px;text-align:center;color:var(--text3);font-size:12px\\'>이미지 없음</div>'">
+          <div class="skin-card-label">${skinLabel}</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }
+
+  grid.innerHTML=`
+    <div class="skin-icon-bar">${iconBar}</div>
+    <div class="skin-display-area">${gallery}</div>
+  `;
+}
+
+function selectSkinAgent(name){
+  _skinOpenAgent=name;
+  renderSkinCollection();
+}
+
+function toggleSkinAgent(name){
+  _skinOpenAgent=_skinOpenAgent===name?null:name;
+  renderSkinCollection();
+}
+
+function openSkinLightbox(url){
+  const lb=document.createElement('div');
+  lb.className='skin-lightbox';
+  lb.onclick=()=>lb.remove();
+  lb.innerHTML=`<img src="${url}" onclick="event.stopPropagation()">`;
+  document.body.appendChild(lb);
+  const esc=e=>{if(e.key==='Escape'){lb.remove();document.removeEventListener('keydown',esc);}};
+  document.addEventListener('keydown',esc);
+}
+
+// ═══════════════════════════════════════════════════════════════════
 // EXCHANGE
 // ═══════════════════════════════════════════════════════════════════
 function openExchangeModal(){
@@ -6261,6 +6438,14 @@ function init(){
     _imgCache[url] = img;
   };
   S.exchAmt=S.exchAmt||1;
+  // 기존 보유 요원 스킨 획득 시간 마이그레이션
+  if(!S.skinAcquiredAt)S.skinAcquiredAt={};
+  S.hunters.forEach(h=>{
+    if(h.isSpecial&&SKIN_DB[h.name]){
+      if(!S.skinAcquiredAt[h.name+'::default'])S.skinAcquiredAt[h.name+'::default']=1;
+      if(h.bloomed&&SKIN_DB[h.name]?.bloom&&!S.skinAcquiredAt[h.name+'::bloom'])S.skinAcquiredAt[h.name+'::bloom']=2;
+    }
+  });
   checkMissionReset();
   // Tick loop
   setInterval(()=>{
