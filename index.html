@@ -433,6 +433,14 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
   .ach-name{font-size:12px}
   .ach-desc{font-size:10px}
   .codex-card{padding:12px 8px}
+  /* ── 스킨 도감 모바일 ── */
+  .skin-icon-bar{gap:3px;padding:2px 0 10px}
+  .skin-icon-btn{min-width:50px;gap:3px}
+  .skin-icon-btn .skin-icon-img{width:42px;height:42px;border-radius:8px;border-width:2px}
+  .skin-icon-btn .skin-icon-name{font-size:9px;max-width:50px}
+  .skin-display-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+  .skin-display-card .skin-card-label{padding:5px 6px;font-size:10px}
+  .skin-lightbox img{max-width:95vw;max-height:85vh;border-radius:8px}
   .notif{right:12px;left:12px;bottom:80px;max-width:none;font-size:12px;padding:10px 14px}
   /* ── 퀵 액션 ── */
   .dash-quick-actions{display:flex;gap:6px;margin-bottom:14px}
@@ -467,6 +475,11 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
   .grid-auto{grid-template-columns:1fr;gap:5px}
   .ach-grid{grid-template-columns:1fr}
   .codex-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}
+  /* ── 스킨 도감 소형 모바일 ── */
+  .skin-icon-btn{min-width:44px;gap:2px}
+  .skin-icon-btn .skin-icon-img{width:36px;height:36px;border-radius:7px}
+  .skin-icon-btn .skin-icon-name{font-size:8px;max-width:44px}
+  .skin-display-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:6px}
   .mob-btn{padding:5px 2px 7px;font-size:8px}
   .mob-btn svg{width:16px;height:16px}
   .dash-quick-actions{gap:4px}
@@ -1226,9 +1239,9 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
     <div class="codex-grid" id="codex-grid"></div>
   </div>
   <div id="codex-skin-section" style="display:none">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
       <div class="page-sub" style="margin-bottom:0">획득한 스킨 일러스트 컬렉션</div>
-      <select id="skin-sort-select" onchange="renderSkinCollection()" style="padding:6px 10px;border:1px solid var(--border);border-radius:var(--radius);font-size:12px;background:var(--surface);color:var(--text);cursor:pointer">
+      <select id="skin-sort-select" onchange="renderSkinCollection()" style="padding:6px 10px;border:1px solid var(--border);border-radius:var(--radius);font-size:12px;background:var(--surface);color:var(--text);cursor:pointer;flex-shrink:0">
         <option value="newest">최신 획득 순</option>
         <option value="most">많은 이미지 순</option>
         <option value="least">적은 이미지 순</option>
@@ -6061,17 +6074,16 @@ function renderSkinCollection(){
   }
   const selected=agentSkinData.find(a=>a.name===_skinOpenAgent);
 
-  // 상단 아이콘 바 — default.png 우선, 없으면 base.png, 그래도 없으면 아이콘 폴백
+  // 상단 아이콘 바 — SKIN_DB의 default 이미지를 썸네일로 사용
   const iconBar=agentSkinData.map(ag=>{
     const isActive=ag.name===_skinOpenAgent;
-    const baseUrl=ag.skins[0]?.url||'';
-    const iconUrl=baseUrl?baseUrl.replace(/\/base\.png$/,'/default.png'):'';
+    const thumbUrl=ag.skins[0]?.url||'';
     const codexEntry=[...(S_CODEX||[]),...(SECRET_POOL||[])].find(c=>c.name===ag.name);
     const col=codexEntry?fieldColor(codexEntry.field):'var(--accent)';
     const ico=codexEntry?roleIcon(codexEntry.role):'sword';
     const fallbackHtml=`<div style="width:100%;height:100%;background:${col}15;display:flex;align-items:center;justify-content:center">${strokify(SVG[ico],col,22)}</div>`;
-    const imgHtml=iconUrl
-      ?`<img src="${iconUrl}" alt="${ag.name}" onerror="this.onerror=null;if(this.src.includes('/default.png')){this.src='${baseUrl}';}else{this.style.display='none';this.nextElementSibling.style.display='flex';}"><div style="display:none;width:100%;height:100%;background:${col}15;align-items:center;justify-content:center">${strokify(SVG[ico],col,22)}</div>`
+    const imgHtml=thumbUrl
+      ?`<img src="${thumbUrl}" alt="${ag.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div style="display:none;width:100%;height:100%;background:${col}15;align-items:center;justify-content:center">${strokify(SVG[ico],col,22)}</div>`
       :fallbackHtml;
     return `<div class="skin-icon-btn${isActive?' active':''}" onclick="selectSkinAgent('${ag.name}')">
       <div class="skin-icon-img">${imgHtml}</div>
