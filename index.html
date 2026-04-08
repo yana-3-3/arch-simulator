@@ -2600,6 +2600,7 @@ function renderSelGrid(){
   const grid=document.getElementById('sel-pick-grid');if(!grid)return;
   const mElem=_selContent.elem||'무';
   let avail=S.hunters.filter(h=>!h.busy);
+  if(_selContent&&_selContent.type==='quest')avail=avail.filter(h=>(h.role||'센티넬')!=='가이드');
   if(_selFilter==='special')avail=avail.filter(h=>h.isSpecial);
   else if(_selFilter==='normal')avail=avail.filter(h=>!h.isSpecial);
   // 정렬
