@@ -6896,14 +6896,16 @@ const COUPON_DB = {
 function redeemCoupon() {
   const input = document.getElementById('coupon-input');
   if (!input) return;
-  const code = input.value.trim().toUpperCase();
-  if (!code) { notify('쿠폰 코드를 입력해주세요.', 'err'); return; }
+  const rawCode = input.value.trim();
+  if (!rawCode) { notify('쿠폰 코드를 입력해주세요.', 'err'); return; }
 
+  // 대소문자 구분 없이 쿠폰 검색
+  const code = Object.keys(COUPON_DB).find(k => k.toLowerCase() === rawCode.toLowerCase());
+  if (!code) { notify('유효하지 않은 쿠폰 코드입니다.', 'err'); return; }
   const coupon = COUPON_DB[code];
-  if (!coupon) { notify('유효하지 않은 쿠폰 코드입니다.', 'err'); return; }
 
   S.usedCoupons = S.usedCoupons || [];
-  if (S.usedCoupons.includes(code)) { notify('이미 사용한 쿠폰입니다.', 'err'); return; }
+  if (S.usedCoupons.some(c => c.toLowerCase() === code.toLowerCase())) { notify('이미 사용한 쿠폰입니다.', 'err'); return; }
 
   // 보상 지급
   const r = coupon.rewards;
