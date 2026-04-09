@@ -5579,12 +5579,7 @@ function checkMissionReset(){
         S.weeklyActionLog.days10missions=(S.weeklyActionLog.days10missions||0)+1;
       }
     }
-    // 일일 게이지 보상 수령 횟수 -> 주간에 반영
-    const dailyClaimedCount=Object.keys(S.dailyClaimed||{}).length;
-    if(dailyClaimedCount>0){
-      S.weeklyActionLog=S.weeklyActionLog||{};
-      S.weeklyActionLog.dailyRewardsClaimed=(S.weeklyActionLog.dailyRewardsClaimed||0)+dailyClaimedCount;
-    }
+    // 일일 게이지 보상 수령 횟수는 claimMissionReward()에서 실시간 반영됨
     // 리셋
     const pool=[...Array(DAILY_MISSION_POOL.length).keys()];
     const shuffled=pool.sort(()=>Math.random()-0.5);
@@ -5689,6 +5684,9 @@ function claimMissionReward(type,tier){
   claimed[tier]=true;
   if(type==='daily'){
     S.gold+=20000;
+    // 주간 미션 실시간 반영: 일일 게이지 보상 수령 횟수
+    S.weeklyActionLog=S.weeklyActionLog||{};
+    S.weeklyActionLog.dailyRewardsClaimed=(S.weeklyActionLog.dailyRewardsClaimed||0)+1;
     addLog(`[일일 미션] ${needed}pt 보상 수령 — G +20,000`,'good');
     notify('✓ 일일 미션 보상: 골드 20,000 획득!','ok');
   } else {
@@ -5698,6 +5696,18 @@ function claimMissionReward(type,tier){
   }
   saveState();render();renderMissions();
 }
+
+// ── 기존 일일 보상 수령분 주간 로그 보정 (1회성 마이그레이션) ──
+(function migrateDailyClaimedToWeekly(){
+  if(S._dailyClaimedMigrated) return;
+  const count=Object.keys(S.dailyClaimed||{}).length;
+  if(count>0){
+    S.weeklyActionLog=S.weeklyActionLog||{};
+    S.weeklyActionLog.dailyRewardsClaimed=(S.weeklyActionLog.dailyRewardsClaimed||0)+count;
+  }
+  S._dailyClaimedMigrated=true;
+  saveState();
+})();
 
 // ── 미션 뱃지 업데이트 ──
 function updateMissionBadge(){
