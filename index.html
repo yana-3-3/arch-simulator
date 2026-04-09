@@ -303,7 +303,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
 .skin-display-card .skin-card-label{position:absolute;bottom:0;left:0;right:0;padding:8px 10px;background:linear-gradient(transparent,rgba(0,0,0,0.75));color:#fff;font-size:11px;font-weight:600;text-align:center}
 .skin-display-empty{text-align:center;color:var(--text3);padding:60px 0;font-size:13px}
 .skin-lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:9999;display:flex;align-items:center;justify-content:center;cursor:pointer;animation:fadeUp .2s ease}
-.skin-lightbox img{max-width:92vw;max-height:92vh;object-fit:contain;border-radius:var(--radius-lg);box-shadow:0 0 60px rgba(0,0,0,0.5)}
+.skin-lightbox img{max-width:92vw;max-height:92vh;object-fit:contain;border-radius:var(--radius-lg);box-shadow:0 0 60px rgba(0,0,0,0.5);-webkit-user-select:none;user-select:none;-webkit-user-drag:none;pointer-events:none}
 
 /* ── EXCHANGE ────────────────────────────────────────────────── */
 .exchange-control{display:flex;align-items:center;justify-content:center;gap:12px;margin:20px 0}
@@ -6506,7 +6506,8 @@ function openSkinLightbox(url){
   const lb=document.createElement('div');
   lb.className='skin-lightbox';
   lb.onclick=()=>lb.remove();
-  lb.innerHTML=`<img src="${url}" onclick="event.stopPropagation()">`;
+  lb.innerHTML=`<img src="${url}" onclick="event.stopPropagation()" oncontextmenu="return false" ondragstart="return false">`;
+  lb.oncontextmenu=e=>e.preventDefault();
   document.body.appendChild(lb);
   const esc=e=>{if(e.key==='Escape'){lb.remove();document.removeEventListener('keydown',esc);}};
   document.addEventListener('keydown',esc);
