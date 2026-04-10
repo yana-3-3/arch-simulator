@@ -7174,26 +7174,26 @@ async function doReset(){
   _fbPendingData=null;
   _fbLastSaved='';
   clearTimeout(_fbSaveTimer);
-  if(window._fbReady && window._fbUser){
-    const uid=window._fbUser.uid;
-    const fb=window.firebaseFs,db=window.firebaseDb;
+  const uid=(window._fbUser||{}).uid||(window.firebaseAuth&&window.firebaseAuth.currentUser&&window.firebaseAuth.currentUser.uid);
+  const fb=window.firebaseFs,db=window.firebaseDb;
+  // 1) 세이브 초기화
+  if(uid&&fb&&db){
+    try{await fb.setDoc(fb.doc(db,'saves',uid),{data:'',updatedAt:Date.now()});}catch(e){console.warn('[ARCH] save reset fail',e);}
+    // 2) 쿠폰 사용 기록 초기화
     try{
-      await window._fbSetDoc(window._fbDoc(window._fbDb,'saves',uid),{data:'',updatedAt:Date.now()});
-      if(fb&&db){
-        const snap=await fb.getDocs(fb.collection(db,'coupons'));
-        for(const d of snap.docs){
-          const data=d.data();
-          const usedBy=data.usedBy;
-          if(usedBy&&typeof usedBy==='object'&&!Array.isArray(usedBy)&&uid in usedBy){
-            const newUsedBy=Object.assign({},usedBy);
-            delete newUsedBy[uid];
-            await fb.setDoc(fb.doc(db,'coupons',d.id),{...data,usedBy:newUsedBy});
-          }
+      const snap=await fb.getDocs(fb.collection(db,'coupons'));
+      const docs=[];snap.forEach(d=>docs.push(d));
+      for(let i=0;i<docs.length;i++){
+        const d=docs[i],data=d.data(),usedBy=data.usedBy||{};
+        if(typeof usedBy==='object'&&!Array.isArray(usedBy)&&usedBy[uid]!=null){
+          const newUsedBy=Object.assign({},usedBy);
+          delete newUsedBy[uid];
+          await fb.setDoc(fb.doc(db,'coupons',d.id),Object.assign({},data,{usedBy:newUsedBy}));
         }
       }
-    }catch(e){console.warn('[ARCH] reset failed',e);}
+    }catch(e){console.warn('[ARCH] coupon reset fail',e);}
   }
-  setTimeout(()=>location.reload(), 500);
+  setTimeout(()=>location.reload(),500);
 }
 
 // ═══════════════════════════════════════════════════════════════════
