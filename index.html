@@ -7404,6 +7404,8 @@ const COUPON_DB = {
 };
 
 async function redeemCoupon(){
+  window.COUPONS=window.COUPONS||{};
+  const COUPONS=window.COUPONS;
   const input=document.getElementById('coupon-input');
   const code=(input.value||'').trim().toUpperCase();
   if(!code){notify('쿠폰 코드를 입력하세요','err');return;}
