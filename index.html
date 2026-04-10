@@ -7521,13 +7521,110 @@ if(sessionStorage.getItem('ownerLoggedIn')==='1'){
 
 init();
 </script>
+<style>
+#ac-modal{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:10000;display:flex;align-items:center;justify-content:center;font-family:-apple-system,sans-serif}
+#ac-modal *{box-sizing:border-box}
+.ac-box{background:#14161a;color:#e6e6e6;border:1px solid #2a2f38;border-radius:12px;width:94%;max-width:680px;max-height:90vh;display:flex;flex-direction:column;overflow:hidden}
+.ac-hd{padding:14px 18px;border-bottom:1px solid #2a2f38;display:flex;justify-content:space-between;align-items:center;background:#1a1d23}
+.ac-hd h3{margin:0;font-size:15px;letter-spacing:.5px}
+.ac-hd button{background:transparent;border:0;color:#888;font-size:22px;cursor:pointer}
+.ac-tabs{display:flex;border-bottom:1px solid #2a2f38;background:#16191f}
+.ac-tab{flex:1;padding:10px;background:transparent;border:0;color:#888;cursor:pointer;font-size:13px;border-bottom:2px solid transparent}
+.ac-tab.on{color:#6cf;border-bottom-color:#6cf}
+.ac-body{padding:16px 18px;overflow:auto;flex:1}
+.ac-row{display:flex;gap:8px;margin:6px 0}
+.ac-row>*{flex:1;min-width:0}
+.ac-inp,.ac-sel{width:100%;padding:9px 11px;background:#0f1115;color:#fff;border:1px solid #2a2f38;border-radius:6px;font-size:13px;outline:none}
+.ac-inp:focus,.ac-sel:focus{border-color:#4a7}
+.ac-lbl{display:block;font-size:11px;color:#888;margin:10px 0 4px;text-transform:uppercase;letter-spacing:.5px}
+.ac-chk{display:flex;align-items:center;gap:8px;padding:9px 11px;background:#0f1115;border:1px solid #2a2f38;border-radius:6px;cursor:pointer;user-select:none;font-size:13px}
+.ac-chk input{margin:0}
+.ac-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ac-btn{padding:10px 14px;border:0;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600}
+.ac-btn-pri{background:#4a7;color:#0a0c0f}
+.ac-btn-pri:hover{background:#5c8}
+.ac-btn-gh{background:#2a2f38;color:#ccc}
+.ac-btn-dg{background:#532;color:#fbb}
+.ac-card{background:#1a1d23;border:1px solid #2a2f38;border-radius:8px;padding:12px 14px;margin-bottom:8px}
+.ac-card-hd{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ac-code{font-family:monospace;font-size:14px;color:#6cf;font-weight:700;letter-spacing:1px}
+.ac-meta{font-size:11px;color:#777;margin-top:6px;line-height:1.6}
+.ac-chip{display:inline-block;padding:2px 8px;background:#0f1115;border:1px solid #2a2f38;border-radius:10px;margin:2px 4px 2px 0;font-size:11px;color:#bbb}
+.ac-empty{text-align:center;color:#666;padding:40px 20px;font-size:13px}
+.ac-fab{position:fixed;right:18px;bottom:18px;width:52px;height:52px;border-radius:50%;background:#1a1d23;color:#fff;border:1px solid #3a3f48;font-size:22px;z-index:9999;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.5)}
+.ac-fab:hover{background:#252932}
+</style>
 <script>
 const ADMIN_UID='VaPbIcFV4BbtyphVnWtmhYDiT612';
-window.addEventListener('load',()=>{const ck=setInterval(()=>{const u=window.firebaseAuth?.currentUser;if(!u)return;clearInterval(ck);if(u.uid!==ADMIN_UID)return;const b=document.createElement('button');b.textContent='🛠️';b.style.cssText='position:fixed;right:16px;bottom:16px;width:48px;height:48px;border-radius:50%;background:#222;color:#fff;border:1px solid #555;font-size:20px;z-index:9999;cursor:pointer';b.onclick=openAdminPanel;document.body.appendChild(b);},500);});
-async function openAdminPanel(){const fb=window.firebaseFs,db=window.firebaseDb;const sn=await fb.getDocs(fb.collection(db,'coupons'));const list=[];sn.forEach(d=>list.push({code:d.id,...d.data()}));window._coupons=list;const html=`<div id="ac-modal" style="position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:10000;display:flex;align-items:center;justify-content:center" onclick="if(event.target===this)this.remove()"><div style="background:#1a1a1a;color:#eee;padding:20px;border-radius:8px;max-width:620px;width:92%;max-height:88vh;overflow:auto;font-family:sans-serif"><h3 style="margin:0 0 10px">🛠️ 쿠폰 관리</h3><div style="border:1px solid #444;padding:10px;margin:10px 0"><input id="ac-code" placeholder="CODE" style="width:100%;margin:2px 0;padding:6px;background:#222;color:#fff;border:1px solid #555"><input id="ac-desc" placeholder="설명" style="width:100%;margin:2px 0;padding:6px;background:#222;color:#fff;border:1px solid #555"><input id="ac-gold" type="number" placeholder="골드" style="width:48%;margin:2px 1%;padding:6px;background:#222;color:#fff;border:1px solid #555"><input id="ac-dia" type="number" placeholder="다이아" style="width:48%;margin:2px 1%;padding:6px;background:#222;color:#fff;border:1px solid #555"><input id="ac-shards" type="number" placeholder="결정 파편" style="width:48%;margin:2px 1%;padding:6px;background:#222;color:#fff;border:1px solid #555"><input id="ac-max" type="number" placeholder="최대 사용 횟수" style="width:48%;margin:2px 1%;padding:6px;background:#222;color:#fff;border:1px solid #555"><input id="ac-crystals" placeholder='결정 JSON 예: {"불":5,"물":3}' style="width:100%;margin:2px 0;padding:6px;background:#222;color:#fff;border:1px solid #555"><select id="ac-agent" style="width:100%;margin:2px 0;padding:6px;background:#222;color:#fff;border:1px solid #555"></select><input id="ac-agents" placeholder="선택된 에이전트 (쉼표구분, 직접 편집 가능)" style="width:100%;margin:2px 0;padding:6px;background:#222;color:#fff;border:1px solid #555"><input id="ac-exp" type="date" style="width:100%;margin:2px 0;padding:6px;background:#222;color:#fff;border:1px solid #555"><button onclick="saveCoupon()" style="width:100%;padding:8px;margin-top:6px;background:#4a9;color:#fff;border:0;cursor:pointer;border-radius:4px">저장 / 수정</button></div><div id="ac-list">${list.map(c=>`<div style="border:1px solid #333;padding:8px;margin:6px 0;border-radius:4px"><b style="color:#8cf">${c.code}</b> — 사용 ${(c.usedBy||[]).length}${c.maxUses?'/'+c.maxUses:''}<div style="font-size:11px;color:#aaa;margin:4px 0">${JSON.stringify(c.reward||{})}</div><div style="font-size:11px;color:#888">만료: ${c.expiresAt?new Date(c.expiresAt).toLocaleDateString():'없음'} · ${c.desc||''}</div><button onclick="editCoupon('${c.code}')" style="margin:4px 4px 0 0;padding:4px 10px;cursor:pointer">수정</button><button onclick="delCoupon('${c.code}')" style="background:#833;color:#fff;border:0;padding:4px 10px;cursor:pointer;border-radius:3px">삭제</button></div>`).join('')}</div></div></div>`;const w=document.createElement('div');w.innerHTML=html;document.body.appendChild(w.firstElementChild);const sel=document.getElementById('ac-agent');const pool=[...(typeof S_CODEX!=='undefined'?S_CODEX:[]),...(typeof SECRET_POOL!=='undefined'?SECRET_POOL:[])];sel.innerHTML='<option value="">-- 에이전트 추가 --</option>'+pool.map(a=>`<option value="${a.name}">[${a.rank}] ${a.name}</option>`).join('');sel.onchange=()=>{if(!sel.value)return;const t=document.getElementById('ac-agents');const cur=t.value.split(',').map(x=>x.trim()).filter(Boolean);if(!cur.includes(sel.value))cur.push(sel.value);t.value=cur.join(',');sel.value='';};}
-window.saveCoupon=async function(){const fb=window.firebaseFs,db=window.firebaseDb;const code=document.getElementById('ac-code').value.trim().toUpperCase();if(!code)return alert('코드 필요');const reward={};const g=+document.getElementById('ac-gold').value;if(g)reward.gold=g;const d=+document.getElementById('ac-dia').value;if(d)reward.dia=d;const sh=+document.getElementById('ac-shards').value;if(sh)reward.shards=sh;const cr=document.getElementById('ac-crystals').value.trim();if(cr){try{reward.crystals=JSON.parse(cr);}catch(e){return alert('결정 JSON 파싱 오류');}}const ag=document.getElementById('ac-agents').value.trim();if(ag)reward.agents=ag.split(',').map(x=>x.trim()).filter(Boolean);const desc=document.getElementById('ac-desc').value.trim();const exp=document.getElementById('ac-exp').value;const mx=+document.getElementById('ac-max').value;const data={reward,usedBy:[]};if(desc)data.desc=desc;if(exp)data.expiresAt=new Date(exp).getTime();if(mx)data.maxUses=mx;const ex=(window._coupons||[]).find(c=>c.code===code);if(ex)data.usedBy=ex.usedBy||[];await fb.setDoc(fb.doc(db,'coupons',code),data);alert('저장 완료');document.getElementById('ac-modal').remove();openAdminPanel();};
-window.editCoupon=function(code){const c=window._coupons.find(x=>x.code===code);if(!c)return;document.getElementById('ac-code').value=c.code;document.getElementById('ac-desc').value=c.desc||'';document.getElementById('ac-gold').value=c.reward?.gold||'';document.getElementById('ac-dia').value=c.reward?.dia||'';document.getElementById('ac-shards').value=c.reward?.shards||'';document.getElementById('ac-crystals').value=c.reward?.crystals?JSON.stringify(c.reward.crystals):'';document.getElementById('ac-agents').value=(c.reward?.agents||[]).join(',');document.getElementById('ac-max').value=c.maxUses||'';if(c.expiresAt)document.getElementById('ac-exp').value=new Date(c.expiresAt).toISOString().slice(0,10);};
-window.delCoupon=async function(code){if(!confirm(code+' 삭제?'))return;const fb=window.firebaseFs,db=window.firebaseDb;await fb.deleteDoc(fb.doc(db,'coupons',code));document.getElementById('ac-modal').remove();openAdminPanel();};
+window.addEventListener('load',()=>{const ck=setInterval(()=>{const u=window.firebaseAuth?.currentUser;if(!u)return;clearInterval(ck);if(u.uid!==ADMIN_UID)return;const b=document.createElement('button');b.textContent='🛠️';b.className='ac-fab';b.onclick=openAdminPanel;document.body.appendChild(b);},500);});
+
+let _acEdit=null;
+
+async function openAdminPanel(){
+  const fb=window.firebaseFs,db=window.firebaseDb;
+  const sn=await fb.getDocs(fb.collection(db,'coupons'));
+  const list=[];sn.forEach(d=>list.push({code:d.id,...d.data()}));
+  window._coupons=list;
+  const pool=[...(typeof S_CODEX!=='undefined'?S_CODEX:[]),...(typeof SECRET_POOL!=='undefined'?SECRET_POOL:[])];
+  const agentOpts='<option value="">+ 에이전트 추가</option>'+pool.map(a=>`<option value="${a.name}">[${a.rank}] ${a.name}</option>`).join('');
+  const html=`<div id="ac-modal" onclick="if(event.target===this)this.remove()"><div class="ac-box">
+    <div class="ac-hd"><h3>🛠️ 쿠폰 관리 · ${list.length}개</h3><button onclick="document.getElementById('ac-modal').remove()">×</button></div>
+    <div class="ac-tabs"><button class="ac-tab on" onclick="acTab(0)">목록</button><button class="ac-tab" onclick="acTab(1)">새 쿠폰</button></div>
+    <div class="ac-body">
+      <div id="ac-pane-list">${list.length?list.map(c=>{
+        const r=c.reward||{};const chips=[];
+        if(r.gold)chips.push(`💰 ${r.gold.toLocaleString()}`);
+        if(r.dia)chips.push(`💎 ${r.dia}`);
+        if(r.shards)chips.push(`🔮 ${r.shards}`);
+        if(r.crystals)for(const[k,v]of Object.entries(r.crystals))chips.push(`✦ ${k} ${v}`);
+        if(r.agents)r.agents.forEach(a=>chips.push(`⭐ ${a}`));
+        const exp=c.expiresAt?new Date(c.expiresAt).toLocaleDateString('ko-KR'):'무제한';
+        const used=(c.usedBy||[]).length;
+        return `<div class="ac-card"><div class="ac-card-hd"><span class="ac-code">${c.code}</span><div><button class="ac-btn ac-btn-gh" style="padding:5px 10px;font-size:11px" onclick="editCoupon('${c.code}')">수정</button> <button class="ac-btn ac-btn-dg" style="padding:5px 10px;font-size:11px" onclick="delCoupon('${c.code}')">삭제</button></div></div><div style="margin-top:8px">${chips.map(x=>`<span class="ac-chip">${x}</span>`).join('')}</div><div class="ac-meta">📅 ${exp} · 👥 ${used}${c.maxUses?'/'+c.maxUses:''} 사용${c.desc?' · '+c.desc:''}</div></div>`;
+      }).join(''):'<div class="ac-empty">등록된 쿠폰이 없습니다.<br>상단 [새 쿠폰] 탭에서 추가하세요.</div>'}</div>
+      <div id="ac-pane-edit" style="display:none">
+        <label class="ac-lbl">쿠폰 코드</label>
+        <input id="ac-code" class="ac-inp" placeholder="예: WELCOME2026" style="text-transform:uppercase">
+        <label class="ac-lbl">설명 (선택)</label>
+        <input id="ac-desc" class="ac-inp" placeholder="예: 신규 유저 환영 쿠폰">
+        <label class="ac-lbl">보상 (체크한 항목만 지급)</label>
+        <div class="ac-grid">
+          <label class="ac-chk"><input type="checkbox" id="ac-c-gold"> 💰 골드</label>
+          <input id="ac-gold" class="ac-inp" type="number" placeholder="수량">
+          <label class="ac-chk"><input type="checkbox" id="ac-c-dia"> 💎 다이아</label>
+          <input id="ac-dia" class="ac-inp" type="number" placeholder="수량">
+          <label class="ac-chk"><input type="checkbox" id="ac-c-shards"> 🔮 결정 파편</label>
+          <input id="ac-shards" class="ac-inp" type="number" placeholder="수량">
+        </div>
+        <label class="ac-lbl">속성 결정 (JSON, 선택)</label>
+        <input id="ac-crystals" class="ac-inp" placeholder='예: {"불":5,"물":3}'>
+        <label class="ac-lbl">특수 요원 (선택)</label>
+        <select id="ac-agent" class="ac-sel">${agentOpts}</select>
+        <input id="ac-agents" class="ac-inp" placeholder="선택된 요원 (쉼표구분)" style="margin-top:6px">
+        <div class="ac-grid" style="margin-top:10px">
+          <div><label class="ac-lbl">만료일</label><input id="ac-exp" class="ac-inp" type="date"></div>
+          <div><label class="ac-lbl">최대 사용 횟수</label><input id="ac-max" class="ac-inp" type="number" placeholder="무제한"></div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:16px">
+          <button class="ac-btn ac-btn-pri" style="flex:2" onclick="saveCoupon()">💾 저장</button>
+          <button class="ac-btn ac-btn-gh" style="flex:1" onclick="resetForm()">초기화</button>
+        </div>
+      </div>
+    </div></div></div>`;
+  const w=document.createElement('div');w.innerHTML=html;document.body.appendChild(w.firstElementChild);
+  document.getElementById('ac-agent').onchange=function(){if(!this.value)return;const t=document.getElementById('ac-agents');const cur=t.value.split(',').map(x=>x.trim()).filter(Boolean);if(!cur.includes(this.value))cur.push(this.value);t.value=cur.join(', ');this.value='';};
+  ['gold','dia','shards'].forEach(k=>{const inp=document.getElementById('ac-'+k);inp.oninput=()=>{document.getElementById('ac-c-'+k).checked=!!+inp.value;};});
+}
+
+window.acTab=function(i){const ts=document.querySelectorAll('.ac-tab');ts.forEach((t,j)=>t.classList.toggle('on',i===j));document.getElementById('ac-pane-list').style.display=i?'none':'block';document.getElementById('ac-pane-edit').style.display=i?'block':'none';if(i===0)_acEdit=null;};
+
+window.resetForm=function(){_acEdit=null;['ac-code','ac-desc','ac-gold','ac-dia','ac-shards','ac-crystals','ac-agents','ac-exp','ac-max'].forEach(id=>document.getElementById(id).value='');['ac-c-gold','ac-c-dia','ac-c-shards'].forEach(id=>document.getElementById(id).checked=false);document.getElementById('ac-code').disabled=false;};
+
+window.editCoupon=function(code){const c=(window._coupons||[]).find(x=>x.code===code);if(!c)return;_acEdit=code;acTab(1);const r=c.reward||{};document.getElementById('ac-code').value=c.code;document.getElementById('ac-code').disabled=true;document.getElementById('ac-desc').value=c.desc||'';document.getElementById('ac-gold').value=r.gold||'';document.getElementById('ac-c-gold').checked=!!r.gold;document.getElementById('ac-dia').value=r.dia||'';document.getElementById('ac-c-dia').checked=!!r.dia;document.getElementById('ac-shards').value=r.shards||'';document.getElementById('ac-c-shards').checked=!!r.shards;document.getElementById('ac-crystals').value=r.crystals?JSON.stringify(r.crystals):'';document.getElementById('ac-agents').value=(r.agents||[]).join(', ');document.getElementById('ac-max').value=c.maxUses||'';if(c.expiresAt)document.getElementById('ac-exp').value=new Date(c.expiresAt).toISOString().slice(0,10);};
+
+window.saveCoupon=async function(){const fb=window.firebaseFs,db=window.firebaseDb;const code=document.getElementById('ac-code').value.trim().toUpperCase();if(!code)return alert('쿠폰 코드를 입력하세요');const reward={};if(document.getElementById('ac-c-gold').checked){const v=+document.getElementById('ac-gold').value;if(v)reward.gold=v;}if(document.getElementById('ac-c-dia').checked){const v=+document.getElementById('ac-dia').value;if(v)reward.dia=v;}if(document.getElementById('ac-c-shards').checked){const v=+document.getElementById('ac-shards').value;if(v)reward.shards=v;}const cr=document.getElementById('ac-crystals').value.trim();if(cr){try{reward.crystals=JSON.parse(cr);}catch(e){return alert('속성 결정 JSON 형식 오류');}}const ag=document.getElementById('ac-agents').value.trim();if(ag)reward.agents=ag.split(',').map(x=>x.trim()).filter(Boolean);if(!Object.keys(reward).length)return alert('보상을 하나 이상 설정하세요');const desc=document.getElementById('ac-desc').value.trim();const exp=document.getElementById('ac-exp').value;const mx=+document.getElementById('ac-max').value;const data={reward,usedBy:[]};if(desc)data.desc=desc;if(exp)data.expiresAt=new Date(exp).getTime();if(mx)data.maxUses=mx;const ex=(window._coupons||[]).find(c=>c.code===code);if(ex)data.usedBy=ex.usedBy||[];try{await fb.setDoc(fb.doc(db,'coupons',code),data);document.getElementById('ac-modal').remove();openAdminPanel();}catch(e){alert('저장 실패: '+e.message);}};
+
+window.delCoupon=async function(code){if(!confirm(code+' 쿠폰을 삭제할까요?'))return;const fb=window.firebaseFs,db=window.firebaseDb;try{await fb.deleteDoc(fb.doc(db,'coupons',code));document.getElementById('ac-modal').remove();openAdminPanel();}catch(e){alert('삭제 실패: '+e.message);}};
 </script>
 </body>
 </html>
