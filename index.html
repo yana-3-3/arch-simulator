@@ -785,6 +785,39 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Preten
 </style>
 </head>
 <body>
+<div id="archIntro" style="position:fixed;inset:0;background:#0a0b10;z-index:99999;display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;font-family:'Syne',sans-serif;">
+  <div style="font-size:clamp(60px,12vw,140px);font-weight:800;letter-spacing:.15em;color:#fff;text-shadow:0 0 40px rgba(99,102,241,.6);animation:archPulse 1.2s ease-in-out infinite;">ARCH</div>
+</div>
+<style>@keyframes archPulse{0%,100%{opacity:.7}50%{opacity:1}}</style>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyDuNV-Y-d_lZRzhKhNmcnNjHlhTdWzgvFA",
+  authDomain: "arch-simulator.firebaseapp.com",
+  projectId: "arch-simulator",
+  storageBucket: "arch-simulator.firebasestorage.app",
+  messagingSenderId: "57629561881",
+  appId: "1:57629561881:web:e5dfcccb07c207cfb38688"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+window._fbDb = db; window._fbDoc = doc; window._fbGetDoc = getDoc; window._fbSetDoc = setDoc;
+window._fbReady = false; window._fbUser = null;
+const ready = new Promise((resolve) => {
+  onAuthStateChanged(auth, (u) => { if(u){ window._fbUser = u; window._fbReady = true; resolve(true); } });
+  signInAnonymously(auth).catch(e => { console.warn('[ARCH] anon sign-in failed', e); resolve(false); });
+});
+const timeout = new Promise(r => setTimeout(() => r(false), 3000));
+window._fbBootstrap = Promise.race([ready, timeout]).then(async (ok) => {
+  if(ok && window._fbReady){ try{ await loadStateFromCloud(); }catch(e){} }
+  const el = document.getElementById('archIntro');
+  if(el){ el.style.opacity='0'; setTimeout(()=>el.remove(), 500); }
+});
+</script>
+
 <!-- 비밀번호 잠금 화면 -->
 <div id="lock-screen" style="display:none;position:fixed;inset:0;z-index:99999;background:#fff;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px">
   <div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;letter-spacing:2px;color:#1e2030">ARCH</div>
@@ -2037,8 +2070,26 @@ let S={
   dailyActionLog:{}, weeklyActionLog:{},
 };
 
-function saveState(){try{localStorage.setItem('arch1',JSON.stringify(S));}catch(e){}}
+let _fbSaveTimer=null;
+function saveState(){
+  try{localStorage.setItem('arch1',JSON.stringify(S));}catch(e){}
+  if(window._fbReady && window._fbUser){
+    clearTimeout(_fbSaveTimer);
+    _fbSaveTimer=setTimeout(()=>{
+      try{window._fbSetDoc(window._fbDoc(window._fbDb,'saves',window._fbUser.uid),{data:JSON.stringify(S),updatedAt:Date.now()});}
+      catch(e){console.warn('[ARCH] cloud save failed',e);}
+    },2000);
+  }
+}
 function loadState(){try{const d=localStorage.getItem('arch1');if(d){const p=JSON.parse(d);S={...S,...p};}}catch(e){}}
+async function loadStateFromCloud(){
+  if(!window._fbReady||!window._fbUser)return false;
+  try{
+    const snap=await window._fbGetDoc(window._fbDoc(window._fbDb,'saves',window._fbUser.uid));
+    if(snap.exists()){const raw=snap.data().data;if(raw){localStorage.setItem('arch1',raw);const p=JSON.parse(raw);S={...S,...p};return true;}}
+  }catch(e){console.warn('[ARCH] cloud load failed',e);}
+  return false;
+}
 
 // ═══════════════════════════════════════════════════════════════════
 // UTILS
