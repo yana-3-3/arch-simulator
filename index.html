@@ -2079,7 +2079,7 @@ function saveState(){
     _fbSaveTimer=setTimeout(()=>{
       try{window._fbSetDoc(window._fbDoc(window._fbDb,'saves',window._fbUser.uid),{data:JSON.stringify(S),updatedAt:Date.now()});}
       catch(e){console.warn('[ARCH] cloud save failed',e);}
-    },2000);
+    },5000);
   }
 }
 function loadState(){try{const d=localStorage.getItem('arch1');if(d){const p=JSON.parse(d);S={...S,...p};}}catch(e){}}
