@@ -2072,24 +2072,60 @@ let S={
 };
 
 let _fbSaveTimer=null;
+let _fbLastSaved='';
+let _fbPendingData=null;
+window._saveEnabled=false; // 🔒 부팅 시 잠금. loadStateFromCloud 완료 후 해제
 function saveState(){
-  try{localStorage.setItem('arch1',JSON.stringify(S));}catch(e){}
+  const serialized=JSON.stringify(S);
+  if(!window._saveEnabled){return;} // 팻말 붙어있으면 로컬/클라우드 전부 차단
+  try{localStorage.setItem('arch1',serialized);}catch(e){}
   if(window._fbReady && window._fbUser){
+    if(serialized===_fbLastSaved)return;
+    _fbPendingData=serialized;
     clearTimeout(_fbSaveTimer);
     _fbSaveTimer=setTimeout(()=>{
-      try{window._fbSetDoc(window._fbDoc(window._fbDb,'saves',window._fbUser.uid),{data:JSON.stringify(S),updatedAt:Date.now()});}
+      if(!window._saveEnabled)return;
+      if(!_fbPendingData||_fbPendingData===_fbLastSaved)return;
+      const toSave=_fbPendingData;_fbLastSaved=toSave;_fbPendingData=null;
+      try{window._fbSetDoc(window._fbDoc(window._fbDb,'saves',window._fbUser.uid),{data:toSave,updatedAt:Date.now()});}
       catch(e){console.warn('[ARCH] cloud save failed',e);}
-    },5000);
+    },2000);
   }
 }
+function _fbFlushSave(){
+  if(!window._saveEnabled)return;
+  if(!window._fbReady||!window._fbUser)return;
+  if(!_fbPendingData||_fbPendingData===_fbLastSaved)return;
+  const toSave=_fbPendingData;_fbLastSaved=toSave;_fbPendingData=null;
+  clearTimeout(_fbSaveTimer);
+  try{window._fbSetDoc(window._fbDoc(window._fbDb,'saves',window._fbUser.uid),{data:toSave,updatedAt:Date.now()});}catch(e){}
+}
+window.addEventListener('beforeunload',_fbFlushSave);
+window.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')_fbFlushSave();});
 function loadState(){try{const d=localStorage.getItem('arch1');if(d){const p=JSON.parse(d);S={...S,...p};}}catch(e){}}
 async function loadStateFromCloud(){
-  if(!window._fbReady||!window._fbUser)return false;
+  if(!window._fbReady||!window._fbUser){console.warn('[ARCH] fb not ready, save disabled');return false;}
   try{
     const snap=await window._fbGetDoc(window._fbDoc(window._fbDb,'saves',window._fbUser.uid));
-    if(snap.exists()){const raw=snap.data().data;if(raw){localStorage.setItem('arch1',raw);const p=JSON.parse(raw);S={...S,...p};return true;}}
-  }catch(e){console.warn('[ARCH] cloud load failed',e);}
-  return false;
+    if(snap.exists()){
+      const raw=snap.data().data;
+      if(raw){
+        localStorage.setItem('arch1',raw);
+        const p=JSON.parse(raw);
+        S={...S,...p};
+        _fbLastSaved=raw;
+        window._saveEnabled=true; // ✅ 기존 유저 데이터 로드 완료
+        return true;
+      }
+    }
+    // 문서는 없지만 조회 자체는 성공 = 진짜 신규 유저
+    window._saveEnabled=true; // ✅ 신규 유저, 저장 허용
+    return false;
+  }catch(e){
+    console.warn('[ARCH] cloud load failed, save stays DISABLED',e);
+    // 팻말 유지: 이 세션에선 저장 안 함 (데이터 보호)
+    return false;
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -7110,8 +7146,15 @@ function confirmReset(){
     </div>
   `);
 }
-function doReset(){
-  localStorage.removeItem('arch1');location.reload();
+async function doReset(){
+  localStorage.removeItem('arch1');
+  // 유저 명시적 초기화 → Firebase도 즉시 덮어쓰기 (팻말 무시)
+  if(window._fbReady && window._fbUser){
+    try{
+      await window._fbSetDoc(window._fbDoc(window._fbDb,'saves',window._fbUser.uid),{data:'',updatedAt:Date.now()});
+    }catch(e){console.warn('[ARCH] reset cloud failed',e);}
+  }
+  location.reload();
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -7569,6 +7612,7 @@ async function openAdminPanel(){
   const agentOpts='<option value="">+ 에이전트 추가</option>'+pool.map(a=>`<option value="${a.name}">[${a.rank}] ${a.name}</option>`).join('');
   const html=`<div id="ac-modal" onclick="if(event.target===this)this.remove()"><div class="ac-box">
     <div class="ac-hd"><h3>🛠️ 쿠폰 관리 · ${list.length}개</h3><button onclick="document.getElementById('ac-modal').remove()">×</button></div>
+    <div style="background:#3a1a1a;border-bottom:1px solid #5a2020;padding:10px 18px;display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span style="font-size:11px;color:#faa">🧪 테스트: 로컬만 지우고 리로드 → Firebase 복구 확인용</span><button onclick="acTestWipeLocal()" style="margin-left:auto;padding:6px 12px;background:#d44;color:#fff;border:0;border-radius:4px;cursor:pointer;font-size:11px;font-weight:600">로컬 초기화 + 리로드</button></div>
     <div class="ac-tabs"><button class="ac-tab on" onclick="acTab(0)">목록</button><button class="ac-tab" onclick="acTab(1)">새 쿠폰</button></div>
     <div class="ac-body">
       <div id="ac-pane-list">${list.length?list.map(c=>{
@@ -7624,6 +7668,8 @@ window.editCoupon=function(code){const c=(window._coupons||[]).find(x=>x.code===
 
 window.saveCoupon=async function(){const fb=window.firebaseFs,db=window.firebaseDb;const code=document.getElementById('ac-code').value.trim().toUpperCase();if(!code)return alert('쿠폰 코드를 입력하세요');const reward={};if(document.getElementById('ac-c-gold').checked){const v=+document.getElementById('ac-gold').value;if(v)reward.gold=v;}if(document.getElementById('ac-c-dia').checked){const v=+document.getElementById('ac-dia').value;if(v)reward.dia=v;}if(document.getElementById('ac-c-shards').checked){const v=+document.getElementById('ac-shards').value;if(v)reward.shards=v;}const cr=document.getElementById('ac-crystals').value.trim();if(cr){try{reward.crystals=JSON.parse(cr);}catch(e){return alert('속성 결정 JSON 형식 오류');}}const ag=document.getElementById('ac-agents').value.trim();if(ag)reward.agents=ag.split(',').map(x=>x.trim()).filter(Boolean);if(!Object.keys(reward).length)return alert('보상을 하나 이상 설정하세요');const desc=document.getElementById('ac-desc').value.trim();const exp=document.getElementById('ac-exp').value;const mx=+document.getElementById('ac-max').value;const data={reward,usedBy:[]};if(desc)data.desc=desc;if(exp)data.expiresAt=new Date(exp).getTime();if(mx)data.maxUses=mx;const ex=(window._coupons||[]).find(c=>c.code===code);if(ex)data.usedBy=ex.usedBy||[];try{await fb.setDoc(fb.doc(db,'coupons',code),data);document.getElementById('ac-modal').remove();openAdminPanel();}catch(e){alert('저장 실패: '+e.message);}};
 
+
+window.acTestWipeLocal=function(){if(!confirm('🧪 테스트 모드\n\n로컬스토리지만 삭제하고 리로드합니다.\nFirebase 데이터는 건드리지 않아요.\n\n리로드 후 Firebase에서 데이터가 정상 복구되는지 확인하세요.\n\n진행할까요?'))return;try{localStorage.removeItem('arch1');}catch(e){}console.log('[ARCH TEST] local wiped, reloading...');location.reload();};
 window.delCoupon=async function(code){if(!confirm(code+' 쿠폰을 삭제할까요?'))return;const fb=window.firebaseFs,db=window.firebaseDb;try{await fb.deleteDoc(fb.doc(db,'coupons',code));document.getElementById('ac-modal').remove();openAdminPanel();}catch(e){alert('삭제 실패: '+e.message);}};
 </script>
 </body>
